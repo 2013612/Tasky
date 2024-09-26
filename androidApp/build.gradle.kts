@@ -48,4 +48,5 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     ktlintRuleset(libs.ktlint)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.ui.text.google.fonts)
 }
