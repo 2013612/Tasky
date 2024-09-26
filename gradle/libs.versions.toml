@@ -7,6 +7,7 @@ androidx-activityCompose = "1.9.2"
 ktlint = "0.4.4"
 lifecycleViewmodelCompose = "2.8.6"
 navigationCompose = "2.8.1"
+serialization = "1.7.3"
 
 [libraries]
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
@@ -19,6 +20,8 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlint" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
