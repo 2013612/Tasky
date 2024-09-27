@@ -8,30 +8,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.tasky.android.R
 
-val fontFamily =
+private val Inter =
     FontFamily(
-        Font(R.font.inter_bold),
-        Font(R.font.inter_thin),
-        Font(R.font.inter_black),
-        Font(R.font.inter_light),
-        Font(R.font.inter_medium),
-        Font(R.font.inter_regular),
-        Font(R.font.inter_semibold),
-        Font(R.font.inter_extrabold),
-        Font(R.font.inter_extralight),
+        Font(R.font.inter_bold, weight = FontWeight.Bold),
+        Font(R.font.inter_thin, weight = FontWeight.Thin),
+        Font(R.font.inter_black, weight = FontWeight.Black),
+        Font(R.font.inter_light, weight = FontWeight.Light),
+        Font(R.font.inter_medium, weight = FontWeight.Medium),
+        Font(R.font.inter_regular, weight = FontWeight.Normal),
+        Font(R.font.inter_semibold, weight = FontWeight.SemiBold),
+        Font(R.font.inter_extrabold, weight = FontWeight.ExtraBold),
+        Font(R.font.inter_extralight, weight = FontWeight.ExtraLight),
     )
 
 val MyTypography =
     Typography(
-        displayMedium = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
-        displaySmall = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
-        headlineMedium = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
-        headlineSmall = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold, fontFamily = fontFamily),
-        titleMedium = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
-        bodyLarge = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
-        bodyMedium = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold, fontFamily = fontFamily),
-        bodySmall = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal, fontFamily = fontFamily),
-        labelLarge = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, fontFamily = fontFamily),
-        labelMedium = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Light, fontFamily = fontFamily),
-        labelSmall = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = fontFamily),
+        displayMedium = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
+        displaySmall = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
+        headlineMedium = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
+        headlineSmall = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold, fontFamily = Inter),
+        titleMedium = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
+        bodyLarge = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
+        bodyMedium = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold, fontFamily = Inter),
+        bodySmall = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal, fontFamily = Inter),
+        labelLarge = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, fontFamily = Inter),
+        labelMedium = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Light, fontFamily = Inter),
+        labelSmall = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = Inter),
     )
