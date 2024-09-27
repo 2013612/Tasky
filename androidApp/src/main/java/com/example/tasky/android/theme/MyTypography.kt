@@ -2,23 +2,24 @@ package com.example.tasky.android.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.example.tasky.android.R
 
-val provider =
-    GoogleFont.Provider(
-        providerAuthority = "com.google.android.gms.fonts",
-        providerPackage = "com.google.android.gms",
-        certificates = R.array.com_google_android_gms_fonts_certs,
+val fontFamily =
+    FontFamily(
+        Font(R.font.inter_bold),
+        Font(R.font.inter_thin),
+        Font(R.font.inter_black),
+        Font(R.font.inter_light),
+        Font(R.font.inter_medium),
+        Font(R.font.inter_regular),
+        Font(R.font.inter_semibold),
+        Font(R.font.inter_extrabold),
+        Font(R.font.inter_extralight),
     )
-
-val fontName = GoogleFont("Inter")
-
-val fontFamily = FontFamily(Font(googleFont = fontName, fontProvider = provider))
 
 val MyTypography =
     Typography(
