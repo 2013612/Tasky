@@ -50,6 +50,7 @@ fun LoginTextField(
                 errorContainerColor = Light2,
                 focusedBorderColor = LightBlue,
                 errorBorderColor = Red,
+                unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
             if (validator(text)) {
