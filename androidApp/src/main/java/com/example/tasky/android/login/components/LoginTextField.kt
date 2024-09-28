@@ -34,7 +34,7 @@ fun LoginTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeHolder: String,
-    validator: (String) -> Boolean,
+    isCheckVisible: Boolean,
     errorText: String?,
     isPassword: Boolean,
     modifier: Modifier = Modifier,
@@ -92,7 +92,7 @@ fun LoginTextField(
                     }
                 }
             } else {
-                if (validator(text)) {
+                if (isCheckVisible) {
                     { Icon(Icons.Filled.Check, null, tint = Color.Green) }
                 } else {
                     null
@@ -108,7 +108,7 @@ fun LoginTextField(
 @Composable
 private fun LoginTextFieldPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", { false }, null, isPassword = false)
+        LoginTextField("", {}, "placeholder", false, null, isPassword = false)
     }
 }
 
@@ -116,7 +116,7 @@ private fun LoginTextFieldPreview() {
 @Composable
 private fun LoginTextFieldValidPreview() {
     MyApplicationTheme {
-        LoginTextField("userName", {}, "placeholder", { true }, null, isPassword = false)
+        LoginTextField("userName", {}, "placeholder", true, null, isPassword = false)
     }
 }
 
@@ -124,7 +124,7 @@ private fun LoginTextFieldValidPreview() {
 @Composable
 private fun LoginTextFieldErrorPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", { false }, "error Text", isPassword = false)
+        LoginTextField("", {}, "placeholder", false, "error Text", isPassword = false)
     }
 }
 
@@ -132,6 +132,6 @@ private fun LoginTextFieldErrorPreview() {
 @Composable
 private fun LoginTextFieldPasswordPreview() {
     MyApplicationTheme {
-        LoginTextField("password", {}, "placeholder", { true }, null, isPassword = true)
+        LoginTextField("password", {}, "placeholder", true, null, isPassword = true)
     }
 }
