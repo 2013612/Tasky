@@ -1,33 +1,35 @@
 package com.example.tasky.android.login.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.android.R
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
 @Composable
-fun LoginTextField(
+fun LoginPasswordTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeHolder: String,
-    isCheckVisible: Boolean,
+    showPassword: Boolean,
+    updateShowPassword: (Boolean) -> Unit,
     errorText: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -55,36 +57,47 @@ fun LoginTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (isCheckVisible) {
-                { Icon(Icons.Filled.Check, null, tint = Color.Green) }
+            if (showPassword) {
+                {
+                    Icon(
+                        painterResource(R.drawable.visibility),
+                        null,
+                        modifier =
+                            Modifier.clickable {
+                                updateShowPassword(false)
+                            },
+                    )
+                }
             } else {
-                null
+                {
+                    Icon(
+                        painterResource(R.drawable.visibility_off),
+                        null,
+                        modifier =
+                            Modifier.clickable {
+                                updateShowPassword(true)
+                            },
+                    )
+                }
             },
         supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
         isError = errorText != null,
+        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
     )
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Preview
 @Composable
-private fun LoginTextFieldPreview() {
+private fun LoginPasswordTextFieldPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, null)
+        LoginPasswordTextField("password", {}, "password", false, {}, null)
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Preview
 @Composable
-private fun LoginTextFieldValidPreview() {
+private fun LoginPasswordTextFieldShowPreview() {
     MyApplicationTheme {
-        LoginTextField("userName", {}, "placeholder", true, null)
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun LoginTextFieldErrorPreview() {
-    MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, "error Text")
+        LoginPasswordTextField("password", {}, "password", true, {}, null)
     }
 }
