@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.login.components.CheckTextField
+import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
@@ -46,8 +47,7 @@ fun NavGraphBuilder.loginScreen() {
 object Login
 
 data class LoginScreenState(
-    val email: String = "",
-    val isEmailValid: Boolean = false,
+    val emailState: CheckTextFieldState = CheckTextFieldState(),
     val password: String = "",
     val showPassword: Boolean = false,
 )
@@ -91,7 +91,12 @@ private fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(47.dp))
-        Text("Welcome Back!", style = typography.displayMedium, lineHeight = 30.sp, color = Color.White)
+        Text(
+            "Welcome Back!",
+            style = typography.displayMedium,
+            lineHeight = 30.sp,
+            color = Color.White,
+        )
         Spacer(Modifier.height(40.dp))
         Column(
             Modifier
@@ -104,13 +109,20 @@ private fun LoginScreen(
         ) {
             Spacer(Modifier.height(50.dp))
             CheckTextField(
-                text = state.email,
+                state = state.emailState,
                 onTextChange = {
-                    onEvent(LoginScreenEvent.OnStateChange(state.copy(email = it)))
+                    onEvent(
+                        LoginScreenEvent.OnStateChange(
+                            state.copy(
+                                emailState =
+                                    state.emailState.copy(
+                                        text = it,
+                                    ),
+                            ),
+                        ),
+                    )
                 },
                 placeHolder = "Email address",
-                isCheckVisible = state.isEmailValid,
-                errorText = null,
                 modifier = Modifier.fillMaxWidth(),
             )
             VisibilityTextField(

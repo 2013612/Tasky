@@ -20,17 +20,21 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
+data class CheckTextFieldState(
+    val text: String = "",
+    val isCheckVisible: Boolean = false,
+    val errorText: String? = null,
+)
+
 @Composable
 fun CheckTextField(
-    text: String,
+    state: CheckTextFieldState,
     onTextChange: (String) -> Unit,
     placeHolder: String,
-    isCheckVisible: Boolean,
-    errorText: String?,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
-        text,
+        state.text,
         onTextChange,
         placeholder = {
             Text(
@@ -53,13 +57,13 @@ fun CheckTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (isCheckVisible) {
+            if (state.isCheckVisible) {
                 { Icon(Icons.Filled.Check, null, tint = Color.Green) }
             } else {
                 null
             },
-        supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
-        isError = errorText != null,
+        supportingText = { Text(state.errorText ?: "", style = typography.labelSmall, color = Red) },
+        isError = state.errorText != null,
     )
 }
 
@@ -67,7 +71,7 @@ fun CheckTextField(
 @Composable
 private fun CheckTextFieldPreview() {
     MyApplicationTheme {
-        CheckTextField("", {}, "placeholder", false, null)
+        CheckTextField(CheckTextFieldState(), {}, "placeholder")
     }
 }
 
@@ -75,7 +79,7 @@ private fun CheckTextFieldPreview() {
 @Composable
 private fun CheckTextFieldValidPreview() {
     MyApplicationTheme {
-        CheckTextField("userName", {}, "placeholder", true, null)
+        CheckTextField(CheckTextFieldState(text = "userName", isCheckVisible = true), {}, "placeholder")
     }
 }
 
@@ -83,6 +87,6 @@ private fun CheckTextFieldValidPreview() {
 @Composable
 private fun CheckTextFieldErrorPreview() {
     MyApplicationTheme {
-        CheckTextField("", {}, "placeholder", false, "error Text")
+        CheckTextField(CheckTextFieldState(errorText = "error Text"), {}, "placeholder")
     }
 }
