@@ -28,8 +28,8 @@ fun LoginPasswordTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeHolder: String,
-    showPassword: Boolean,
-    updateShowPassword: (Boolean) -> Unit,
+    isVisible: Boolean,
+    onVisibilityChange: (Boolean) -> Unit,
     errorText: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -57,14 +57,14 @@ fun LoginPasswordTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (showPassword) {
+            if (isVisible) {
                 {
                     Icon(
                         painterResource(R.drawable.visibility),
                         null,
                         modifier =
                             Modifier.clickable {
-                                updateShowPassword(false)
+                                onVisibilityChange(false)
                             },
                     )
                 }
@@ -75,14 +75,14 @@ fun LoginPasswordTextField(
                         null,
                         modifier =
                             Modifier.clickable {
-                                updateShowPassword(true)
+                                onVisibilityChange(true)
                             },
                     )
                 }
             },
         supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
         isError = errorText != null,
-        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
     )
 }
 

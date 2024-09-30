@@ -119,11 +119,11 @@ private fun LoginScreen(
                     onEvent(LoginScreenEvent.OnStateChange(state.copy(password = it)))
                 },
                 placeHolder = "Password",
-                showPassword = state.showPassword,
-                {
+                isVisible = state.showPassword,
+                onVisibilityChange = {
                     onEvent(LoginScreenEvent.OnStateChange(state.copy(showPassword = it)))
                 },
-                null,
+                errorText = null,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(25.dp))
