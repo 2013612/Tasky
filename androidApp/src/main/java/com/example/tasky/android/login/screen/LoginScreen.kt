@@ -111,22 +111,22 @@ private fun LoginScreen(
         ) {
             Spacer(Modifier.height(50.dp))
             LoginTextField(
-                state.email,
-                {
+                text = state.email,
+                onTextChange = {
                     events.updateLoginScreenState(state.copy(email = it))
                 },
-                "Email address",
-                state.isEmailValid,
-                null,
+                placeHolder = "Email address",
+                isCheckVisible = state.isEmailValid,
+                errorText = null,
                 modifier = Modifier.fillMaxWidth(),
             )
             LoginPasswordTextField(
-                state.password,
-                {
+                text = state.password,
+                onTextChange = {
                     events.updateLoginScreenState(state.copy(password = it))
                 },
-                "Password",
-                state.showPassword,
+                placeHolder = "Password",
+                showPassword = state.showPassword,
                 {
                     events.updateLoginScreenState(state.copy(showPassword = it))
                 },
