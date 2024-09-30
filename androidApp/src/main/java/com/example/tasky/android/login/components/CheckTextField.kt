@@ -9,8 +9,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -22,17 +20,21 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
+data class CheckTextFieldState(
+    val text: String = "",
+    val isCheckVisible: Boolean = false,
+    val errorText: String? = null,
+)
+
 @Composable
-fun LoginTextField(
-    text: String,
+fun CheckTextField(
+    state: CheckTextFieldState,
     onTextChange: (String) -> Unit,
     placeHolder: String,
-    isCheckVisible: Boolean,
-    errorText: String?,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
-        text,
+        state.text,
         onTextChange,
         placeholder = {
             Text(
@@ -55,36 +57,36 @@ fun LoginTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (isCheckVisible) {
+            if (state.isCheckVisible) {
                 { Icon(Icons.Filled.Check, null, tint = Color.Green) }
             } else {
                 null
             },
-        supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
-        isError = errorText != null,
+        supportingText = { Text(state.errorText ?: "", style = typography.labelSmall, color = Red) },
+        isError = state.errorText != null,
     )
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldPreview() {
+private fun CheckTextFieldPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, null)
+        CheckTextField(CheckTextFieldState(), {}, "placeholder")
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldValidPreview() {
+private fun CheckTextFieldValidPreview() {
     MyApplicationTheme {
-        LoginTextField("userName", {}, "placeholder", true, null)
+        CheckTextField(CheckTextFieldState(text = "userName", isCheckVisible = true), {}, "placeholder")
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldErrorPreview() {
+private fun CheckTextFieldErrorPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, "error Text")
+        CheckTextField(CheckTextFieldState(errorText = "error Text"), {}, "placeholder")
     }
 }

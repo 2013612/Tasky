@@ -23,18 +23,22 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
+data class VisibilityTextFieldState(
+    val text: String = "",
+    val isVisible: Boolean = false,
+    val errorText: String? = null,
+)
+
 @Composable
-fun LoginPasswordTextField(
-    text: String,
-    onTextChange: (String) -> Unit,
+fun VisibilityTextField(
+    state: VisibilityTextFieldState,
     placeHolder: String,
-    showPassword: Boolean,
-    updateShowPassword: (Boolean) -> Unit,
-    errorText: String?,
+    onTextChange: (String) -> Unit,
+    onVisibilityChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
-        text,
+        state.text,
         onTextChange,
         placeholder = {
             Text(
@@ -57,14 +61,14 @@ fun LoginPasswordTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (showPassword) {
+            if (state.isVisible) {
                 {
                     Icon(
                         painterResource(R.drawable.visibility),
                         null,
                         modifier =
                             Modifier.clickable {
-                                updateShowPassword(false)
+                                onVisibilityChange(false)
                             },
                     )
                 }
@@ -75,29 +79,29 @@ fun LoginPasswordTextField(
                         null,
                         modifier =
                             Modifier.clickable {
-                                updateShowPassword(true)
+                                onVisibilityChange(true)
                             },
                     )
                 }
             },
-        supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
-        isError = errorText != null,
-        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+        supportingText = { Text(state.errorText ?: "", style = typography.labelSmall, color = Red) },
+        isError = state.errorText != null,
+        visualTransformation = if (state.isVisible) VisualTransformation.None else PasswordVisualTransformation(),
     )
 }
 
 @Preview
 @Composable
-private fun LoginPasswordTextFieldPreview() {
+private fun VisibilityTextFieldPreview() {
     MyApplicationTheme {
-        LoginPasswordTextField("password", {}, "password", false, {}, null)
+        VisibilityTextField(VisibilityTextFieldState(text = "password"), "password", {}, {})
     }
 }
 
 @Preview
 @Composable
-private fun LoginPasswordTextFieldShowPreview() {
+private fun VisibilityTextFieldShowPreview() {
     MyApplicationTheme {
-        LoginPasswordTextField("password", {}, "password", true, {}, null)
+        VisibilityTextField(VisibilityTextFieldState(text = "password", isVisible = true), "password", {}, {})
     }
 }
