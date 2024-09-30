@@ -23,18 +23,22 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
+data class VisibilityTextFieldState(
+    val text: String = "",
+    val isVisible: Boolean = false,
+    val errorText: String? = null,
+)
+
 @Composable
 fun VisibilityTextField(
-    text: String,
-    onTextChange: (String) -> Unit,
+    state: VisibilityTextFieldState,
     placeHolder: String,
-    isVisible: Boolean,
+    onTextChange: (String) -> Unit,
     onVisibilityChange: (Boolean) -> Unit,
-    errorText: String?,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
-        text,
+        state.text,
         onTextChange,
         placeholder = {
             Text(
@@ -57,7 +61,7 @@ fun VisibilityTextField(
                 unfocusedBorderColor = Color.Transparent,
             ),
         trailingIcon =
-            if (isVisible) {
+            if (state.isVisible) {
                 {
                     Icon(
                         painterResource(R.drawable.visibility),
@@ -80,9 +84,9 @@ fun VisibilityTextField(
                     )
                 }
             },
-        supportingText = { Text(errorText ?: "", style = typography.labelSmall, color = Red) },
-        isError = errorText != null,
-        visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        supportingText = { Text(state.errorText ?: "", style = typography.labelSmall, color = Red) },
+        isError = state.errorText != null,
+        visualTransformation = if (state.isVisible) VisualTransformation.None else PasswordVisualTransformation(),
     )
 }
 
@@ -90,7 +94,7 @@ fun VisibilityTextField(
 @Composable
 private fun VisibilityTextFieldPreview() {
     MyApplicationTheme {
-        VisibilityTextField("password", {}, "password", false, {}, null)
+        VisibilityTextField(VisibilityTextFieldState(text = "password"), "password", {}, {})
     }
 }
 
@@ -98,6 +102,6 @@ private fun VisibilityTextFieldPreview() {
 @Composable
 private fun VisibilityTextFieldShowPreview() {
     MyApplicationTheme {
-        VisibilityTextField("password", {}, "password", true, {}, null)
+        VisibilityTextField(VisibilityTextFieldState(text = "password", isVisible = true), "password", {}, {})
     }
 }

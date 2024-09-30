@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
+import com.example.tasky.android.login.components.VisibilityTextFieldState
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
@@ -48,8 +49,7 @@ object Login
 
 data class LoginScreenState(
     val emailState: CheckTextFieldState = CheckTextFieldState(),
-    val password: String = "",
-    val showPassword: Boolean = false,
+    val passwordState: VisibilityTextFieldState = VisibilityTextFieldState(),
 )
 
 sealed interface LoginScreenEvent {
@@ -126,16 +126,32 @@ private fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             VisibilityTextField(
-                text = state.password,
+                state = state.passwordState,
                 onTextChange = {
-                    onEvent(LoginScreenEvent.OnStateChange(state.copy(password = it)))
+                    onEvent(
+                        LoginScreenEvent.OnStateChange(
+                            state.copy(
+                                passwordState =
+                                    state.passwordState.copy(
+                                        text = it,
+                                    ),
+                            ),
+                        ),
+                    )
                 },
                 placeHolder = "Password",
-                isVisible = state.showPassword,
                 onVisibilityChange = {
-                    onEvent(LoginScreenEvent.OnStateChange(state.copy(showPassword = it)))
+                    onEvent(
+                        LoginScreenEvent.OnStateChange(
+                            state.copy(
+                                passwordState =
+                                    state.passwordState.copy(
+                                        isVisible = it,
+                                    ),
+                            ),
+                        ),
+                    )
                 },
-                errorText = null,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(25.dp))
