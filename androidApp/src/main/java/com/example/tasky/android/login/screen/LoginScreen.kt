@@ -35,11 +35,19 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.loginScreen() {
+fun NavGraphBuilder.loginScreen(
+    navigateToAgenda: () -> Unit,
+    navigateToSignUp: () -> Unit,
+) {
     composable<Login> {
         LoginScreen(
             LoginScreenState(),
-            {},
+            { event ->
+                when (event) {
+                    is LoginScreenEvent.OnClickToSignUp -> navigateToSignUp()
+                    else -> {}
+                }
+            },
         )
     }
 }
@@ -57,9 +65,9 @@ sealed interface LoginScreenEvent {
 
     data object OnClickLogin : LoginScreenEvent
 
-    data class OnStateChange(
-        val newState: LoginScreenState,
-    ) : LoginScreenEvent
+    data class OnEmailStateChange(val newState: CheckTextFieldState) : LoginScreenEvent
+
+    data class OnPasswordStateChange(val newState: VisibilityTextFieldState) : LoginScreenEvent
 }
 
 @Composable
@@ -112,12 +120,9 @@ private fun LoginScreen(
                 state = state.emailState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                emailState =
-                                    state.emailState.copy(
-                                        text = it,
-                                    ),
+                        LoginScreenEvent.OnEmailStateChange(
+                            state.emailState.copy(
+                                text = it,
                             ),
                         ),
                     )
@@ -129,12 +134,9 @@ private fun LoginScreen(
                 state = state.passwordState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                passwordState =
-                                    state.passwordState.copy(
-                                        text = it,
-                                    ),
+                        LoginScreenEvent.OnPasswordStateChange(
+                            state.passwordState.copy(
+                                text = it,
                             ),
                         ),
                     )
@@ -142,12 +144,9 @@ private fun LoginScreen(
                 placeHolder = "Password",
                 onVisibilityChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                passwordState =
-                                    state.passwordState.copy(
-                                        isVisible = it,
-                                    ),
+                        LoginScreenEvent.OnPasswordStateChange(
+                            state.passwordState.copy(
+                                isVisible = it,
                             ),
                         ),
                     )
