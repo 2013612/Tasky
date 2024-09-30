@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.tasky.android.login.components.LoginTextField
+import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
@@ -103,7 +103,7 @@ private fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(50.dp))
-            LoginTextField(
+            CheckTextField(
                 text = state.email,
                 onTextChange = {
                     onEvent(LoginScreenEvent.OnStateChange(state.copy(email = it)))

@@ -9,8 +9,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +21,7 @@ import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
 @Composable
-fun LoginTextField(
+fun CheckTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeHolder: String,
@@ -67,24 +65,24 @@ fun LoginTextField(
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldPreview() {
+private fun CheckTextFieldPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, null)
+        CheckTextField("", {}, "placeholder", false, null)
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldValidPreview() {
+private fun CheckTextFieldValidPreview() {
     MyApplicationTheme {
-        LoginTextField("userName", {}, "placeholder", true, null)
+        CheckTextField("userName", {}, "placeholder", true, null)
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
-private fun LoginTextFieldErrorPreview() {
+private fun CheckTextFieldErrorPreview() {
     MyApplicationTheme {
-        LoginTextField("", {}, "placeholder", false, "error Text")
+        CheckTextField("", {}, "placeholder", false, "error Text")
     }
 }
