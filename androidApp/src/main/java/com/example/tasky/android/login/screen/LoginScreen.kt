@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.tasky.android.login.components.LoginPasswordTextField
 import com.example.tasky.android.login.components.LoginTextField
+import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
@@ -113,7 +113,7 @@ private fun LoginScreen(
                 errorText = null,
                 modifier = Modifier.fillMaxWidth(),
             )
-            LoginPasswordTextField(
+            VisibilityTextField(
                 text = state.password,
                 onTextChange = {
                     onEvent(LoginScreenEvent.OnStateChange(state.copy(password = it)))

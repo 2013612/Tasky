@@ -24,7 +24,7 @@ import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.theme.Red
 
 @Composable
-fun LoginPasswordTextField(
+fun VisibilityTextField(
     text: String,
     onTextChange: (String) -> Unit,
     placeHolder: String,
@@ -88,16 +88,16 @@ fun LoginPasswordTextField(
 
 @Preview
 @Composable
-private fun LoginPasswordTextFieldPreview() {
+private fun VisibilityTextFieldPreview() {
     MyApplicationTheme {
-        LoginPasswordTextField("password", {}, "password", false, {}, null)
+        VisibilityTextField("password", {}, "password", false, {}, null)
     }
 }
 
 @Preview
 @Composable
-private fun LoginPasswordTextFieldShowPreview() {
+private fun VisibilityTextFieldShowPreview() {
     MyApplicationTheme {
-        LoginPasswordTextField("password", {}, "password", true, {}, null)
+        VisibilityTextField("password", {}, "password", true, {}, null)
     }
 }
