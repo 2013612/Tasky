@@ -37,16 +37,7 @@ fun NavGraphBuilder.loginScreen() {
     composable<Login> {
         LoginScreen(
             LoginScreenState(),
-            object : LoginScreenEvents {
-                override fun onClickToSignUp() {
-                }
-
-                override fun onClickLogin() {
-                }
-
-                override fun updateLoginScreenState(newState: LoginScreenState) {
-                }
-            },
+            {},
         )
     }
 }
@@ -61,18 +52,20 @@ data class LoginScreenState(
     val showPassword: Boolean = false,
 )
 
-interface LoginScreenEvents {
-    fun onClickToSignUp()
+sealed interface LoginScreenEvent {
+    data object OnClickToSignUp : LoginScreenEvent
 
-    fun onClickLogin()
+    data object OnClickLogin : LoginScreenEvent
 
-    fun updateLoginScreenState(newState: LoginScreenState)
+    data class OnStateChange(
+        val newState: LoginScreenState,
+    ) : LoginScreenEvent
 }
 
 @Composable
 private fun LoginScreen(
     state: LoginScreenState,
-    events: LoginScreenEvents,
+    onEvent: (LoginScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val annotatedString =
@@ -86,7 +79,7 @@ private fun LoginScreen(
                             style = SpanStyle(color = LightBlue),
                         ),
                     linkInteractionListener = {
-                        events.onClickToSignUp()
+                        onEvent(LoginScreenEvent.OnClickToSignUp)
                     },
                 ),
             ) {
@@ -113,7 +106,7 @@ private fun LoginScreen(
             LoginTextField(
                 text = state.email,
                 onTextChange = {
-                    events.updateLoginScreenState(state.copy(email = it))
+                    onEvent(LoginScreenEvent.OnStateChange(state.copy(email = it)))
                 },
                 placeHolder = "Email address",
                 isCheckVisible = state.isEmailValid,
@@ -123,18 +116,20 @@ private fun LoginScreen(
             LoginPasswordTextField(
                 text = state.password,
                 onTextChange = {
-                    events.updateLoginScreenState(state.copy(password = it))
+                    onEvent(LoginScreenEvent.OnStateChange(state.copy(password = it)))
                 },
                 placeHolder = "Password",
                 showPassword = state.showPassword,
                 {
-                    events.updateLoginScreenState(state.copy(showPassword = it))
+                    onEvent(LoginScreenEvent.OnStateChange(state.copy(showPassword = it)))
                 },
                 null,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(25.dp))
-            Button(onClick = events::onClickLogin, modifier = Modifier.fillMaxWidth().height(55.dp)) {
+            Button(onClick = {
+                onEvent(LoginScreenEvent.OnClickLogin)
+            }, modifier = Modifier.fillMaxWidth().height(55.dp)) {
                 Text("LOG IN")
             }
             Spacer(Modifier.weight(1f))
@@ -150,15 +145,7 @@ private fun LoginScreenPreview() {
     MyApplicationTheme {
         LoginScreen(
             LoginScreenState(),
-            object : LoginScreenEvents {
-                override fun onClickToSignUp() {}
-
-                override fun onClickLogin() {
-                }
-
-                override fun updateLoginScreenState(newState: LoginScreenState) {
-                }
-            },
+            {},
         )
     }
 }
