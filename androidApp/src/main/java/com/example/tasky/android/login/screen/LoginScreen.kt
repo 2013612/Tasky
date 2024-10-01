@@ -81,9 +81,11 @@ sealed interface LoginScreenEvent {
 
     data object OnClickLogin : LoginScreenEvent
 
-    data class OnEmailStateChange(val newState: CheckTextFieldState) : LoginScreenEvent
+    data class OnEmailChange(val email: String) : LoginScreenEvent
 
-    data class OnPasswordStateChange(val newState: VisibilityTextFieldState) : LoginScreenEvent
+    data class OnPasswordChange(val password: String) : LoginScreenEvent
+
+    data class OnPasswordVisibilityChange(val isVisible: Boolean) : LoginScreenEvent
 }
 
 @Composable
@@ -136,11 +138,7 @@ private fun LoginScreen(
                 state = state.emailState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnEmailStateChange(
-                            state.emailState.copy(
-                                text = it,
-                            ),
-                        ),
+                        LoginScreenEvent.OnEmailChange(it),
                     )
                 },
                 placeHolder = "Email address",
@@ -150,21 +148,13 @@ private fun LoginScreen(
                 state = state.passwordState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnPasswordStateChange(
-                            state.passwordState.copy(
-                                text = it,
-                            ),
-                        ),
+                        LoginScreenEvent.OnPasswordChange(it),
                     )
                 },
                 placeHolder = "Password",
                 onVisibilityChange = {
                     onEvent(
-                        LoginScreenEvent.OnPasswordStateChange(
-                            state.passwordState.copy(
-                                isVisible = it,
-                            ),
-                        ),
+                        LoginScreenEvent.OnPasswordVisibilityChange(it),
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),

@@ -20,8 +20,17 @@ class LoginViewModel : ViewModel() {
         when (event) {
             is LoginScreenEvent.OnClickLogin -> login()
             is LoginScreenEvent.OnClickToSignUp -> {}
-            is LoginScreenEvent.OnEmailStateChange -> _screenStateFlow.update { it.copy(emailState = event.newState) }
-            is LoginScreenEvent.OnPasswordStateChange -> _screenStateFlow.update { it.copy(passwordState = event.newState) }
+            is LoginScreenEvent.OnEmailChange -> _screenStateFlow.update { it.copy(emailState = it.emailState.copy(text = event.email)) }
+            is LoginScreenEvent.OnPasswordChange ->
+                _screenStateFlow.update {
+                    it.copy(
+                        passwordState = it.passwordState.copy(text = event.password),
+                    )
+                }
+            is LoginScreenEvent.OnPasswordVisibilityChange ->
+                _screenStateFlow.update {
+                    it.copy(passwordState = it.passwordState.copy(isVisible = event.isVisible))
+                }
         }
     }
 
