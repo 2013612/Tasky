@@ -41,8 +41,8 @@ fun NavGraphBuilder.loginScreen(
 ) {
     composable<Login> {
         LoginScreen(
-            LoginScreenState(),
-            { event ->
+            state = LoginScreenState(),
+            onEvent = { event ->
                 when (event) {
                     is LoginScreenEvent.OnClickToSignUp -> navigateToSignUp()
                     else -> {}
@@ -81,7 +81,7 @@ private fun LoginScreen(
             append("DON'T HAVE AN ACCOUNT? ")
             withLink(
                 LinkAnnotation.Clickable(
-                    "tag",
+                    tag = "tag",
                     styles =
                         TextLinkStyles(
                             style = SpanStyle(color = LightBlue),
@@ -171,8 +171,8 @@ private fun LoginScreen(
 private fun LoginScreenPreview() {
     MyApplicationTheme {
         LoginScreen(
-            LoginScreenState(),
-            {},
+            state = LoginScreenState(),
+            onEvent = {},
         )
     }
 }
