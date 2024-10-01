@@ -6,6 +6,7 @@ import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -19,8 +20,8 @@ class LoginViewModel : ViewModel() {
         when (event) {
             is LoginScreenEvent.OnClickLogin -> login()
             is LoginScreenEvent.OnClickToSignUp -> {}
-            is LoginScreenEvent.OnEmailStateChange -> _screenStateFlow.value = screenStateFlow.value.copy(emailState = event.newState)
-            is LoginScreenEvent.OnPasswordStateChange -> _screenStateFlow.value = screenStateFlow.value.copy(passwordState = event.newState)
+            is LoginScreenEvent.OnEmailStateChange -> _screenStateFlow.update { it.copy(emailState = event.newState) }
+            is LoginScreenEvent.OnPasswordStateChange -> _screenStateFlow.update { it.copy(passwordState = event.newState) }
         }
     }
 
