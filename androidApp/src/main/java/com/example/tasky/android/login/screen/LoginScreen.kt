@@ -12,6 +12,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,23 +25,45 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.login.components.VisibilityTextFieldState
+import com.example.tasky.android.login.viewmodel.LoginViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.loginScreen() {
+fun NavGraphBuilder.loginScreen(
+    navigateToAgenda: () -> Unit,
+    navigateToSignUp: () -> Unit,
+) {
     composable<Login> {
+        val viewModel: LoginViewModel = viewModel()
+
+        val loginState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+        val isLoginSuccess by viewModel.isLoginSuccessFlow.collectAsStateWithLifecycle()
+
+        LaunchedEffect(isLoginSuccess) {
+            if (isLoginSuccess) {
+                navigateToAgenda()
+            }
+        }
+
         LoginScreen(
-            LoginScreenState(),
-            {},
+            state = loginState,
+            onEvent = { event ->
+                when (event) {
+                    is LoginScreenEvent.OnClickToSignUp -> navigateToSignUp()
+                    else -> viewModel.onEvent(event)
+                }
+            },
         )
     }
 }
@@ -57,9 +81,11 @@ sealed interface LoginScreenEvent {
 
     data object OnClickLogin : LoginScreenEvent
 
-    data class OnStateChange(
-        val newState: LoginScreenState,
-    ) : LoginScreenEvent
+    data class OnEmailChange(val email: String) : LoginScreenEvent
+
+    data class OnPasswordChange(val password: String) : LoginScreenEvent
+
+    data class OnPasswordVisibilityChange(val isVisible: Boolean) : LoginScreenEvent
 }
 
 @Composable
@@ -73,7 +99,7 @@ private fun LoginScreen(
             append("DON'T HAVE AN ACCOUNT? ")
             withLink(
                 LinkAnnotation.Clickable(
-                    "tag",
+                    tag = "tag",
                     styles =
                         TextLinkStyles(
                             style = SpanStyle(color = LightBlue),
@@ -112,14 +138,7 @@ private fun LoginScreen(
                 state = state.emailState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                emailState =
-                                    state.emailState.copy(
-                                        text = it,
-                                    ),
-                            ),
-                        ),
+                        LoginScreenEvent.OnEmailChange(it),
                     )
                 },
                 placeHolder = "Email address",
@@ -129,27 +148,13 @@ private fun LoginScreen(
                 state = state.passwordState,
                 onTextChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                passwordState =
-                                    state.passwordState.copy(
-                                        text = it,
-                                    ),
-                            ),
-                        ),
+                        LoginScreenEvent.OnPasswordChange(it),
                     )
                 },
                 placeHolder = "Password",
                 onVisibilityChange = {
                     onEvent(
-                        LoginScreenEvent.OnStateChange(
-                            state.copy(
-                                passwordState =
-                                    state.passwordState.copy(
-                                        isVisible = it,
-                                    ),
-                            ),
-                        ),
+                        LoginScreenEvent.OnPasswordVisibilityChange(it),
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -172,8 +177,8 @@ private fun LoginScreen(
 private fun LoginScreenPreview() {
     MyApplicationTheme {
         LoginScreen(
-            LoginScreenState(),
-            {},
+            state = LoginScreenState(),
+            onEvent = {},
         )
     }
 }
