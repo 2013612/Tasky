@@ -12,6 +12,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,12 +25,15 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.login.components.VisibilityTextFieldState
+import com.example.tasky.android.login.viewmodel.LoginViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
@@ -40,12 +45,23 @@ fun NavGraphBuilder.loginScreen(
     navigateToSignUp: () -> Unit,
 ) {
     composable<Login> {
+        val viewModel: LoginViewModel = viewModel()
+
+        val loginState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+        val isLoginSuccess by viewModel.isLoginSuccessFlow.collectAsStateWithLifecycle()
+
+        LaunchedEffect(isLoginSuccess) {
+            if (isLoginSuccess) {
+                navigateToAgenda()
+            }
+        }
+
         LoginScreen(
-            state = LoginScreenState(),
+            state = loginState,
             onEvent = { event ->
                 when (event) {
                     is LoginScreenEvent.OnClickToSignUp -> navigateToSignUp()
-                    else -> {}
+                    else -> viewModel.onEvent(event)
                 }
             },
         )
