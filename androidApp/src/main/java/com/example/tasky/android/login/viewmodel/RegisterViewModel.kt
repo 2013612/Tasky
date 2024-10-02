@@ -24,7 +24,7 @@ class RegisterViewModel : ViewModel() {
                 }
             is RegisterScreenEvent.OnEmailChange ->
                 _screenStateFlow.update {
-                    it.copy(emailState = it.emailState.copy(text = event.email, isCheckVisible = Validator.validateName(event.email)))
+                    it.copy(emailState = it.emailState.copy(text = event.email, isCheckVisible = Validator.validateEmail(event.email)))
                 }
             is RegisterScreenEvent.OnPasswordChange ->
                 _screenStateFlow.update {

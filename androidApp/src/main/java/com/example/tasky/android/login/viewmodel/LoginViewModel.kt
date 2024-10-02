@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
 import com.example.tasky.manager.LoginManager
+import com.example.tasky.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,7 +19,10 @@ class LoginViewModel : ViewModel() {
         when (event) {
             is LoginScreenEvent.OnClickLogin -> login()
             is LoginScreenEvent.OnClickToSignUp -> {}
-            is LoginScreenEvent.OnEmailChange -> _screenStateFlow.update { it.copy(emailState = it.emailState.copy(text = event.email)) }
+            is LoginScreenEvent.OnEmailChange ->
+                _screenStateFlow.update {
+                    it.copy(emailState = it.emailState.copy(text = event.email, isCheckVisible = Validator.validateEmail(event.email)))
+                }
             is LoginScreenEvent.OnPasswordChange ->
                 _screenStateFlow.update {
                     it.copy(
@@ -32,7 +36,18 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    private fun validateInput(): Boolean {
+        val email = screenStateFlow.value.emailState.text
+        val password = screenStateFlow.value.passwordState.text
+
+        return Validator.validateEmail(email) && Validator.validatePassword(password)
+    }
+
     private fun login() {
+        if (!validateInput()) {
+            return
+        }
+
         viewModelScope.launch {
             val isLoginSuccess = LoginManager.logIn()
 
