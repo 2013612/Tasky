@@ -12,18 +12,46 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
 import com.example.tasky.android.login.components.VisibilityTextFieldState
+import com.example.tasky.android.login.viewmodel.RegisterViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
+import kotlinx.serialization.Serializable
+
+fun NavGraphBuilder.registerScreen() {
+    composable<Register> {
+        val viewModel: RegisterViewModel = viewModel()
+
+        val registerState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+
+        RegisterScreen(
+            state = registerState,
+            onEvent = viewModel::onEvent,
+        )
+    }
+}
+
+fun NavController.navigateToRegister() {
+    navigate(Register)
+}
+
+@Serializable
+private object Register
 
 data class RegisterScreenState(
     val nameState: CheckTextFieldState = CheckTextFieldState(),
