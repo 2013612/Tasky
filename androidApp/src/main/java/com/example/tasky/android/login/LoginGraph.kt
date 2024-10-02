@@ -13,7 +13,6 @@ object LoginGraph
 fun NavGraphBuilder.loginGraph(navController: NavController) {
     navigation<LoginGraph>(startDestination = Login) {
         loginScreen(
-            navigateToAgenda = {},
             navigateToSignUp = {},
         )
     }
