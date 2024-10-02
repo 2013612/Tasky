@@ -12,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,21 +39,11 @@ import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.loginScreen(
-    navigateToAgenda: () -> Unit,
-    navigateToSignUp: () -> Unit,
-) {
+fun NavGraphBuilder.loginScreen(navigateToSignUp: () -> Unit) {
     composable<Login> {
         val viewModel: LoginViewModel = viewModel()
 
         val loginState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
-        val isLoginSuccess by viewModel.isLoginSuccessFlow.collectAsStateWithLifecycle()
-
-        LaunchedEffect(isLoginSuccess) {
-            if (isLoginSuccess) {
-                navigateToAgenda()
-            }
-        }
 
         LoginScreen(
             state = loginState,
