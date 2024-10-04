@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +34,19 @@ import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.registerScreen() {
+fun NavGraphBuilder.registerScreen(navigateUp: () -> Unit) {
     composable<Register> {
         val viewModel: RegisterViewModel = viewModel()
 
         val registerState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+
+        val isRegisterSuccess by viewModel.isRegisterSuccessFlow.collectAsStateWithLifecycle()
+
+        LaunchedEffect(isRegisterSuccess) {
+            if (isRegisterSuccess) {
+                navigateUp()
+            }
+        }
 
         RegisterScreen(
             state = registerState,
