@@ -41,7 +41,7 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
-    private fun validateInput(): Boolean {
+    private fun isInputValid(): Boolean {
         val name = screenStateFlow.value.nameState.text
         val email = screenStateFlow.value.emailState.text
         val password = screenStateFlow.value.passwordState.text
@@ -50,7 +50,7 @@ class RegisterViewModel : ViewModel() {
     }
 
     private fun register() {
-        if (!validateInput()) {
+        if (!isInputValid()) {
             return
         }
 
