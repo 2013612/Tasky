@@ -17,6 +17,8 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
         loginScreen(
             navigateToSignUp = navController::navigateToRegister,
         )
-        registerScreen()
+        registerScreen(
+            navigateUp = navController::navigateUp,
+        )
     }
 }
