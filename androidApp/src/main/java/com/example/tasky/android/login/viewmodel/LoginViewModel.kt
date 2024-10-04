@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
-import com.example.tasky.manager.LoginManager
+import com.example.tasky.manager.loginManager
 import com.example.tasky.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,7 +49,7 @@ class LoginViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val isLoginSuccess = LoginManager.logIn()
+            val isLoginSuccess = loginManager.logIn()
 
             if (!isLoginSuccess) {
                 _screenStateFlow.update {

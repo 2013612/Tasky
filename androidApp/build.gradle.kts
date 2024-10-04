@@ -48,4 +48,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     ktlintRuleset(libs.ktlint)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.multiplatform.settings)
+    implementation(libs.multiplatform.settings.datastore)
+    implementation(libs.multiplatform.settings.coroutines)
 }
