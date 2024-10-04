@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.RegisterScreenEvent
 import com.example.tasky.android.login.screen.RegisterScreenState
-import com.example.tasky.manager.RegisterManager
 import com.example.tasky.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +13,9 @@ import kotlinx.coroutines.launch
 class RegisterViewModel : ViewModel() {
     private val _screenStateFlow = MutableStateFlow(RegisterScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()
+
+    private val _isRegisterSuccessFlow = MutableStateFlow(false)
+    val isRegisterSuccessFlow = _isRegisterSuccessFlow.asStateFlow()
 
     fun onEvent(event: RegisterScreenEvent) {
         when (event) {
@@ -53,7 +55,8 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val isRegisterSuccess = RegisterManager.register()
+            val isRegisterSuccess = true
+            _isRegisterSuccessFlow.update { isRegisterSuccess }
             if (!isRegisterSuccess) {
                 _screenStateFlow.update {
                     it.copy(
