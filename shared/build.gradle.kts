@@ -30,9 +30,22 @@ kotlin {
             implementation(libs.multiplatform.settings.coroutines)
             implementation(libs.multiplatform.settings.datastore)
             api(libs.androidx.datastore.preferences.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.resources)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.ktor.client.logging)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
