@@ -1,12 +1,17 @@
 package com.example.tasky.manager
 
+import com.example.tasky.dataSource.LoginDataSource
 import com.example.tasky.dataStore.SettingsKey
+import com.example.tasky.model.ResultWrapper
+import com.example.tasky.model.login.LoginBody
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 lateinit var loginManager: LoginManager
 
@@ -14,20 +19,28 @@ lateinit var loginManager: LoginManager
 class LoginManager(
     private val settings: FlowSettings,
 ) {
-    private val tokenFlow: Flow<String?> = settings.getStringOrNullFlow(SettingsKey.TOKEN.name)
+    private val loginDataSource = LoginDataSource()
+
+    private val loginResponseFlow: Flow<String?> = settings.getStringOrNullFlow(SettingsKey.LOGIN_RESPONSE.name)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isLoginInFlow = tokenFlow.mapLatest { !it.isNullOrEmpty() }
+    val isLoginInFlow = loginResponseFlow.mapLatest { !it.isNullOrEmpty() }
 
-    suspend fun logIn(): Boolean {
-        delay(1000)
-        settings.putString(SettingsKey.TOKEN.name, "token")
-
-        return true
+    suspend fun logIn(loginBody: LoginBody): Boolean {
+        when (val result = loginDataSource.login(loginBody)) {
+            is ResultWrapper.Success -> {
+                val jsonString = Json.encodeToString(result.data)
+                settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
+                return true
+            }
+            is ResultWrapper.Error -> {
+                return false
+            }
+        }
     }
 
     suspend fun logOut() {
         delay(1000)
-        settings.remove(SettingsKey.TOKEN.name)
+        settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
 }
