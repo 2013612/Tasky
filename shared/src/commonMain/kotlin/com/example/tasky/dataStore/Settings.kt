@@ -10,5 +10,5 @@ import com.russhwolf.settings.datastore.DataStoreSettings
 fun createSettings(dataStore: DataStore<Preferences>): DataStoreSettings = DataStoreSettings(dataStore)
 
 enum class SettingsKey {
-    TOKEN,
+    LOGIN_RESPONSE,
 }
