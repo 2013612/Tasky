@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.RegisterScreenEvent
 import com.example.tasky.android.login.screen.RegisterScreenState
+import com.example.tasky.model.login.RegisterBody
+import com.example.tasky.model.onError
+import com.example.tasky.model.onSuccess
+import com.example.tasky.repository.LoginRepository
 import com.example.tasky.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
+    private val loginRepository = LoginRepository()
+
     private val _screenStateFlow = MutableStateFlow(RegisterScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
@@ -55,17 +61,25 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val isRegisterSuccess = true
-            _isRegisterSuccessFlow.update { isRegisterSuccess }
-            if (!isRegisterSuccess) {
-                _screenStateFlow.update {
-                    it.copy(
-                        nameState = it.nameState.copy(errorText = ""),
-                        emailState = it.emailState.copy(errorText = ""),
-                        passwordState = it.passwordState.copy(errorText = ""),
-                    )
+            val body =
+                RegisterBody(
+                    fullName = screenStateFlow.value.nameState.text,
+                    email = screenStateFlow.value.emailState.text,
+                    password = screenStateFlow.value.passwordState.text,
+                )
+            loginRepository
+                .register(body)
+                .onSuccess {
+                    _isRegisterSuccessFlow.update { true }
+                }.onError {
+                    _screenStateFlow.update {
+                        it.copy(
+                            nameState = it.nameState.copy(errorText = ""),
+                            emailState = it.emailState.copy(errorText = ""),
+                            passwordState = it.passwordState.copy(errorText = ""),
+                        )
+                    }
                 }
-            }
         }
     }
 }
