@@ -4,6 +4,7 @@ import com.example.tasky.dataSource.LoginDataSource
 import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.login.LoginBody
+import com.example.tasky.model.onSuccess
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,16 +28,15 @@ class LoginManager(
     val isLoginInFlow = loginResponseFlow.mapLatest { !it.isNullOrEmpty() }
 
     suspend fun logIn(loginBody: LoginBody): Boolean {
-        when (val result = loginDataSource.login(loginBody)) {
-            is ResultWrapper.Success -> {
-                val jsonString = Json.encodeToString(result.data)
-                settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
-                return true
-            }
-            is ResultWrapper.Error -> {
-                return false
-            }
-        }
+        val result =
+            loginDataSource
+                .login(loginBody)
+                .onSuccess {
+                    val jsonString = Json.encodeToString(it)
+                    settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
+                }
+
+        return result is ResultWrapper.Success
     }
 
     suspend fun logOut() {
