@@ -1,10 +1,10 @@
 package com.example.tasky.manager
 
-import com.example.tasky.dataSource.LoginDataSource
 import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.login.LoginBody
 import com.example.tasky.model.onSuccess
+import com.example.tasky.repository.LoginRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +20,7 @@ lateinit var loginManager: LoginManager
 class LoginManager(
     private val settings: FlowSettings,
 ) {
-    private val loginDataSource = LoginDataSource()
+    private val loginRepository = LoginRepository()
 
     private val loginResponseFlow: Flow<String?> = settings.getStringOrNullFlow(SettingsKey.LOGIN_RESPONSE.name)
 
@@ -29,7 +29,7 @@ class LoginManager(
 
     suspend fun logIn(loginBody: LoginBody): Boolean {
         val result =
-            loginDataSource
+            loginRepository
                 .login(loginBody)
                 .onSuccess {
                     val jsonString = Json.encodeToString(it)
