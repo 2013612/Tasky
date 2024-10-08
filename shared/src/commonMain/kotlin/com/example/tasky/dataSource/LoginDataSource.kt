@@ -1,6 +1,8 @@
 package com.example.tasky.dataSource
 
 import com.example.tasky.manager.HttpManager
+import com.example.tasky.model.BaseError
+import com.example.tasky.model.DataError
 import com.example.tasky.model.ErrorResponse
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.login.Login
@@ -15,7 +17,7 @@ import io.ktor.client.request.setBody
 class LoginDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
-    suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse> {
+    suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, BaseError> {
         return try {
             val response =
                 httpClient.post(Login()) {
@@ -23,13 +25,15 @@ class LoginDataSource(
                 }
 
             if (!response.isSuccess()) {
-                return ResultWrapper.Error(response.body<ErrorResponse>())
+                val errorResponse = response.body<ErrorResponse>()
+                println("login fail: ${errorResponse.message}")
+                return ResultWrapper.Error(DataError.Remote.UNKNOWN)
             }
 
             ResultWrapper.Success(response.body<LoginResponse>())
         } catch (e: Exception) {
             Throwable(e)
-            ResultWrapper.Error(ErrorResponse.unknown)
+            ResultWrapper.Error(DataError.Remote.UNKNOWN)
         }
     }
 }
