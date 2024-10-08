@@ -1,7 +1,21 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.buildKonfig)
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.buildkonfig.gradle.plugin)
+    }
 }
 
 kotlin {
@@ -61,5 +75,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+buildkonfig {
+    packageName = "com.example.tasky"
+
+    defaultConfigs {
+        val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("API_KEY")
+        buildConfigField(STRING, "API_KEY", apiKey)
     }
 }
