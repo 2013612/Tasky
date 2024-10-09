@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -28,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.R
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
@@ -85,7 +87,7 @@ private fun LoginScreen(
 ) {
     val annotatedString =
         buildAnnotatedString {
-            append("DON'T HAVE AN ACCOUNT? ")
+            append(stringResource(R.string.don_t_have_an_account))
             withLink(
                 LinkAnnotation.Clickable(
                     tag = "tag",
@@ -98,16 +100,18 @@ private fun LoginScreen(
                     },
                 ),
             ) {
-                append("SIGN UP")
+                append(stringResource(R.string.sign_up))
             }
         }
     Column(
-        modifier.fillMaxSize().background(Black),
+        modifier
+            .fillMaxSize()
+            .background(Black),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(47.dp))
         Text(
-            "Welcome Back!",
+            stringResource(R.string.welcome_back),
             style = typography.displayMedium,
             lineHeight = 30.sp,
             color = Color.White,
@@ -119,7 +123,8 @@ private fun LoginScreen(
                 .background(
                     Color.White,
                     RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                ).padding(horizontal = 16.dp),
+                )
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(50.dp))
@@ -130,7 +135,7 @@ private fun LoginScreen(
                         LoginScreenEvent.OnEmailChange(it),
                     )
                 },
-                placeHolder = "Email address",
+                placeHolder = stringResource(R.string.email_address),
                 modifier = Modifier.fillMaxWidth(),
             )
             VisibilityTextField(
@@ -140,7 +145,7 @@ private fun LoginScreen(
                         LoginScreenEvent.OnPasswordChange(it),
                     )
                 },
-                placeHolder = "Password",
+                placeHolder = stringResource(R.string.password),
                 onVisibilityChange = {
                     onEvent(
                         LoginScreenEvent.OnPasswordVisibilityChange(it),
@@ -149,10 +154,16 @@ private fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(25.dp))
-            Button(onClick = {
-                onEvent(LoginScreenEvent.OnClickLogin)
-            }, modifier = Modifier.fillMaxWidth().height(55.dp)) {
-                Text("LOG IN")
+            Button(
+                onClick = {
+                    onEvent(LoginScreenEvent.OnClickLogin)
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+            ) {
+                Text(stringResource(R.string.log_in))
             }
             Spacer(Modifier.weight(1f))
             Text(annotatedString, style = typography.labelLarge, lineHeight = 30.sp, color = Gray)
