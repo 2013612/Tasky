@@ -4,7 +4,7 @@ import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.login.LoginBody
 import com.example.tasky.model.onSuccess
-import com.example.tasky.repository.LoginRepository
+import com.example.tasky.repository.ILoginRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,9 +19,8 @@ lateinit var loginManager: LoginManager
 @OptIn(ExperimentalSettingsApi::class)
 class LoginManager(
     private val settings: FlowSettings,
+    private val loginRepository: ILoginRepository,
 ) {
-    private val loginRepository = LoginRepository()
-
     private val loginResponseFlow: Flow<String?> = settings.getStringOrNullFlow(SettingsKey.LOGIN_RESPONSE.name)
 
     @OptIn(ExperimentalCoroutinesApi::class)
