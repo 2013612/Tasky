@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="don_t_have_an_account">"DON'T HAVE AN ACCOUNT? "</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="name">Name</string>
+    <string name="get_started">GET STARTED</string>
+</resources>
