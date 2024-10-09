@@ -6,4 +6,7 @@
     <string name="log_in">登入</string>
     <string name="don_t_have_an_account">沒有帳號？</string>
     <string name="sign_up">註冊</string>
+    <string name="create_your_account">建立你的帳號</string>
+    <string name="name">名稱</string>
+    <string name="get_started">開始</string>
 </resources>

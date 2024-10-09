@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.R
 import com.example.tasky.android.login.components.CheckTextField
 import com.example.tasky.android.login.components.CheckTextFieldState
 import com.example.tasky.android.login.components.VisibilityTextField
@@ -103,12 +105,14 @@ private fun RegisterScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier.fillMaxSize().background(Black),
+        modifier
+            .fillMaxSize()
+            .background(Black),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(47.dp))
         Text(
-            "Create your account",
+            stringResource(R.string.create_your_account),
             style = typography.displayMedium,
             lineHeight = 30.sp,
             color = Color.White,
@@ -120,7 +124,8 @@ private fun RegisterScreen(
                 .background(
                     Color.White,
                     RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                ).padding(horizontal = 16.dp),
+                )
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(50.dp))
@@ -131,7 +136,7 @@ private fun RegisterScreen(
                         RegisterScreenEvent.OnNameChange(it),
                     )
                 },
-                placeHolder = "Name",
+                placeHolder = stringResource(R.string.name),
                 modifier = Modifier.fillMaxWidth(),
             )
             CheckTextField(
@@ -141,7 +146,7 @@ private fun RegisterScreen(
                         RegisterScreenEvent.OnEmailChange(it),
                     )
                 },
-                placeHolder = "Email address",
+                placeHolder = stringResource(R.string.email_address),
                 modifier = Modifier.fillMaxWidth(),
             )
             VisibilityTextField(
@@ -151,7 +156,7 @@ private fun RegisterScreen(
                         RegisterScreenEvent.OnPasswordChange(it),
                     )
                 },
-                placeHolder = "Password",
+                placeHolder = stringResource(R.string.password),
                 onVisibilityChange = {
                     onEvent(
                         RegisterScreenEvent.OnPasswordVisibilityChange(it),
@@ -160,10 +165,16 @@ private fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(25.dp))
-            Button(onClick = {
-                onEvent(RegisterScreenEvent.OnClickRegister)
-            }, modifier = Modifier.fillMaxWidth().height(55.dp)) {
-                Text("GET STARTED")
+            Button(
+                onClick = {
+                    onEvent(RegisterScreenEvent.OnClickRegister)
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+            ) {
+                Text(stringResource(R.string.get_started))
             }
             Spacer(Modifier.weight(1f))
         }
