@@ -51,4 +51,5 @@ dependencies {
     implementation(libs.multiplatform.settings)
     implementation(libs.multiplatform.settings.datastore)
     implementation(libs.multiplatform.settings.coroutines)
+    implementation(libs.androidx.core.splashscreen)
 }
