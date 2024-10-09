@@ -15,6 +15,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.setBody
+import kotlin.coroutines.cancellation.CancellationException
 
 class LoginDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
@@ -34,6 +35,8 @@ class LoginDataSource(
 
             ResultWrapper.Success(response.body<LoginResponse>())
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
             Throwable(e)
             ResultWrapper.Error(DataError.Remote.UNKNOWN)
         }
@@ -54,6 +57,8 @@ class LoginDataSource(
 
             ResultWrapper.Success(Unit)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
             Throwable(e)
             ResultWrapper.Error(DataError.Remote.UNKNOWN)
         }
