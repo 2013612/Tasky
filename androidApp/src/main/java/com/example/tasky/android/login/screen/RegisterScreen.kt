@@ -34,19 +34,15 @@ import com.example.tasky.android.login.components.VisibilityTextFieldState
 import com.example.tasky.android.login.viewmodel.RegisterViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.android.util.viewModelFactory
 import com.example.tasky.repository.LoginRepository
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.registerScreen(navigateUp: () -> Unit) {
     composable<Register> {
         val viewModel: RegisterViewModel =
-            viewModel(
-                factory =
-                    viewModelFactory {
-                        RegisterViewModel(LoginRepository())
-                    },
-            )
+            viewModel {
+                RegisterViewModel(LoginRepository())
+            }
 
         val registerState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
@@ -124,8 +120,7 @@ private fun RegisterScreen(
                 .background(
                     Color.White,
                     RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                )
-                .padding(horizontal = 16.dp),
+                ).padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(50.dp))
