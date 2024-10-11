@@ -52,4 +52,6 @@ dependencies {
     implementation(libs.multiplatform.settings.datastore)
     implementation(libs.multiplatform.settings.coroutines)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.kotlinx.datetime)
 }
