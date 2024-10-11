@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
@@ -26,10 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.agenda.components.AgendaDayBar
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.agendaScreen() {
@@ -69,6 +76,24 @@ private fun AgendaScreen(modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
+        Column(
+            modifier =
+                Modifier.fillMaxSize().background(
+                    Color.White,
+                    RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        ) {
+            AgendaDayBar(
+                (0..5)
+                    .map {
+                        val now = Clock.System.now()
+                        now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                    }.toImmutableList(),
+                0,
+                {},
+                Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 
