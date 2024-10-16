@@ -9,4 +9,7 @@
     <string name="create_your_account">建立你的帳號</string>
     <string name="name">名稱</string>
     <string name="get_started">開始</string>
+    <string name="open">詳細</string>
+    <string name="edit">修改</string>
+    <string name="delete">刪除</string>
 </resources>
