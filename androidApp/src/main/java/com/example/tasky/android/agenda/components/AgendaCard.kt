@@ -150,6 +150,42 @@ private fun getMoreIconColor(agendaItem: AgendaItem): Color =
         is Event, is Reminder -> Brown
     }
 
+private fun getTimeDisplay(agendaItem: AgendaItem): String {
+    val dateTimeFormat =
+        LocalDateTime.Format {
+            monthName(names = MonthNames.ENGLISH_ABBREVIATED)
+            char(' ')
+            dayOfMonth()
+            char(',')
+            char(' ')
+            hour()
+            char(':')
+            minute()
+        }
+    return when (agendaItem) {
+        is Task ->
+            Instant
+                .fromEpochSeconds(agendaItem.time)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(dateTimeFormat)
+
+        is Reminder ->
+            Instant
+                .fromEpochSeconds(agendaItem.time)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(dateTimeFormat)
+
+        is Event ->
+            "${
+                Instant.fromEpochSeconds(agendaItem.from)
+                    .toLocalDateTime(TimeZone.currentSystemDefault()).format(dateTimeFormat)
+            } - ${
+                Instant.fromEpochSeconds(agendaItem.to).toLocalDateTime(TimeZone.currentSystemDefault())
+                    .format(dateTimeFormat)
+            }"
+    }
+}
+
 @Preview
 @Composable
 private fun AgendaCardPreview() {
