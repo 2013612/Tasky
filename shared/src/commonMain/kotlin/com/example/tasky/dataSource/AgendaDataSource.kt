@@ -5,8 +5,8 @@ import com.example.tasky.model.BaseError
 import com.example.tasky.model.DataError
 import com.example.tasky.model.ErrorResponse
 import com.example.tasky.model.ResultWrapper
+import com.example.tasky.model.agenda.Agenda
 import com.example.tasky.model.agenda.GetAgendaResponse
-import com.example.tasky.model.login.Login
 import com.example.tasky.util.isSuccess
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -24,7 +24,7 @@ class AgendaDataSource(
     ): ResultWrapper<GetAgendaResponse, BaseError> {
         return try {
             val response =
-                httpClient.get(Login()) {
+                httpClient.get(Agenda()) {
                     bearerAuth(token)
                     parameter("time", timeStamp)
                 }
