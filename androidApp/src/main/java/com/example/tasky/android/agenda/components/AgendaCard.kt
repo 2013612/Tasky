@@ -44,8 +44,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.char
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
@@ -174,18 +174,13 @@ private fun getMoreIconColor(agendaItem: AgendaItem): Color =
         is Event, is Reminder -> Brown
     }
 
+@OptIn(FormatStringsInDatetimeFormats::class)
 private fun getTimeDisplay(agendaItem: AgendaItem): String {
     val dateTimeFormat =
         LocalDateTime.Format {
-            monthName(names = MonthNames.ENGLISH_ABBREVIATED)
-            char(' ')
-            dayOfMonth()
-            char(',')
-            char(' ')
-            hour()
-            char(':')
-            minute()
+            byUnicodePattern("MMM d, HH:mm")
         }
+
     return when (agendaItem) {
         is Task ->
             Instant
@@ -199,14 +194,20 @@ private fun getTimeDisplay(agendaItem: AgendaItem): String {
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(dateTimeFormat)
 
-        is Event ->
-            "${
-                Instant.fromEpochSeconds(agendaItem.from)
-                    .toLocalDateTime(TimeZone.currentSystemDefault()).format(dateTimeFormat)
-            } - ${
-                Instant.fromEpochSeconds(agendaItem.to).toLocalDateTime(TimeZone.currentSystemDefault())
+        is Event -> {
+            val fromDateTime =
+                Instant
+                    .fromEpochSeconds(agendaItem.from)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
                     .format(dateTimeFormat)
-            }"
+            val toDateTime =
+                Instant
+                    .fromEpochSeconds(agendaItem.to)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .format(dateTimeFormat)
+
+            "$fromDateTime - $toDateTime"
+        }
     }
 }
 
