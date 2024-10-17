@@ -32,11 +32,16 @@ import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.model.agenda.AgendaItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.agendaScreen() {
@@ -47,8 +52,19 @@ fun NavGraphBuilder.agendaScreen() {
 @Serializable
 object Agenda
 
+data class AgendaScreenState(
+    val agendas: ImmutableList<AgendaItem> = persistentListOf(),
+    val name: String = "",
+    val startDate: Instant = Clock.System.now(),
+    val numberOfDateShown: Int = 6,
+    val selectedDateOffset: Int = 0,
+)
+
 @Composable
-private fun AgendaScreen(modifier: Modifier = Modifier) {
+private fun AgendaScreen(
+    state: AgendaScreenState,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.fillMaxSize().background(Black)) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -57,13 +73,18 @@ private fun AgendaScreen(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("MARCH", style = typography.bodyLarge, lineHeight = 19.2.sp, color = Color.White)
+                Text(
+                    state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()).month.name,
+                    style = typography.bodyLarge,
+                    lineHeight = 19.2.sp,
+                    color = Color.White,
+                )
                 Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = Color.White)
             }
 
             Box(modifier = Modifier.size(36.dp).background(Light, CircleShape)) {
                 Text(
-                    "AB",
+                    state.name,
                     style = typography.bodyMedium,
                     fontSize = 13.sp,
                     lineHeight = 15.6.sp,
@@ -78,21 +99,24 @@ private fun AgendaScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
         Column(
             modifier =
-                Modifier.fillMaxSize().background(
-                    Color.White,
-                    RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Color.White,
+                        RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                    ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
         ) {
             AgendaDayBar(
-                (0..5)
+                (0..state.numberOfDateShown)
                     .map {
-                        val now = Clock.System.now()
+                        val now = state.startDate
                         now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
                     }.toImmutableList(),
-                0,
+                state.selectedDateOffset,
                 {},
                 Modifier.fillMaxWidth(),
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -101,6 +125,6 @@ private fun AgendaScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun AgendaScreenPreview() {
     MyApplicationTheme {
-        AgendaScreen()
+        AgendaScreen(state = AgendaScreenState())
     }
 }
