@@ -199,14 +199,20 @@ private fun getTimeDisplay(agendaItem: AgendaItem): String {
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(dateTimeFormat)
 
-        is Event ->
-            "${
-                Instant.fromEpochSeconds(agendaItem.from)
-                    .toLocalDateTime(TimeZone.currentSystemDefault()).format(dateTimeFormat)
-            } - ${
-                Instant.fromEpochSeconds(agendaItem.to).toLocalDateTime(TimeZone.currentSystemDefault())
+        is Event -> {
+            val fromDateTime =
+                Instant
+                    .fromEpochSeconds(agendaItem.from)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
                     .format(dateTimeFormat)
-            }"
+            val toDateTime =
+                Instant
+                    .fromEpochSeconds(agendaItem.to)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .format(dateTimeFormat)
+
+            "$fromDateTime - $toDateTime"
+        }
     }
 }
 
