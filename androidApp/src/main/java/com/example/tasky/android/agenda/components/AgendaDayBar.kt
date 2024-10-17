@@ -1,8 +1,9 @@
 package com.example.tasky.android.agenda.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,8 +24,8 @@ fun AgendaDayBar(
     onDaySelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
-        days.mapIndexed { index, day ->
+    LazyRow(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
+        itemsIndexed(days) { index, day ->
             val localDate = day.toLocalDateTime(TimeZone.currentSystemDefault())
             AgendaDayItem(
                 upperString =
