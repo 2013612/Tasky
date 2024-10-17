@@ -41,12 +41,11 @@ import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
-import kotlinx.datetime.format.FormatStringsInDatetimeFormats
-import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun AgendaCard(
@@ -174,24 +173,22 @@ private fun getMoreIconColor(agendaItem: AgendaItem): Color =
         is Event, is Reminder -> Brown
     }
 
-@OptIn(FormatStringsInDatetimeFormats::class)
 private fun getTimeDisplay(agendaItem: AgendaItem): String {
-    val dateTimeFormat =
-        LocalDateTime.Format {
-            byUnicodePattern("MMM d, HH:mm")
-        }
+    val dateTimeFormat = DateTimeFormatter.ofPattern("MMM d, HH:mm")
 
     return when (agendaItem) {
         is Task ->
             Instant
                 .fromEpochSeconds(agendaItem.time)
                 .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toJavaLocalDateTime()
                 .format(dateTimeFormat)
 
         is Reminder ->
             Instant
                 .fromEpochSeconds(agendaItem.time)
                 .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toJavaLocalDateTime()
                 .format(dateTimeFormat)
 
         is Event -> {
@@ -199,11 +196,13 @@ private fun getTimeDisplay(agendaItem: AgendaItem): String {
                 Instant
                     .fromEpochSeconds(agendaItem.from)
                     .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .toJavaLocalDateTime()
                     .format(dateTimeFormat)
             val toDateTime =
                 Instant
                     .fromEpochSeconds(agendaItem.to)
                     .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .toJavaLocalDateTime()
                     .format(dateTimeFormat)
 
             "$fromDateTime - $toDateTime"
