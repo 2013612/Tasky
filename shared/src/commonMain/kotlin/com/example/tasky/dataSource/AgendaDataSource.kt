@@ -11,21 +11,16 @@ import com.example.tasky.util.isSuccess
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.parameter
 import kotlin.coroutines.cancellation.CancellationException
 
 class AgendaDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
-    suspend fun getAgenda(
-        timeStamp: Long,
-        token: String,
-    ): ResultWrapper<GetAgendaResponse, BaseError> {
+    suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError> {
         return try {
             val response =
                 httpClient.get(Agenda()) {
-                    bearerAuth(token)
                     parameter("time", timeStamp)
                 }
 
