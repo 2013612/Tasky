@@ -68,6 +68,9 @@ private fun AgendaScreen(
         AgendaTopBar(
             month = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()).month,
             name = state.name,
+            onLogoutClick = {
+                println("Logout")
+            },
             modifier =
                 Modifier
                     .fillMaxWidth()

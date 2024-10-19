@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
@@ -45,9 +47,11 @@ import kotlinx.datetime.Month
 fun AgendaTopBar(
     month: Month,
     name: String,
+    onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isDateDialogOpen by remember { mutableStateOf(false) }
+    var isMenuOpen by remember { mutableStateOf(false) }
 
     Row(
         modifier =
@@ -75,7 +79,9 @@ fun AgendaTopBar(
             modifier =
                 Modifier
                     .size(36.dp)
-                    .background(Light, CircleShape),
+                    .background(Light, CircleShape).clickable {
+                        isMenuOpen = true
+                    },
         ) {
             Text(
                 name,
@@ -88,6 +94,18 @@ fun AgendaTopBar(
                         Alignment.Center,
                     ),
             )
+
+            DropdownMenu(
+                expanded = isMenuOpen,
+                onDismissRequest = { isMenuOpen = false },
+            ) {
+                DropdownMenuItem(text = {
+                    Text(stringResource(R.string.logout))
+                }, onClick = {
+                    onLogoutClick()
+                    isMenuOpen = false
+                })
+            }
         }
     }
 
@@ -131,6 +149,7 @@ private fun AgendaTopBarPreview() {
         AgendaTopBar(
             Month.MAY,
             "PL",
+            {},
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
