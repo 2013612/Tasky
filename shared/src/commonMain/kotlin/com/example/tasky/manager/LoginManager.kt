@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 lateinit var loginManager: LoginManager
 
@@ -31,7 +30,7 @@ class LoginManager(
             loginRepository
                 .login(loginBody)
                 .onSuccess {
-                    val jsonString = Json.encodeToString(it)
+                    val jsonString = HttpManager.json.encodeToString(it)
                     settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
                 }
 

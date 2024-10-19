@@ -11,7 +11,6 @@ interface IAgendaRepository {
 
 class AgendaRepository(
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
-    private val token: String,
 ) : IAgendaRepository {
-    override suspend fun getAgenda(timeStamp: Long) = agendaDataSource.getAgenda(timeStamp = timeStamp, token = token)
+    override suspend fun getAgenda(timeStamp: Long) = agendaDataSource.getAgenda(timeStamp = timeStamp)
 }
