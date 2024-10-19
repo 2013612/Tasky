@@ -34,7 +34,7 @@ import kotlinx.serialization.json.Json
 
 internal object HttpManager {
     private const val TIMEOUT = 60_000L
-    private val json =
+    val json =
         Json {
             prettyPrint
         }
