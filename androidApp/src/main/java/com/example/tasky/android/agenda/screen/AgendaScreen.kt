@@ -7,20 +7,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.agenda.components.AgendaCard
 import com.example.tasky.android.agenda.components.AgendaDayBar
 import com.example.tasky.android.agenda.components.AgendaTopBar
+import com.example.tasky.android.agenda.components.TimeNeedle
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
+import com.example.tasky.model.agenda.Event
+import com.example.tasky.model.agenda.Reminder
+import com.example.tasky.model.agenda.Task
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -97,7 +108,37 @@ private fun AgendaScreen(
                 Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Today",
+                style = typography.headlineMedium,
+                color = Black,
+                lineHeight = 16.sp,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn {
+                val timeNeedleIndex = getTimeNeedleDisplayIndex(state.agendas)
+                if (timeNeedleIndex < 0) {
+                    item {
+                        TimeNeedle()
+                    }
+                }
+                itemsIndexed(state.agendas) { index, item ->
+                    AgendaCard(agendaItem = item, onOpenClick = {}, onDeleteClick = {}, onEditClick = {})
+                    TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
+                }
+            }
         }
+    }
+}
+
+private fun getTimeNeedleDisplayIndex(agendaItems: ImmutableList<AgendaItem>): Int {
+    val currentTime = System.currentTimeMillis()
+    val index = agendaItems.indexOfFirst { it.getStartTime() > currentTime }
+
+    return if (index < 0) {
+        agendaItems.lastIndex
+    } else {
+        index - 1
     }
 }
 
@@ -105,6 +146,11 @@ private fun AgendaScreen(
 @Composable
 private fun AgendaScreenPreview() {
     MyApplicationTheme {
-        AgendaScreen(state = AgendaScreenState())
+        AgendaScreen(
+            state =
+                AgendaScreenState(
+                    agendas = persistentListOf(Event.DUMMY, Task.DUMMY, Reminder.DUMMY),
+                ),
+        )
     }
 }
