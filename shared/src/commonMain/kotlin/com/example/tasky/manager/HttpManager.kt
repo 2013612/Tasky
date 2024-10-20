@@ -25,6 +25,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.cancellation.CancellationException
 
 internal object HttpManager {
     private const val TIMEOUT = 60_000L
@@ -83,6 +84,8 @@ internal object HttpManager {
 
                             BearerTokens(responseBody.accessToken, body.refreshToken)
                         } catch (e: Exception) {
+                            if (e is CancellationException) throw e
+
                             SessionManager.removeToken()
                             Throwable(e)
                             null
