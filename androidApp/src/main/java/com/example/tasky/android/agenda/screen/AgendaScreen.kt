@@ -1,6 +1,7 @@
 package com.example.tasky.android.agenda.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -24,6 +26,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.agenda.components.AgendaCard
 import com.example.tasky.android.agenda.components.AgendaDayBar
+import com.example.tasky.android.agenda.components.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.components.AgendaTopBar
 import com.example.tasky.android.agenda.components.TimeNeedle
 import com.example.tasky.android.theme.Black
@@ -69,65 +72,70 @@ private fun AgendaScreen(
     state: AgendaScreenState,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Box(
         modifier =
             modifier
                 .fillMaxSize()
                 .background(Black),
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-        AgendaTopBar(
-            month = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()).month,
-            name = state.name,
-            onLogoutClick = {
-                println("Logout")
-            },
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        Color.White,
-                        RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                    ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
-        ) {
-            AgendaDayBar(
-                (0..state.numberOfDateShown)
-                    .map {
-                        val now = state.startDate
-                        now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
-                    }.toImmutableList(),
-                state.selectedDateOffset,
-                {},
-                Modifier.fillMaxWidth(),
+        Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            AgendaTopBar(
+                month = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()).month,
+                name = state.name,
+                onLogoutClick = {
+                    println("Logout")
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                "Today",
-                style = typography.headlineMedium,
-                color = Black,
-                lineHeight = 16.sp,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn {
-                val timeNeedleIndex = getTimeNeedleDisplayIndex(state.agendas)
-                if (timeNeedleIndex < 0) {
-                    item {
-                        TimeNeedle()
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Color.White,
+                            RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                        ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            ) {
+                AgendaDayBar(
+                    (0..state.numberOfDateShown)
+                        .map {
+                            val now = state.startDate
+                            now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                        }.toImmutableList(),
+                    state.selectedDateOffset,
+                    {},
+                    Modifier.fillMaxWidth(),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Today",
+                    style = typography.headlineMedium,
+                    color = Black,
+                    lineHeight = 16.sp,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn {
+                    val timeNeedleIndex = getTimeNeedleDisplayIndex(state.agendas)
+                    if (timeNeedleIndex < 0) {
+                        item {
+                            TimeNeedle()
+                        }
                     }
-                }
-                itemsIndexed(state.agendas) { index, item ->
-                    AgendaCard(agendaItem = item, onOpenClick = {}, onDeleteClick = {}, onEditClick = {})
-                    TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
+                    itemsIndexed(state.agendas) { index, item ->
+                        AgendaCard(agendaItem = item, onOpenClick = {}, onDeleteClick = {}, onEditClick = {})
+                        TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
+                    }
                 }
             }
         }
+
+        AgendaFloatingActionButton(onEventClick = {
+        }, onTaskClick = {}, onReminderClick = {}, modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp))
     }
 }
 
