@@ -105,6 +105,18 @@ data class Task(
     override val remindAt: Long,
     val isDone: Boolean,
 ) : AgendaItem() {
+    companion object {
+        val DUMMY =
+            Task(
+                id = "1",
+                title = "Project X",
+                description = "Just work",
+                time = 1678886400000,
+                remindAt = 1678886400000,
+                isDone = true,
+            )
+    }
+
     override fun getStartTime(): Long = time
 }
 
@@ -116,5 +128,16 @@ data class Reminder(
     val time: Long,
     override val remindAt: Long,
 ) : AgendaItem() {
+    companion object {
+        val DUMMY =
+            Reminder(
+                id = "1",
+                title = "Meeting",
+                description = "Amet minim mollit non deserunt ullamco est",
+                time = 1678886400000,
+                remindAt = 1678886400000,
+            )
+    }
+
     override fun getStartTime(): Long = time
 }
