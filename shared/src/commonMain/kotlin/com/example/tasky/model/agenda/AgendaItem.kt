@@ -8,6 +8,8 @@ sealed class AgendaItem {
     abstract val title: String
     abstract val description: String
     abstract val remindAt: Long
+
+    abstract fun getStartTime(): Long
 }
 
 @Serializable
@@ -38,6 +40,8 @@ data class Event(
                 photos = Photo.DUMMY_LIST,
             )
     }
+
+    override fun getStartTime(): Long = from
 }
 
 @Serializable
@@ -100,7 +104,9 @@ data class Task(
     val time: Long,
     override val remindAt: Long,
     val isDone: Boolean,
-) : AgendaItem()
+) : AgendaItem() {
+    override fun getStartTime(): Long = time
+}
 
 @Serializable
 data class Reminder(
@@ -109,4 +115,6 @@ data class Reminder(
     override val description: String,
     val time: Long,
     override val remindAt: Long,
-) : AgendaItem()
+) : AgendaItem() {
+    override fun getStartTime(): Long = time
+}
