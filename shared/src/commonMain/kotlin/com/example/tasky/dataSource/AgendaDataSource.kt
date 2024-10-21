@@ -7,6 +7,7 @@ import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.agenda.Agenda
 import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
+import com.example.tasky.model.agenda.TaskPath
 import com.example.tasky.util.toResult
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
@@ -37,6 +38,21 @@ class AgendaDataSource(
             val response =
                 httpClient.delete(EventPath()) {
                     parameter("eventId", eventId)
+                }
+
+            response.toResult<Unit>()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
+            Throwable(e)
+            ResultWrapper.Error(DataError.Remote.UNKNOWN)
+        }
+
+    suspend fun deleteTask(taskId: String): ResultWrapper<Unit, BaseError> =
+        try {
+            val response =
+                httpClient.delete(TaskPath()) {
+                    parameter("taskId", taskId)
                 }
 
             response.toResult<Unit>()
