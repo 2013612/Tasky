@@ -69,6 +69,30 @@ data class AgendaScreenState(
     val selectedDateOffset: Int = 0,
 )
 
+sealed interface AgendaScreenEvent {
+    data object OnClickLogout : AgendaScreenEvent
+
+    data object OnClickToCreateTask : AgendaScreenEvent
+
+    data object OnClickToCreateEvent : AgendaScreenEvent
+
+    data object OnClickToCreateReminder : AgendaScreenEvent
+
+    data class OnDateSelected(
+        val newDate: Long,
+    ) : AgendaScreenEvent
+
+    data class OnDayOffsetSelected(
+        val newOffset: Int,
+    ) : AgendaScreenEvent
+
+    data class OnOpenClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+
+    data class OnEditClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+
+    data class OnDeleteClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+}
+
 @Composable
 private fun AgendaScreen(
     state: AgendaScreenState,
