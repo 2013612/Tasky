@@ -139,12 +139,12 @@ private fun AgendaScreen(
     }
 }
 
-private fun getTimeNeedleDisplayIndex(agendaItems: ImmutableList<AgendaItem>): Int {
+private fun getTimeNeedleDisplayIndex(agendaItemsSortedByStartTime: ImmutableList<AgendaItem>): Int {
     val currentTime = System.currentTimeMillis()
-    val index = agendaItems.indexOfFirst { it.getStartTime() > currentTime }
+    val index = agendaItemsSortedByStartTime.indexOfFirst { it.getStartTime() > currentTime }
 
     return if (index < 0) {
-        agendaItems.lastIndex
+        agendaItemsSortedByStartTime.lastIndex
     } else {
         index - 1
     }
