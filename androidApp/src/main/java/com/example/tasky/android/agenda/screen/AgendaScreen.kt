@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaCard
 import com.example.tasky.android.agenda.components.AgendaDayBar
 import com.example.tasky.android.agenda.components.AgendaFloatingActionButton
@@ -102,18 +104,19 @@ private fun AgendaScreen(
                         ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
             ) {
                 AgendaDayBar(
-                    (0..state.numberOfDateShown)
-                        .map {
-                            val now = state.startDate
-                            now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
-                        }.toImmutableList(),
-                    state.selectedDateOffset,
-                    {},
-                    Modifier.fillMaxWidth(),
+                    days =
+                        (0..state.numberOfDateShown)
+                            .map {
+                                val now = state.startDate
+                                now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                            }.toImmutableList(),
+                    selectedDayOffset = state.selectedDateOffset,
+                    onDaySelect = {},
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "Today",
+                    stringResource(R.string.today),
                     style = typography.headlineMedium,
                     color = Black,
                     lineHeight = 16.sp,
@@ -134,17 +137,25 @@ private fun AgendaScreen(
             }
         }
 
-        AgendaFloatingActionButton(onEventClick = {
-        }, onTaskClick = {}, onReminderClick = {}, modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp))
+        AgendaFloatingActionButton(
+            onEventClick = {
+            },
+            onTaskClick = {},
+            onReminderClick = {},
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp),
+        )
     }
 }
 
-private fun getTimeNeedleDisplayIndex(agendaItems: ImmutableList<AgendaItem>): Int {
+private fun getTimeNeedleDisplayIndex(agendaItemsSortedByStartTime: ImmutableList<AgendaItem>): Int {
     val currentTime = System.currentTimeMillis()
-    val index = agendaItems.indexOfFirst { it.getStartTime() > currentTime }
+    val index = agendaItemsSortedByStartTime.indexOfFirst { it.getStartTime() > currentTime }
 
     return if (index < 0) {
-        agendaItems.lastIndex
+        agendaItemsSortedByStartTime.lastIndex
     } else {
         index - 1
     }

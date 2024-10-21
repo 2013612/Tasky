@@ -18,4 +18,5 @@
     <string name="event">活動</string>
     <string name="task">工作</string>
     <string name="reminder">提醒</string>
+    <string name="today">今日</string>
 </resources>
