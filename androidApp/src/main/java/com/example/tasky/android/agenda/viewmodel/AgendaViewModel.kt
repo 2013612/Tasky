@@ -26,7 +26,8 @@ class AgendaViewModel(
     private val _screenStateFlow = MutableStateFlow(AgendaScreenState(numberOfDateShown = DEFAULT_DAYS_TO_SHOW))
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
-    init {
+    fun initState() {
+        getAgendas(System.currentTimeMillis())
         updateName()
     }
 
@@ -49,7 +50,7 @@ class AgendaViewModel(
         }
     }
 
-    fun getAgendas(timeStamp: Long) {
+    private fun getAgendas(timeStamp: Long) {
         viewModelScope.launch {
             agendaRepository.getAgenda(timeStamp = timeStamp).onSuccess { data ->
                 val list =
