@@ -83,4 +83,16 @@ object SessionManager {
     suspend fun removeToken() {
         settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
+
+    suspend fun getFullName(): String? =
+        try {
+            val loginResponse = loadLoginResponse()
+
+            loginResponse?.fullName
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
+            println("cannot get name: $e")
+            null
+        }
 }
