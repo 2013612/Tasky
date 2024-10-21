@@ -68,7 +68,13 @@ class AgendaViewModel(
     }
 
     private fun deleteAgenda(agendaItem: AgendaItem) {
-        // TODO
+        viewModelScope.launch {
+            agendaRepository.deleteAgenda(agendaItem).onSuccess {
+                val newList = screenStateFlow.value.agendas.toMutableList()
+                newList.remove(agendaItem)
+                _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
+            }
+        }
     }
 
     private fun updateName() {
