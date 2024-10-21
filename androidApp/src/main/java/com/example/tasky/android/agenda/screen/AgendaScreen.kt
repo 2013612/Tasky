@@ -42,6 +42,7 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
+import com.example.tasky.repository.AgendaRepository
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -61,7 +62,10 @@ fun NavGraphBuilder.agendaScreen(
     navigateToEditAgenda: (AgendaItem) -> Unit,
 ) {
     composable<Agenda> {
-        val viewModel: AgendaViewModel = viewModel()
+        val viewModel: AgendaViewModel =
+            viewModel {
+                AgendaViewModel(AgendaRepository())
+            }
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
