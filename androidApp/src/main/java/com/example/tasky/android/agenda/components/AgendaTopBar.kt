@@ -40,14 +40,19 @@ import com.example.tasky.android.R
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
-import kotlinx.datetime.Month
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgendaTopBar(
-    month: Month,
+    date: LocalDateTime,
     name: String,
     onLogoutClick: () -> Unit,
+    onDateSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isDateDialogOpen by remember { mutableStateOf(false) }
@@ -67,7 +72,7 @@ fun AgendaTopBar(
                 },
         ) {
             Text(
-                month.name,
+                date.month.name,
                 style = typography.bodyLarge,
                 lineHeight = 19.2.sp,
                 color = Color.White,
@@ -110,7 +115,13 @@ fun AgendaTopBar(
     }
 
     if (isDateDialogOpen) {
-        val datePickerState = rememberDatePickerState()
+        val datePickerState =
+            rememberDatePickerState(
+                initialSelectedDateMillis =
+                    date.toInstant(
+                        TimeZone.currentSystemDefault(),
+                    ).toEpochMilliseconds(),
+            )
         val confirmEnabled =
             remember {
                 derivedStateOf { datePickerState.selectedDateMillis != null }
@@ -123,6 +134,7 @@ fun AgendaTopBar(
             confirmButton = {
                 TextButton(
                     onClick = {
+                        datePickerState.selectedDateMillis?.let { onDateSelect(it) }
                         isDateDialogOpen = false
                     },
                     enabled = confirmEnabled.value,
@@ -147,8 +159,9 @@ fun AgendaTopBar(
 private fun AgendaTopBarPreview() {
     MyApplicationTheme {
         AgendaTopBar(
-            Month.MAY,
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
             "PL",
+            {},
             {},
             Modifier
                 .fillMaxWidth()

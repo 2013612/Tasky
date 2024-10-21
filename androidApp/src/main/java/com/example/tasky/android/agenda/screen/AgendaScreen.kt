@@ -50,7 +50,7 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.agendaScreen() {
     composable<Agenda> {
-        AgendaScreen(AgendaScreenState())
+        AgendaScreen(AgendaScreenState(), onEvent = {})
     }
 }
 
@@ -78,24 +78,31 @@ sealed interface AgendaScreenEvent {
 
     data object OnClickToCreateReminder : AgendaScreenEvent
 
-    data class OnDateSelected(
+    data class OnDateSelect(
         val newDate: Long,
     ) : AgendaScreenEvent
 
-    data class OnDayOffsetSelected(
+    data class OnDayOffsetSelect(
         val newOffset: Int,
     ) : AgendaScreenEvent
 
-    data class OnOpenClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+    data class OnOpenClick(
+        val agendaItem: AgendaItem,
+    ) : AgendaScreenEvent
 
-    data class OnEditClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+    data class OnEditClick(
+        val agendaItem: AgendaItem,
+    ) : AgendaScreenEvent
 
-    data class OnDeleteClick(val agendaItem: AgendaItem) : AgendaScreenEvent
+    data class OnDeleteClick(
+        val agendaItem: AgendaItem,
+    ) : AgendaScreenEvent
 }
 
 @Composable
 private fun AgendaScreen(
     state: AgendaScreenState,
+    onEvent: (AgendaScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -107,10 +114,13 @@ private fun AgendaScreen(
         Column {
             Spacer(modifier = Modifier.height(8.dp))
             AgendaTopBar(
-                month = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()).month,
+                date = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()),
                 name = state.name,
                 onLogoutClick = {
-                    println("Logout")
+                    onEvent(AgendaScreenEvent.OnClickLogout)
+                },
+                onDateSelect = {
+                    onEvent(AgendaScreenEvent.OnDateSelect(it))
                 },
                 modifier =
                     Modifier
@@ -135,7 +145,9 @@ private fun AgendaScreen(
                                 now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
                             }.toImmutableList(),
                     selectedDayOffset = state.selectedDateOffset,
-                    onDaySelect = {},
+                    onDaySelect = {
+                        onEvent(AgendaScreenEvent.OnDayOffsetSelect(it))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -154,7 +166,13 @@ private fun AgendaScreen(
                         }
                     }
                     itemsIndexed(state.agendas) { index, item ->
-                        AgendaCard(agendaItem = item, onOpenClick = {}, onDeleteClick = {}, onEditClick = {})
+                        AgendaCard(agendaItem = item, onOpenClick = {
+                            onEvent(AgendaScreenEvent.OnOpenClick(item))
+                        }, onDeleteClick = {
+                            onEvent(AgendaScreenEvent.OnDeleteClick(item))
+                        }, onEditClick = {
+                            onEvent(AgendaScreenEvent.OnEditClick(item))
+                        })
                         TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
                     }
                 }
@@ -163,9 +181,14 @@ private fun AgendaScreen(
 
         AgendaFloatingActionButton(
             onEventClick = {
+                onEvent(AgendaScreenEvent.OnClickToCreateEvent)
             },
-            onTaskClick = {},
-            onReminderClick = {},
+            onTaskClick = {
+                onEvent(AgendaScreenEvent.OnClickToCreateTask)
+            },
+            onReminderClick = {
+                onEvent(AgendaScreenEvent.OnClickToCreateReminder)
+            },
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
@@ -194,6 +217,7 @@ private fun AgendaScreenPreview() {
                 AgendaScreenState(
                     agendas = persistentListOf(Event.DUMMY, Task.DUMMY, Reminder.DUMMY),
                 ),
+            onEvent = {},
         )
     }
 }
