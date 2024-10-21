@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -31,6 +34,7 @@ import com.example.tasky.android.agenda.components.AgendaDayBar
 import com.example.tasky.android.agenda.components.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.components.AgendaTopBar
 import com.example.tasky.android.agenda.components.TimeNeedle
+import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
@@ -48,9 +52,28 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.agendaScreen() {
+fun NavGraphBuilder.agendaScreen(
+    navigateToCreateEvent: () -> Unit,
+    navigateToCreateTask: () -> Unit,
+    navigateToCreateReminder: () -> Unit,
+    navigateToAgendaDetails: (AgendaItem) -> Unit,
+    navigateToEditAgenda: (AgendaItem) -> Unit,
+) {
     composable<Agenda> {
-        AgendaScreen(AgendaScreenState(), onEvent = {})
+        val viewModel: AgendaViewModel = viewModel()
+
+        val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+
+        AgendaScreen(screenState, onEvent = { event ->
+            when (event) {
+                AgendaScreenEvent.OnClickToCreateEvent -> navigateToCreateEvent()
+                AgendaScreenEvent.OnClickToCreateReminder -> navigateToCreateReminder()
+                AgendaScreenEvent.OnClickToCreateTask -> navigateToCreateTask()
+                is AgendaScreenEvent.OnEditClick -> navigateToEditAgenda(event.agendaItem)
+                is AgendaScreenEvent.OnOpenClick -> navigateToAgendaDetails(event.agendaItem)
+                else -> viewModel.onEvent(event)
+            }
+        })
     }
 }
 
