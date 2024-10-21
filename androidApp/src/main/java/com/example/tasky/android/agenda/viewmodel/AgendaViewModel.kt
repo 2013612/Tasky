@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
+import com.example.tasky.manager.SessionManager
 import com.example.tasky.manager.loginManager
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.onSuccess
@@ -18,8 +19,16 @@ import kotlinx.datetime.Instant
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
 ) : ViewModel() {
-    private val _screenStateFlow = MutableStateFlow(AgendaScreenState())
+    companion object {
+        private const val DEFAULT_DAYS_TO_SHOW = 6
+    }
+
+    private val _screenStateFlow = MutableStateFlow(AgendaScreenState(numberOfDateShown = DEFAULT_DAYS_TO_SHOW))
     val screenStateFlow = _screenStateFlow.asStateFlow()
+
+    init {
+        updateName()
+    }
 
     fun onEvent(event: AgendaScreenEvent) {
         when (event) {
@@ -59,5 +68,19 @@ class AgendaViewModel(
 
     private fun deleteAgenda(agendaItem: AgendaItem) {
         // TODO
+    }
+
+    private fun updateName() {
+        viewModelScope.launch {
+            val fullName = SessionManager.getFullName() ?: return@launch
+            val splitName = fullName.split(" ")
+            val displayName: String =
+                when (splitName.size) {
+                    0 -> ""
+                    1 -> splitName[0].take(2)
+                    else -> splitName[0][0].toString() + splitName.last()[0]
+                }
+            _screenStateFlow.update { it.copy(name = displayName) }
+        }
     }
 }
