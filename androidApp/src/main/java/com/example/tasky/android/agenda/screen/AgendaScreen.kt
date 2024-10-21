@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaCard
 import com.example.tasky.android.agenda.components.AgendaDayBar
 import com.example.tasky.android.agenda.components.AgendaFloatingActionButton
@@ -113,7 +115,7 @@ private fun AgendaScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "Today",
+                    stringResource(R.string.today),
                     style = typography.headlineMedium,
                     color = Black,
                     lineHeight = 16.sp,
@@ -134,8 +136,16 @@ private fun AgendaScreen(
             }
         }
 
-        AgendaFloatingActionButton(onEventClick = {
-        }, onTaskClick = {}, onReminderClick = {}, modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp))
+        AgendaFloatingActionButton(
+            onEventClick = {
+            },
+            onTaskClick = {},
+            onReminderClick = {},
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp),
+        )
     }
 }
 
