@@ -104,14 +104,15 @@ private fun AgendaScreen(
                         ).padding(top = 16.dp, start = 16.dp, end = 16.dp),
             ) {
                 AgendaDayBar(
-                    (0..state.numberOfDateShown)
-                        .map {
-                            val now = state.startDate
-                            now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
-                        }.toImmutableList(),
-                    state.selectedDateOffset,
-                    {},
-                    Modifier.fillMaxWidth(),
+                    days =
+                        (0..state.numberOfDateShown)
+                            .map {
+                                val now = state.startDate
+                                now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                            }.toImmutableList(),
+                    selectedDayOffset = state.selectedDateOffset,
+                    onDaySelect = {},
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
