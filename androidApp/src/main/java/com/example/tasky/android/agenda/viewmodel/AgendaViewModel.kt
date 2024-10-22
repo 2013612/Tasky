@@ -7,6 +7,7 @@ import com.example.tasky.android.agenda.screen.AgendaScreenState
 import com.example.tasky.manager.SessionManager
 import com.example.tasky.manager.loginManager
 import com.example.tasky.model.agenda.AgendaItem
+import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.onSuccess
 import com.example.tasky.repository.IAgendaRepository
 import kotlinx.collections.immutable.toImmutableList
@@ -47,6 +48,7 @@ class AgendaViewModel(
             is AgendaScreenEvent.OnDeleteClick -> deleteAgenda(agendaItem = event.agendaItem)
             is AgendaScreenEvent.OnEditClick -> {}
             is AgendaScreenEvent.OnOpenClick -> {}
+            is AgendaScreenEvent.OnAgendaCircleClick -> toggleTaskIsDone(event.task)
         }
     }
 
@@ -88,6 +90,18 @@ class AgendaViewModel(
                     else -> splitName[0][0].toString() + splitName.last()[0]
                 }
             _screenStateFlow.update { it.copy(name = displayName) }
+        }
+    }
+
+    private fun toggleTaskIsDone(task: Task) {
+        viewModelScope.launch {
+            val body = task.copy(isDone = task.isDone.not())
+            agendaRepository.updateTask(body).onSuccess {
+                val newList = screenStateFlow.value.agendas.toMutableList()
+                val index = newList.indexOf(task)
+                newList[index] = body
+                _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
+            }
         }
     }
 }

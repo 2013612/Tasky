@@ -9,11 +9,14 @@ import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
 import com.example.tasky.model.agenda.ReminderPath
 import com.example.tasky.model.agenda.TaskPath
+import com.example.tasky.model.agenda.UpdateTaskBody
 import com.example.tasky.util.toResult
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
+import io.ktor.client.plugins.resources.put
 import io.ktor.client.request.parameter
+import io.ktor.client.request.setBody
 import kotlin.coroutines.cancellation.CancellationException
 
 class AgendaDataSource(
@@ -69,6 +72,21 @@ class AgendaDataSource(
             val response =
                 httpClient.delete(ReminderPath()) {
                     parameter("reminderId", reminderId)
+                }
+
+            response.toResult<Unit>()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
+            Throwable(e)
+            ResultWrapper.Error(DataError.Remote.UNKNOWN)
+        }
+
+    suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError> =
+        try {
+            val response =
+                httpClient.put(ReminderPath()) {
+                    setBody(body)
                 }
 
             response.toResult<Unit>()

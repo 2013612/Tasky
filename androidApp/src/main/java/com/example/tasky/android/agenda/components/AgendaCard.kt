@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tasky.android.R
@@ -69,16 +72,25 @@ fun AgendaCard(
                 IconButton(onClick = {
                     onCircleClick?.invoke()
                 }, enabled = onCircleClick != null) {
-                    Icon(
-                        painter = painterResource(R.drawable.outline_circle_24),
-                        contentDescription = null,
-                        tint = getCheckIconColor(agendaItem),
-                    )
+                    if (agendaItem is Task && agendaItem.isDone) {
+                        Icon(
+                            Icons.Outlined.CheckCircle,
+                            contentDescription = null,
+                            tint = getCheckIconColor(agendaItem),
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_circle_24),
+                            contentDescription = null,
+                            tint = getCheckIconColor(agendaItem),
+                        )
+                    }
                 }
                 Text(
                     agendaItem.title,
                     style = typography.headlineMedium,
                     color = getTitleTextColor(agendaItem),
+                    textDecoration = if (agendaItem is Task && agendaItem.isDone) TextDecoration.LineThrough else null,
                     modifier = Modifier.weight(1f),
                 )
                 Box {
