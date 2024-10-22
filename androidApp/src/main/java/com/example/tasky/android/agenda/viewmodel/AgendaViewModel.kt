@@ -82,7 +82,7 @@ class AgendaViewModel(
     private fun updateName() {
         viewModelScope.launch {
             val fullName = SessionManager.getFullName() ?: return@launch
-            val splitName = fullName.split(" ")
+            val splitName = fullName.trim().split(" ")
             val displayName: String =
                 when (splitName.size) {
                     0 -> ""
