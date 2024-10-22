@@ -24,6 +24,6 @@ class AgendaRepository(
         when (agendaItem) {
             is Event -> agendaDataSource.deleteEvent(agendaItem.id)
             is Task -> agendaDataSource.deleteTask(agendaItem.id)
-            is Reminder -> agendaDataSource.deleteTask(agendaItem.id)
+            is Reminder -> agendaDataSource.deleteReminder(agendaItem.id)
         }
 }
