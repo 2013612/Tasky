@@ -13,6 +13,8 @@ sealed interface DataError : BaseError {
         PAYLOAD_TOO_LARGE,
         TOO_MANY_REQUESTS,
         SERVER_ERROR,
+        NO_INTERNET,
+        SERIALIZATION,
         UNKNOWN,
     }
 }
