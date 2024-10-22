@@ -129,6 +129,10 @@ sealed interface AgendaScreenEvent {
     data class OnDeleteClick(
         val agendaItem: AgendaItem,
     ) : AgendaScreenEvent
+
+    data class OnAgendaCircleClick(
+        val task: Task,
+    ) : AgendaScreenEvent
 }
 
 @Composable
@@ -198,13 +202,24 @@ private fun AgendaScreen(
                         }
                     }
                     itemsIndexed(state.agendas) { index, item ->
-                        AgendaCard(agendaItem = item, onOpenClick = {
-                            onEvent(AgendaScreenEvent.OnOpenClick(item))
-                        }, onDeleteClick = {
-                            onEvent(AgendaScreenEvent.OnDeleteClick(item))
-                        }, onEditClick = {
-                            onEvent(AgendaScreenEvent.OnEditClick(item))
-                        })
+                        AgendaCard(
+                            agendaItem = item,
+                            onOpenClick = {
+                                onEvent(AgendaScreenEvent.OnOpenClick(item))
+                            },
+                            onDeleteClick = {
+                                onEvent(AgendaScreenEvent.OnDeleteClick(item))
+                            },
+                            onEditClick = {
+                                onEvent(AgendaScreenEvent.OnEditClick(item))
+                            },
+                            onCircleClick =
+                                if (item is Task) {
+                                    { onEvent(AgendaScreenEvent.OnAgendaCircleClick(task = item)) }
+                                } else {
+                                    null
+                                },
+                        )
                         TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
                     }
                 }
