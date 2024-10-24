@@ -42,7 +42,6 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
-import com.example.tasky.repository.AgendaRepository
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -53,6 +52,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.agendaScreen(
     navigateToCreateEvent: () -> Unit,
@@ -62,10 +62,7 @@ fun NavGraphBuilder.agendaScreen(
     navigateToEditAgenda: (AgendaItem) -> Unit,
 ) {
     composable<Agenda> {
-        val viewModel: AgendaViewModel =
-            viewModel {
-                AgendaViewModel(AgendaRepository())
-            }
+        val viewModel: AgendaViewModel = koinViewModel()
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 

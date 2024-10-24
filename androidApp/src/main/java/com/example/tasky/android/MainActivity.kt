@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.android.theme.MyApplicationTheme
+import org.koin.androidx.compose.KoinAndroidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,9 +19,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                Scaffold { innerPadding ->
-                    val navController = rememberNavController()
-                    MainNavHost(navController, Modifier.padding(innerPadding))
+                KoinAndroidContext {
+                    Scaffold { innerPadding ->
+                        val navController = rememberNavController()
+                        MainNavHost(navController, Modifier.padding(innerPadding))
+                    }
                 }
             }
         }
