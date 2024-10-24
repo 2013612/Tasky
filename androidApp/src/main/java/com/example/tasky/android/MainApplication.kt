@@ -2,6 +2,7 @@ package com.example.tasky.android
 
 import android.app.Application
 import com.example.tasky.android.agenda.di.agendaModule
+import com.example.tasky.android.login.di.registerModule
 import com.example.tasky.dataStore.createSettings
 import com.example.tasky.getDataStore
 import com.example.tasky.manager.LoginManager
@@ -23,6 +24,7 @@ class MainApplication : Application() {
             modules(
                 agendaModule,
             )
+            modules(registerModule)
         }
         loginManager = LoginManager(createSettings(getDataStore(this)), LoginRepository())
     }
