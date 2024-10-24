@@ -19,4 +19,5 @@
     <string name="task">Task</string>
     <string name="reminder">Reminder</string>
     <string name="today">Today</string>
+    <string name="save">Save</string>
 </resources>
