@@ -20,9 +20,11 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.header
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
-import io.ktor.http.headers
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
@@ -99,9 +101,8 @@ internal object HttpManager {
                     protocol = URLProtocol.HTTPS
                     host = "tasky.pl-coding.com"
                 }
-                headers {
-                    append("x-api-key", API_KEY)
-                }
+                header("x-api-key", API_KEY)
+                contentType(ContentType.Application.Json)
             }
         }
 }
