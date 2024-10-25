@@ -23,7 +23,7 @@ class LoginManager(
     private val loginResponseFlow: Flow<String?> = settings.getStringOrNullFlow(SettingsKey.LOGIN_RESPONSE.name)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isLoginInFlow = loginResponseFlow.mapLatest { !it.isNullOrEmpty() }
+    val isLoginFlow = loginResponseFlow.mapLatest { !it.isNullOrEmpty() }
 
     suspend fun logIn(loginBody: LoginBody): Boolean {
         val result =
