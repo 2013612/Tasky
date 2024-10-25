@@ -22,3 +22,7 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
         )
     }
 }
+
+fun NavController.navigateToLoginGraph() {
+    navigate(LoginGraph)
+}
