@@ -22,9 +22,9 @@ class MainApplication : Application() {
             androidLogger()
             androidContext(this@MainApplication)
             modules(
+                registerModule,
                 agendaModule,
             )
-            modules(registerModule)
         }
         loginManager = LoginManager(createSettings(getDataStore(this)), LoginRepository())
     }
