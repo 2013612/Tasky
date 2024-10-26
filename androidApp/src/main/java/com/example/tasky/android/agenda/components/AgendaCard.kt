@@ -188,37 +188,25 @@ private fun getMoreIconColor(agendaItem: AgendaItem): Color =
 
 private fun getTimeDisplay(agendaItem: AgendaItem): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("MMM d, HH:mm")
+    val startTimeString =
+        Instant
+            .fromEpochMilliseconds(agendaItem.getStartTime())
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .toJavaLocalDateTime()
+            .format(dateTimeFormat)
 
     return when (agendaItem) {
-        is Task ->
-            Instant
-                .fromEpochSeconds(agendaItem.time)
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .toJavaLocalDateTime()
-                .format(dateTimeFormat)
-
-        is Reminder ->
-            Instant
-                .fromEpochSeconds(agendaItem.time)
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .toJavaLocalDateTime()
-                .format(dateTimeFormat)
+        is Task, is Reminder -> startTimeString
 
         is Event -> {
-            val fromDateTime =
-                Instant
-                    .fromEpochSeconds(agendaItem.from)
-                    .toLocalDateTime(TimeZone.currentSystemDefault())
-                    .toJavaLocalDateTime()
-                    .format(dateTimeFormat)
             val toDateTime =
                 Instant
-                    .fromEpochSeconds(agendaItem.to)
+                    .fromEpochMilliseconds(agendaItem.to)
                     .toLocalDateTime(TimeZone.currentSystemDefault())
                     .toJavaLocalDateTime()
                     .format(dateTimeFormat)
 
-            "$fromDateTime - $toDateTime"
+            "$startTimeString - $toDateTime"
         }
     }
 }
