@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,30 +32,31 @@ fun DetailsHeaderSection(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = Modifier.size(20.dp).background(getColor(item = item)))
+        Box(
+            modifier =
+                Modifier.size(20.dp).background(
+                    when (item) {
+                        is Event -> LightGreen
+                        is Reminder -> Light2
+                        is Task -> Green
+                    },
+                ),
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            stringResource(getStringRes(item = item)),
+            stringResource(
+                when (item) {
+                    is Event -> R.string.event
+                    is Reminder -> R.string.reminder
+                    is Task -> R.string.task
+                },
+            ),
             style = typography.bodyMedium,
             color = DarkGray,
             lineHeight = 19.2.sp,
         )
     }
 }
-
-private fun getColor(item: AgendaItem): Color =
-    when (item) {
-        is Event -> LightGreen
-        is Reminder -> Light2
-        is Task -> Green
-    }
-
-private fun getStringRes(item: AgendaItem): Int =
-    when (item) {
-        is Event -> R.string.event
-        is Reminder -> R.string.reminder
-        is Task -> R.string.task
-    }
 
 @Preview
 @Composable
