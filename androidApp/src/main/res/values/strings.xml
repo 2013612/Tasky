@@ -20,4 +20,6 @@
     <string name="reminder">Reminder</string>
     <string name="today">Today</string>
     <string name="save">Save</string>
+    <string name="from">from</string>
+    <string name="at">at</string>
 </resources>

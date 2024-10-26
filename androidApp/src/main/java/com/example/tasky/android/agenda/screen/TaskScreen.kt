@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
+import com.example.tasky.android.agenda.components.DetailsStartTimeSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
 import com.example.tasky.android.theme.Black
@@ -94,19 +95,7 @@ private fun TaskScreen(
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("At", style = typography.bodySmall, lineHeight = 15.sp, color = Black)
-                    Spacer(modifier = Modifier.width(40.dp))
-                    Text("08:00", style = typography.bodySmall, lineHeight = 15.sp, color = Black)
-                    Spacer(modifier = Modifier.width(80.dp))
-                    Text(
-                        "Jul 21 2022",
-                        style = typography.bodySmall,
-                        lineHeight = 15.sp,
-                        color = Black,
-                    )
-                }
+                DetailsStartTimeSection(state.agendaItem)
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)

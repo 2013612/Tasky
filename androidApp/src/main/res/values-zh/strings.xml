@@ -20,4 +20,6 @@
     <string name="reminder">提醒</string>
     <string name="today">今日</string>
     <string name="save">儲存</string>
+    <string name="from">由</string>
+    <string name="at">在</string>
 </resources>
