@@ -32,7 +32,17 @@ fun DetailsStartTimeSection(
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(8.dp))
-        Text(stringResource(prefixId(item = item)), style = typography.bodySmall, lineHeight = 15.sp, color = Black)
+        Text(
+            stringResource(
+                when (item) {
+                    is Event -> R.string.from
+                    is Task, is Reminder -> R.string.at
+                },
+            ),
+            style = typography.bodySmall,
+            lineHeight = 15.sp,
+            color = Black,
+        )
         Spacer(modifier = Modifier.width(40.dp))
         Text(formatTime(item.getStartTime()), style = typography.bodySmall, lineHeight = 15.sp, color = Black)
         Spacer(modifier = Modifier.width(80.dp))
@@ -44,12 +54,6 @@ fun DetailsStartTimeSection(
         )
     }
 }
-
-private fun prefixId(item: AgendaItem): Int =
-    when (item) {
-        is Event -> R.string.from
-        is Task, is Reminder -> R.string.at
-    }
 
 private fun formatTime(time: Long): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("hh:mm")

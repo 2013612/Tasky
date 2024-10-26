@@ -69,5 +69,5 @@ private fun getReminderTextId(time: Long): Int =
         (60 * 60 * 1000).toLong() -> R.string._1_hour_before
         (6 * 60 * 60 * 1000).toLong() -> R.string._6_hours_before
         (24 * 60 * 60 * 1000).toLong() -> R.string._1_day_before
-        else -> R.string.empty
+        else -> R.string._10_minutes_before
     }
