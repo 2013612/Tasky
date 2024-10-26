@@ -36,14 +36,14 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class DetailsScreenState(
+data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
     val isEdit: Boolean,
 )
 
 @Composable
-private fun TaskScreen(
-    state: DetailsScreenState,
+private fun AgendaDetailsScreen(
+    state: AgendaDetailsScreenState,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -124,6 +124,6 @@ private fun getTitleTimeDisplay(time: Long): String {
 @Composable
 private fun TaskScreenPreview() {
     MyApplicationTheme {
-        TaskScreen(state = DetailsScreenState(Task.DUMMY, false))
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, false))
     }
 }
