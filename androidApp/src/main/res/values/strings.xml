@@ -20,4 +20,12 @@
     <string name="reminder">Reminder</string>
     <string name="today">Today</string>
     <string name="save">Save</string>
+    <string name="from">from</string>
+    <string name="at">at</string>
+    <string name="_10_minutes_before">10 minutes before</string>
+    <string name="_30_minutes_before">30 minutes before</string>
+    <string name="_1_day_before">1 day before</string>
+    <string name="_6_hours_before">6 hours before</string>
+    <string name="_1_hour_before">1 hour before</string>
+    <string name="empty" />
 </resources>

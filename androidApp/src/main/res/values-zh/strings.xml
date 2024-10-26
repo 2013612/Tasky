@@ -20,4 +20,12 @@
     <string name="reminder">提醒</string>
     <string name="today">今日</string>
     <string name="save">儲存</string>
+    <string name="from">由</string>
+    <string name="at">在</string>
+    <string name="_10_minutes_before">10分鐘前</string>
+    <string name="_30_minutes_before">30分鐘前</string>
+    <string name="_1_day_before">1日前</string>
+    <string name="_6_hours_before">6小時前</string>
+    <string name="_1_hour_before">1小時前</string>
+    <string name="empty" />
 </resources>
