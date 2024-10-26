@@ -25,7 +25,15 @@ fun DetailsDeleteSection(
 ) {
     TextButton(onClick = onClick, modifier = modifier) {
         Text(
-            "${stringResource(R.string.delete)} ${stringResource(getTextId(item))}".uppercase(
+            "${stringResource(R.string.delete)} ${
+                stringResource(
+                    when (item) {
+                        is Event -> R.string.event
+                        is Task -> R.string.task
+                        is Reminder -> R.string.reminder
+                    },
+                )
+            }".uppercase(
                 Locale.getDefault(),
             ),
             style = typography.bodyMedium,
@@ -34,13 +42,6 @@ fun DetailsDeleteSection(
         )
     }
 }
-
-private fun getTextId(item: AgendaItem): Int =
-    when (item) {
-        is Event -> R.string.event
-        is Task -> R.string.task
-        is Reminder -> R.string.reminder
-    }
 
 @Preview
 @Composable
