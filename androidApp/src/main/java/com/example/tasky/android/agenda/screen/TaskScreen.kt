@@ -30,6 +30,11 @@ import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Task
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class DetailsScreenState(
     val agendaItem: AgendaItem,
@@ -50,8 +55,8 @@ private fun TaskScreen(
         Column {
             Spacer(modifier = Modifier.height(8.dp))
             DetailsTopBar(
-                title = "01 MARCH 2022",
-                isEdit = true,
+                title = getTitleTimeDisplay(state.agendaItem.getStartTime()),
+                isEdit = state.isEdit,
                 onCloseClick = {},
                 onEditClick = {},
                 onSaveClick = {},
@@ -103,6 +108,16 @@ private fun TaskScreen(
             }
         }
     }
+}
+
+private fun getTitleTimeDisplay(time: Long): String {
+    val dateTimeFormat = DateTimeFormatter.ofPattern("dd MMM yyyy")
+
+    return Instant
+        .fromEpochMilliseconds(time)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .toJavaLocalDateTime()
+        .format(dateTimeFormat)
 }
 
 @Preview
