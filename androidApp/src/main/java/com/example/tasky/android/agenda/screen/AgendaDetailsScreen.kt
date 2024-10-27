@@ -48,6 +48,40 @@ data class AgendaDetailsScreenState(
     val agendaEditTextType: AgendaEditTextType? = null,
 )
 
+sealed interface AgendaDetailsScreenEvent {
+    data object OnCloseClick : AgendaDetailsScreenEvent
+
+    data object OnSaveClick : AgendaDetailsScreenEvent
+
+    data object OnEditClick : AgendaDetailsScreenEvent
+
+    data object OnTitleClick : AgendaDetailsScreenEvent
+
+    data object OnDescClick : AgendaDetailsScreenEvent
+
+    data object OnDeleteClick : AgendaDetailsScreenEvent
+
+    data class OnEditTextTypeChange(
+        val newType: AgendaEditTextType?,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnTitleChange(
+        val newTitle: String,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnDescChange(
+        val newDesc: String,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnStartDateTimeChange(
+        val newDateTime: Long,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnReminderChange(
+        val newReminderTime: Long,
+    ) : AgendaDetailsScreenEvent
+}
+
 @Composable
 private fun AgendaDetailsScreen(
     state: AgendaDetailsScreenState,
