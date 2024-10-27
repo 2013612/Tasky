@@ -1,6 +1,7 @@
 package com.example.tasky.android.agenda.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -61,9 +62,7 @@ sealed interface AgendaDetailsScreenEvent {
 
     data object OnDeleteClick : AgendaDetailsScreenEvent
 
-    data class OnEditTextTypeChange(
-        val newType: AgendaEditTextType?,
-    ) : AgendaDetailsScreenEvent
+    data object CloseEditText : AgendaDetailsScreenEvent
 
     data class OnTitleChange(
         val newTitle: String,
@@ -85,6 +84,7 @@ sealed interface AgendaDetailsScreenEvent {
 @Composable
 private fun AgendaDetailsScreen(
     state: AgendaDetailsScreenState,
+    onEvent: (AgendaDetailsScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -109,9 +109,15 @@ private fun AgendaDetailsScreen(
                         getTitleTimeDisplay(state.agendaItem.getStartTime())
                     },
                 isEdit = state.isEdit,
-                onCloseClick = {},
-                onEditClick = {},
-                onSaveClick = {},
+                onCloseClick = {
+                    onEvent(AgendaDetailsScreenEvent.OnCloseClick)
+                },
+                onEditClick = {
+                    onEvent(AgendaDetailsScreenEvent.OnEditClick)
+                },
+                onSaveClick = {
+                    onEvent(AgendaDetailsScreenEvent.OnSaveClick)
+                },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -128,19 +134,39 @@ private fun AgendaDetailsScreen(
                 DetailsHeaderSection(item = state.agendaItem)
                 Spacer(Modifier.height(30.dp))
 
-                DetailsTitleSection(title = state.agendaItem.title, isEdit = state.isEdit)
+                DetailsTitleSection(
+                    title = state.agendaItem.title,
+                    isEdit = state.isEdit,
+                    modifier =
+                        Modifier.clickable(enabled = state.isEdit) {
+                            onEvent(AgendaDetailsScreenEvent.OnTitleClick)
+                        },
+                )
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsDescSection(desc = state.agendaItem.description, isEdit = state.isEdit)
+                DetailsDescSection(
+                    desc = state.agendaItem.description,
+                    isEdit = state.isEdit,
+                    modifier =
+                        Modifier.clickable(enabled = state.isEdit) {
+                            onEvent(AgendaDetailsScreenEvent.OnDescClick)
+                        },
+                )
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsStartTimeSection(item = state.agendaItem, isEdit = state.isEdit, onDateTimeSelect = {})
+                DetailsStartTimeSection(
+                    item = state.agendaItem,
+                    isEdit = state.isEdit,
+                    onDateTimeSelect = {
+                        onEvent(AgendaDetailsScreenEvent.OnStartDateTimeChange(it))
+                    },
+                )
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
@@ -149,7 +175,9 @@ private fun AgendaDetailsScreen(
                 DetailsReminderSection(
                     item = state.agendaItem,
                     isEdit = state.isEdit,
-                    onReminderSelect = {},
+                    onReminderSelect = {
+                        onEvent(AgendaDetailsScreenEvent.OnReminderChange(it.milliSecond))
+                    },
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -161,7 +189,9 @@ private fun AgendaDetailsScreen(
                 Spacer(Modifier.height(16.dp))
                 DetailsDeleteSection(
                     item = state.agendaItem,
-                    onClick = {},
+                    onClick = {
+                        onEvent(AgendaDetailsScreenEvent.OnDeleteClick)
+                    },
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
                 Spacer(Modifier.height(32.dp))
@@ -170,10 +200,33 @@ private fun AgendaDetailsScreen(
 
         if (state.agendaEditTextType != null) {
             AgendaEditText(
-                initialValue = "",
+                initialValue =
+                    when (state.agendaEditTextType) {
+                        AgendaEditTextType.TITLE -> state.agendaItem.title
+                        AgendaEditTextType.DESCRIPTION -> state.agendaItem.description
+                    },
                 type = state.agendaEditTextType,
-                onBackClick = {},
-                onSaveClick = {},
+                onBackClick = {
+                    onEvent(AgendaDetailsScreenEvent.CloseEditText)
+                },
+                onSaveClick = {
+                    when (state.agendaEditTextType) {
+                        AgendaEditTextType.TITLE ->
+                            onEvent(
+                                AgendaDetailsScreenEvent.OnTitleChange(
+                                    it,
+                                ),
+                            )
+
+                        AgendaEditTextType.DESCRIPTION ->
+                            onEvent(
+                                AgendaDetailsScreenEvent.OnDescChange(
+                                    it,
+                                ),
+                            )
+                    }
+                    onEvent(AgendaDetailsScreenEvent.CloseEditText)
+                },
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -194,7 +247,7 @@ private fun getTitleTimeDisplay(time: Long): String {
 @Composable
 private fun AgendaDetailsScreenPreview() {
     MyApplicationTheme {
-        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, false))
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, false), onEvent = {})
     }
 }
 
@@ -202,7 +255,7 @@ private fun AgendaDetailsScreenPreview() {
 @Composable
 private fun AgendaDetailsScreenEditPreview() {
     MyApplicationTheme {
-        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, true))
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, true), onEvent = {})
     }
 }
 
@@ -210,6 +263,14 @@ private fun AgendaDetailsScreenEditPreview() {
 @Composable
 private fun AgendaDetailsScreenEditTextPreview() {
     MyApplicationTheme {
-        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, true, AgendaEditTextType.TITLE))
+        AgendaDetailsScreen(
+            state =
+                AgendaDetailsScreenState(
+                    Task.DUMMY,
+                    true,
+                    AgendaEditTextType.TITLE,
+                ),
+            onEvent = {},
+        )
     }
 }
