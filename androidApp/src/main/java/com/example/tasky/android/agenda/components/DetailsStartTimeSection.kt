@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -46,6 +49,7 @@ fun DetailsStartTimeSection(
     modifier: Modifier = Modifier,
 ) {
     var isDateDialogOpen by remember { mutableStateOf(false) }
+    var isTimeDialogOpen by remember { mutableStateOf(false) }
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(8.dp))
@@ -61,7 +65,16 @@ fun DetailsStartTimeSection(
             color = Black,
         )
         Spacer(modifier = Modifier.width(40.dp))
-        Text(formatTime(item.getStartTime()), style = typography.bodySmall, lineHeight = 15.sp, color = Black)
+        TextButton(onClick = {
+            isTimeDialogOpen = true
+        }) {
+            Text(
+                formatTime(item.getStartTime()),
+                style = typography.bodySmall,
+                lineHeight = 15.sp,
+                color = Black,
+            )
+        }
         Spacer(modifier = Modifier.width(80.dp))
         TextButton(onClick = {
             isDateDialogOpen = true
@@ -73,6 +86,43 @@ fun DetailsStartTimeSection(
                 color = Black,
             )
         }
+    }
+
+    if (isTimeDialogOpen) {
+        val hour = item.getStartTime() / (60 * 60 * 1000) % 24
+        val minute = item.getStartTime() / (60 * 1000) % 60
+        val timePickerState =
+            rememberTimePickerState(
+                initialHour = hour.toInt(),
+                initialMinute = minute.toInt(),
+                is24Hour = true,
+            )
+
+        AlertDialog(
+            onDismissRequest = {
+                isTimeDialogOpen = false
+            },
+            dismissButton = {
+                TextButton(onClick = { isTimeDialogOpen = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    val newTime = (timePickerState.hour * 60 + timePickerState.minute) * 60 * 1000
+                    val newStartTime =
+                        item.getStartTime() / (24 * 60 * 60 * 1000) * (24 * 60 * 60 * 1000) + newTime
+                    onDateTimeSelect(newStartTime)
+                }) {
+                    Text(stringResource(R.string.ok))
+                }
+            },
+            text = {
+                TimePicker(
+                    state = timePickerState,
+                )
+            },
+        )
     }
 
     if (isDateDialogOpen) {
@@ -102,7 +152,9 @@ fun DetailsStartTimeSection(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { isDateDialogOpen = false }) { Text(stringResource(R.string.cancel)) }
+                TextButton(onClick = {
+                    isDateDialogOpen = false
+                }) { Text(stringResource(R.string.cancel)) }
             },
         ) {
             DatePicker(
