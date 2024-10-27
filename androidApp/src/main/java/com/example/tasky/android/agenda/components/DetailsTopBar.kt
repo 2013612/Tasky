@@ -50,10 +50,6 @@ fun DetailsTopBar(
         }
 
         if (isEdit) {
-            IconButton(onClick = onEditClick) {
-                Icon(Icons.Outlined.Edit, contentDescription = null, tint = Color.White)
-            }
-        } else {
             TextButton(onClick = onSaveClick) {
                 Text(
                     stringResource(R.string.save),
@@ -61,6 +57,10 @@ fun DetailsTopBar(
                     color = Color.White,
                     lineHeight = 12.sp,
                 )
+            }
+        } else {
+            IconButton(onClick = onEditClick) {
+                Icon(Icons.Outlined.Edit, contentDescription = null, tint = Color.White)
             }
         }
     }
