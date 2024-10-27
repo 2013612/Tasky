@@ -106,7 +106,7 @@ private fun AgendaDetailsScreen(
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsStartTimeSection(state.agendaItem)
+                DetailsStartTimeSection(item = state.agendaItem, isEdit = state.isEdit, onDateTimeSelect = {})
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
