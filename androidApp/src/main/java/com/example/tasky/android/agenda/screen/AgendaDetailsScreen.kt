@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tasky.android.agenda.components.AgendaEditText
+import com.example.tasky.android.agenda.components.AgendaEditTextType
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
@@ -38,7 +40,8 @@ import java.time.format.DateTimeFormatter
 
 data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
-    val isEdit: Boolean,
+    val isEdit: Boolean = false,
+    val agendaEditTextType: AgendaEditTextType? = null,
 )
 
 @Composable
@@ -103,9 +106,23 @@ private fun AgendaDetailsScreen(
 
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
-                DetailsDeleteSection(item = state.agendaItem, onClick = {}, modifier = Modifier.align(Alignment.CenterHorizontally))
+                DetailsDeleteSection(
+                    item = state.agendaItem,
+                    onClick = {},
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
                 Spacer(Modifier.height(32.dp))
             }
+        }
+
+        if (state.agendaEditTextType != null) {
+            AgendaEditText(
+                initialValue = "",
+                type = state.agendaEditTextType,
+                onBackClick = {},
+                onSaveClick = {},
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }
@@ -122,8 +139,24 @@ private fun getTitleTimeDisplay(time: Long): String {
 
 @Preview
 @Composable
-private fun TaskScreenPreview() {
+private fun AgendaDetailsScreenPreview() {
     MyApplicationTheme {
         AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, false))
+    }
+}
+
+@Preview
+@Composable
+private fun AgendaDetailsScreenEditPreview() {
+    MyApplicationTheme {
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, true))
+    }
+}
+
+@Preview
+@Composable
+private fun AgendaDetailsScreenEditTextPreview() {
+    MyApplicationTheme {
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Task.DUMMY, true, AgendaEditTextType.TITLE))
     }
 }
