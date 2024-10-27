@@ -29,4 +29,7 @@
     <string name="_1_hour_before">1 hour before</string>
     <string name="edit_title">EDIT TITLE</string>
     <string name="edit_description">EDIT DESCRIPTION</string>
+    <string name="edit_task">EDIT TASK</string>
+    <string name="edit_event">EDIT EVENT</string>
+    <string name="edit_reminder">EDIT REMINDER</string>
 </resources>
