@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
@@ -31,6 +33,8 @@ import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
+import com.example.tasky.model.agenda.Event
+import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -58,7 +62,18 @@ private fun AgendaDetailsScreen(
         Column {
             Spacer(modifier = Modifier.height(8.dp))
             DetailsTopBar(
-                title = getTitleTimeDisplay(state.agendaItem.getStartTime()),
+                title =
+                    if (state.isEdit) {
+                        stringResource(
+                            when (state.agendaItem) {
+                                is Task -> R.string.edit_task
+                                is Event -> R.string.edit_event
+                                is Reminder -> R.string.edit_reminder
+                            },
+                        )
+                    } else {
+                        getTitleTimeDisplay(state.agendaItem.getStartTime())
+                    },
                 isEdit = state.isEdit,
                 onCloseClick = {},
                 onEditClick = {},
