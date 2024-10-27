@@ -146,7 +146,11 @@ private fun AgendaDetailsScreen(
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsReminderSection(item = state.agendaItem, isEdit = state.isEdit)
+                DetailsReminderSection(
+                    item = state.agendaItem,
+                    isEdit = state.isEdit,
+                    onReminderSelect = {},
+                )
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)

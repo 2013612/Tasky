@@ -24,10 +24,19 @@ import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.model.agenda.AgendaItem
 
+enum class ReminderType(val milliSecond: Long) {
+    TEN_MINUTE((10 * 60 * 1000).toLong()),
+    THIRTY_MINUTE((30 * 60 * 1000).toLong()),
+    ONE_HOUR((60 * 60 * 1000).toLong()),
+    SIX_HOUR((6 * 60 * 60 * 1000).toLong()),
+    ONE_DAY((24 * 60 * 60 * 1000).toLong()),
+}
+
 @Composable
 fun DetailsReminderSection(
     item: AgendaItem,
     isEdit: Boolean,
+    onReminderSelect: (ReminderType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
@@ -64,10 +73,10 @@ fun DetailsReminderSection(
 
 private fun getReminderTextId(time: Long): Int =
     when (time) {
-        (10 * 60 * 1000).toLong() -> R.string._10_minutes_before
-        (30 * 60 * 1000).toLong() -> R.string._30_minutes_before
-        (60 * 60 * 1000).toLong() -> R.string._1_hour_before
-        (6 * 60 * 60 * 1000).toLong() -> R.string._6_hours_before
-        (24 * 60 * 60 * 1000).toLong() -> R.string._1_day_before
+        ReminderType.TEN_MINUTE.milliSecond -> R.string._10_minutes_before
+        ReminderType.THIRTY_MINUTE.milliSecond -> R.string._30_minutes_before
+        ReminderType.ONE_HOUR.milliSecond -> R.string._1_hour_before
+        ReminderType.SIX_HOUR.milliSecond -> R.string._6_hours_before
+        ReminderType.ONE_DAY.milliSecond -> R.string._1_day_before
         else -> R.string._10_minutes_before
     }
