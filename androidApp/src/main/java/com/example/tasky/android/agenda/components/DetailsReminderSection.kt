@@ -34,16 +34,21 @@ import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Task
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 enum class ReminderType(
-    val milliSecond: Long,
+    val duration: Duration,
     @StringRes val stringId: Int,
 ) {
-    TEN_MINUTE((10 * 60 * 1000).toLong(), R.string._10_minutes_before),
-    THIRTY_MINUTE((30 * 60 * 1000).toLong(), R.string._30_minutes_before),
-    ONE_HOUR((60 * 60 * 1000).toLong(), R.string._1_hour_before),
-    SIX_HOUR((6 * 60 * 60 * 1000).toLong(), R.string._6_hours_before),
-    ONE_DAY((24 * 60 * 60 * 1000).toLong(), R.string._1_day_before),
+    TEN_MINUTE(10.minutes, R.string._10_minutes_before),
+    THIRTY_MINUTE(30.minutes, R.string._30_minutes_before),
+    ONE_HOUR(1.hours, R.string._1_hour_before),
+    SIX_HOUR(6.hours, R.string._6_hours_before),
+    ONE_DAY(1.days, R.string._1_day_before),
 }
 
 @Composable
@@ -58,7 +63,10 @@ fun DetailsReminderSection(
     }
 
     Box(modifier = modifier) {
-        Row(modifier = Modifier.clickable(enabled = isEdit) { isMenuOpen = true }, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.clickable(enabled = isEdit) { isMenuOpen = true },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Box(
                 modifier =
                     Modifier
@@ -106,7 +114,8 @@ fun DetailsReminderSection(
 }
 
 private fun getReminderTextId(time: Long): Int =
-    ReminderType.entries.firstOrNull { it.milliSecond == time }?.stringId ?: R.string._10_minutes_before
+    ReminderType.entries.firstOrNull { it.duration.toLong(DurationUnit.MILLISECONDS) == time }?.stringId
+        ?: R.string._10_minutes_before
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable

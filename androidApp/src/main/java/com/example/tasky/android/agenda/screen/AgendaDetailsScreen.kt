@@ -42,6 +42,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.time.DurationUnit
 
 data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
@@ -176,7 +177,13 @@ private fun AgendaDetailsScreen(
                     item = state.agendaItem,
                     isEdit = state.isEdit,
                     onReminderSelect = {
-                        onEvent(AgendaDetailsScreenEvent.OnReminderChange(it.milliSecond))
+                        onEvent(
+                            AgendaDetailsScreenEvent.OnReminderChange(
+                                it.duration.toLong(
+                                    DurationUnit.MILLISECONDS,
+                                ),
+                            ),
+                        )
                     },
                 )
 
