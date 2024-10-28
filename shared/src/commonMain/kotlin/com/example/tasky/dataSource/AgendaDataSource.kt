@@ -8,6 +8,7 @@ import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
 import com.example.tasky.model.agenda.ReminderPath
 import com.example.tasky.model.agenda.TaskPath
+import com.example.tasky.model.agenda.UpdateEventBody
 import com.example.tasky.model.agenda.UpdateTaskBody
 import com.example.tasky.util.safeCall
 import io.ktor.client.HttpClient
@@ -51,6 +52,13 @@ class AgendaDataSource(
     suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.put(ReminderPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.put(EventPath()) {
                 setBody(body)
             }
         }
