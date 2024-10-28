@@ -20,6 +20,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,8 +49,8 @@ fun DetailsStartTimeSection(
     onDateTimeSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isDateDialogOpen by remember { mutableStateOf(false) }
-    var isTimeDialogOpen by remember { mutableStateOf(false) }
+    var isDateDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isTimeDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(8.dp))
