@@ -8,14 +8,13 @@ import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.GetAgendaResponse
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
-import com.example.tasky.model.agenda.UpdateTaskBody
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError>
 
     suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError>
 
-    suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError>
+    suspend fun updateAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError>
 }
 
 class AgendaRepository(
@@ -30,5 +29,10 @@ class AgendaRepository(
             is Reminder -> agendaDataSource.deleteReminder(agendaItem.id)
         }
 
-    override suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(body)
+    override suspend fun updateAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> =
+        when (agendaItem) {
+            is Event -> agendaDataSource.updateEvent(agendaItem)
+            is Task -> agendaDataSource.updateTask(agendaItem)
+            is Reminder -> agendaDataSource.updateReminder(agendaItem)
+        }
 }
