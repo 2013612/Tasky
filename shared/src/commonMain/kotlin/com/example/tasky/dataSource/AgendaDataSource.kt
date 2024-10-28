@@ -51,7 +51,7 @@ class AgendaDataSource(
 
     suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError> =
         safeCall {
-            httpClient.put(ReminderPath()) {
+            httpClient.put(TaskPath()) {
                 setBody(body)
             }
         }
