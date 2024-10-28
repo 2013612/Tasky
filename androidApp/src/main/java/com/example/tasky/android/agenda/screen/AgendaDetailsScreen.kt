@@ -73,8 +73,13 @@ sealed interface AgendaDetailsScreenEvent {
         val newDesc: String,
     ) : AgendaDetailsScreenEvent
 
-    data class OnStartDateTimeChange(
-        val newDateTime: Long,
+    data class OnStartTimeChange(
+        val newHour: Int,
+        val newMinute: Int,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnStartDateChange(
+        val newDate: Long,
     ) : AgendaDetailsScreenEvent
 
     data class OnReminderChange(
@@ -164,8 +169,16 @@ private fun AgendaDetailsScreen(
                 DetailsStartTimeSection(
                     item = state.agendaItem,
                     isEdit = state.isEdit,
-                    onDateTimeSelect = {
-                        onEvent(AgendaDetailsScreenEvent.OnStartDateTimeChange(it))
+                    onDateSelect = {
+                        onEvent(AgendaDetailsScreenEvent.OnStartDateChange(it))
+                    },
+                    onTimeSelect = { hour, minute ->
+                        onEvent(
+                            AgendaDetailsScreenEvent.OnStartTimeChange(
+                                newHour = hour,
+                                newMinute = minute,
+                            ),
+                        )
                     },
                 )
 
