@@ -24,13 +24,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.Light2
+import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.AgendaItem
+import com.example.tasky.model.agenda.Task
 
 enum class ReminderType(
     val milliSecond: Long,
@@ -104,3 +107,11 @@ fun DetailsReminderSection(
 
 private fun getReminderTextId(time: Long): Int =
     ReminderType.entries.firstOrNull { it.milliSecond == time }?.stringId ?: R.string._10_minutes_before
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+private fun DetailsReminderSectionPreview() {
+    MyApplicationTheme {
+        DetailsReminderSection(item = Task.DUMMY, isEdit = false, onReminderSelect = {})
+    }
+}
