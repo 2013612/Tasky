@@ -51,6 +51,19 @@ data class Event(
                 attendees = Attendee.DUMMY_LIST,
                 photos = Photo.DUMMY_LIST,
             )
+        val EMPTY =
+            Event(
+                id = "",
+                title = "",
+                description = "",
+                from = 0,
+                to = 0,
+                remindAt = 0,
+                host = "",
+                isUserEventCreator = false,
+                attendees = emptyList(),
+                photos = emptyList(),
+            )
     }
 
     override fun getStartTime(): Long = from
@@ -127,6 +140,7 @@ data class Task(
                 remindAt = 1678886400000,
                 isDone = true,
             )
+        val EMPTY = Task(id = "", title = "", description = "", time = 0, remindAt = 0, isDone = false)
     }
 
     override fun getStartTime(): Long = time
@@ -149,6 +163,7 @@ data class Reminder(
                 time = 1678886400000,
                 remindAt = 1678886400000,
             )
+        val EMPTY = Reminder(id = "", title = "", description = "", time = 0, remindAt = 0)
     }
 
     override fun getStartTime(): Long = time
