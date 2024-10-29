@@ -68,7 +68,7 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
         val args = it.toRoute<AgendaDetails>()
         val viewModel: AgendaDetailsViewModel =
             koinViewModel {
-                parametersOf(args.agendaId, args.type)
+                parametersOf(args.agendaId, args.type, args.isEdit)
             }
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
@@ -96,14 +96,16 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
 fun NavController.navigateToAgendaDetails(
     agendaId: String,
     type: AgendaDetailsScreenType,
+    isEdit: Boolean = false,
 ) {
-    navigate(AgendaDetails(agendaId = agendaId, type = type))
+    navigate(AgendaDetails(agendaId = agendaId, type = type, isEdit = isEdit))
 }
 
 @Serializable
 private data class AgendaDetails(
     val agendaId: String,
     val type: AgendaDetailsScreenType,
+    val isEdit: Boolean,
 ) {
     companion object {
         val typeMap = mapOf(typeOf<AgendaDetailsScreenType>() to serializableNavType<AgendaDetailsScreenType>())
