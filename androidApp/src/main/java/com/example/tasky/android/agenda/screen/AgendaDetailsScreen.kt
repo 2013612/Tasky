@@ -14,12 +14,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
@@ -30,9 +37,11 @@ import com.example.tasky.android.agenda.components.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.DetailsStartTimeSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
+import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.android.utils.serializableNavType
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
@@ -41,13 +50,64 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import java.time.format.DateTimeFormatter
+import kotlin.reflect.typeOf
 import kotlin.time.DurationUnit
 
 enum class AgendaDetailsScreenType {
     TASK,
     EVENT,
     REMINDER,
+}
+
+fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
+    composable<AgendaDetails>(typeMap = AgendaDetails.typeMap) {
+        val args = it.toRoute<AgendaDetails>()
+        val viewModel: AgendaDetailsViewModel =
+            koinViewModel {
+                parametersOf(args.agendaId, args.type)
+            }
+
+        val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+
+        val isDeleteSuccess by viewModel.isDeleteSuccess.collectAsStateWithLifecycle()
+
+        LaunchedEffect(isDeleteSuccess) {
+            if (isDeleteSuccess) {
+                navigateUp()
+            }
+        }
+
+        AgendaDetailsScreen(
+            state = screenState,
+            onEvent = { event ->
+                when (event) {
+                    AgendaDetailsScreenEvent.OnCloseClick -> navigateUp()
+                    else -> viewModel.onEvent(event)
+                }
+            },
+        )
+    }
+}
+
+fun NavController.navigateToAgendaDetails(
+    agendaId: String,
+    type: AgendaDetailsScreenType,
+) {
+    navigate(AgendaDetails(agendaId = agendaId, type = type))
+}
+
+@Serializable
+private data class AgendaDetails(
+    val agendaId: String,
+    val type: AgendaDetailsScreenType,
+) {
+    companion object {
+        val typeMap = mapOf(typeOf<AgendaDetailsScreenType>() to serializableNavType<AgendaDetailsScreenType>())
+    }
 }
 
 data class AgendaDetailsScreenState(
