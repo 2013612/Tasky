@@ -19,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
-enum class ReminderType(
+enum class RemindAtType(
     val duration: Duration,
     @StringRes val stringId: Int,
 ) {
@@ -52,13 +52,13 @@ enum class ReminderType(
 }
 
 @Composable
-fun DetailsReminderSection(
+fun DetailsRemindAtSection(
     item: AgendaItem,
     isEdit: Boolean,
-    onReminderSelect: (ReminderType) -> Unit,
+    onRemindAtSelect: (RemindAtType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isMenuOpen by remember {
+    var isMenuOpen by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -85,7 +85,7 @@ fun DetailsReminderSection(
             }
             Spacer(Modifier.width(8.dp))
             Text(
-                stringResource(getReminderTextId(item.getStartTime() - item.remindAt)),
+                stringResource(getRemindAtTextId(item.getStartTime() - item.remindAt)),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -101,11 +101,11 @@ fun DetailsReminderSection(
             expanded = isMenuOpen,
             onDismissRequest = { isMenuOpen = false },
         ) {
-            ReminderType.entries.map {
+            RemindAtType.entries.map {
                 DropdownMenuItem(text = {
                     Text(stringResource(it.stringId))
                 }, onClick = {
-                    onReminderSelect(it)
+                    onRemindAtSelect(it)
                     isMenuOpen = false
                 })
             }
@@ -113,14 +113,14 @@ fun DetailsReminderSection(
     }
 }
 
-private fun getReminderTextId(time: Long): Int =
-    ReminderType.entries.firstOrNull { it.duration.toLong(DurationUnit.MILLISECONDS) == time }?.stringId
+private fun getRemindAtTextId(time: Long): Int =
+    RemindAtType.entries.firstOrNull { it.duration.toLong(DurationUnit.MILLISECONDS) == time }?.stringId
         ?: R.string._10_minutes_before
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-private fun DetailsReminderSectionPreview() {
+private fun DetailsRemindAtSectionPreview() {
     MyApplicationTheme {
-        DetailsReminderSection(item = Task.DUMMY, isEdit = false, onReminderSelect = {})
+        DetailsRemindAtSection(item = Task.DUMMY, isEdit = false, onRemindAtSelect = {})
     }
 }

@@ -26,7 +26,7 @@ import com.example.tasky.android.agenda.components.AgendaEditTextType
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
-import com.example.tasky.android.agenda.components.DetailsReminderSection
+import com.example.tasky.android.agenda.components.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.DetailsStartTimeSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
@@ -192,10 +192,10 @@ private fun AgendaDetailsScreen(
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsReminderSection(
+                DetailsRemindAtSection(
                     item = state.agendaItem,
                     isEdit = state.isEdit,
-                    onReminderSelect = {
+                    onRemindAtSelect = {
                         onEvent(
                             AgendaDetailsScreenEvent.OnRemindAtChange(
                                 it.duration.toLong(
