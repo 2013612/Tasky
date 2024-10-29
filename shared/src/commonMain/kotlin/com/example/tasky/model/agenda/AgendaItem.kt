@@ -12,6 +12,18 @@ sealed class AgendaItem {
     abstract fun getStartTime(): Long
 }
 
+fun AgendaItem.copy(
+    title: String = this.title,
+    description: String = this.description,
+    remindAt: Long = this.remindAt,
+    startTime: Long = this.getStartTime(),
+): AgendaItem =
+    when (this) {
+        is Event -> this.copy(title = title, description = description, remindAt = remindAt, from = startTime)
+        is Reminder -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
+        is Task -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
+    }
+
 @Serializable
 data class Event(
     override val id: String,
