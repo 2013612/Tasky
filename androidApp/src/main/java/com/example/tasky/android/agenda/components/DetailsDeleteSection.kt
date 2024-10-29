@@ -15,7 +15,6 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
-import java.util.Locale
 
 @Composable
 fun DetailsDeleteSection(
@@ -25,16 +24,12 @@ fun DetailsDeleteSection(
 ) {
     TextButton(onClick = onClick, modifier = modifier) {
         Text(
-            "${stringResource(R.string.delete)} ${
-                stringResource(
-                    when (item) {
-                        is Event -> R.string.event
-                        is Task -> R.string.task
-                        is Reminder -> R.string.reminder
-                    },
-                )
-            }".uppercase(
-                Locale.getDefault(),
+            stringResource(
+                when (item) {
+                    is Event -> R.string.delete_event
+                    is Task -> R.string.delete_task
+                    is Reminder -> R.string.delete_reminder
+                },
             ),
             style = typography.bodyMedium,
             lineHeight = 30.sp,
