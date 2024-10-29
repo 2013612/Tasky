@@ -32,4 +32,7 @@
     <string name="edit_task">修改工作</string>
     <string name="edit_event">修改活動</string>
     <string name="edit_reminder">修改提醒</string>
+    <string name="delete_task">刪除工作</string>
+    <string name="delete_event">刪除活動</string>
+    <string name="delete_reminder">刪除提醒</string>
 </resources>
