@@ -20,6 +20,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,11 +46,12 @@ import java.time.format.DateTimeFormatter
 fun DetailsStartTimeSection(
     item: AgendaItem,
     isEdit: Boolean,
-    onDateTimeSelect: (Long) -> Unit,
+    onTimeSelect: (hour: Int, minute: Int) -> Unit,
+    onDateSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isDateDialogOpen by remember { mutableStateOf(false) }
-    var isTimeDialogOpen by remember { mutableStateOf(false) }
+    var isDateDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var isTimeDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(8.dp))
@@ -109,10 +111,7 @@ fun DetailsStartTimeSection(
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val newTime = (timePickerState.hour * 60 + timePickerState.minute) * 60 * 1000
-                    val newStartTime =
-                        item.getStartTime() / (24 * 60 * 60 * 1000) * (24 * 60 * 60 * 1000) + newTime
-                    onDateTimeSelect(newStartTime)
+                    onTimeSelect(timePickerState.hour, timePickerState.minute)
                 }) {
                     Text(stringResource(R.string.ok))
                 }
@@ -142,8 +141,7 @@ fun DetailsStartTimeSection(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val originTime = item.getStartTime() % (24 * 60 * 60 * 1000)
-                        datePickerState.selectedDateMillis?.let { onDateTimeSelect(it + originTime) }
+                        datePickerState.selectedDateMillis?.let { onDateSelect(it) }
                         isDateDialogOpen = false
                     },
                     enabled = confirmEnabled.value,
@@ -192,7 +190,8 @@ private fun DetailsStartTimeSectionPreview() {
         DetailsStartTimeSection(
             Task.DUMMY,
             isEdit = true,
-            onDateTimeSelect = {},
+            onDateSelect = {},
+            onTimeSelect = { _, _ -> },
             modifier = Modifier,
         )
     }
