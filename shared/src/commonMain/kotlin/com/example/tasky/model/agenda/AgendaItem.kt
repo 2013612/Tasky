@@ -12,6 +12,18 @@ sealed class AgendaItem {
     abstract fun getStartTime(): Long
 }
 
+fun AgendaItem.copy(
+    title: String = this.title,
+    description: String = this.description,
+    remindAt: Long = this.remindAt,
+    startTime: Long = this.getStartTime(),
+): AgendaItem =
+    when (this) {
+        is Event -> this.copy(title = title, description = description, remindAt = remindAt, from = startTime)
+        is Reminder -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
+        is Task -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
+    }
+
 @Serializable
 data class Event(
     override val id: String,
@@ -38,6 +50,19 @@ data class Event(
                 isUserEventCreator = true,
                 attendees = Attendee.DUMMY_LIST,
                 photos = Photo.DUMMY_LIST,
+            )
+        val EMPTY =
+            Event(
+                id = "",
+                title = "",
+                description = "",
+                from = 0,
+                to = 0,
+                remindAt = 0,
+                host = "",
+                isUserEventCreator = false,
+                attendees = emptyList(),
+                photos = emptyList(),
             )
     }
 
@@ -115,6 +140,7 @@ data class Task(
                 remindAt = 1678886400000,
                 isDone = true,
             )
+        val EMPTY = Task(id = "", title = "", description = "", time = 0, remindAt = 0, isDone = false)
     }
 
     override fun getStartTime(): Long = time
@@ -137,6 +163,7 @@ data class Reminder(
                 time = 1678886400000,
                 remindAt = 1678886400000,
             )
+        val EMPTY = Reminder(id = "", title = "", description = "", time = 0, remindAt = 0)
     }
 
     override fun getStartTime(): Long = time

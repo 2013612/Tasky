@@ -44,6 +44,12 @@ import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.DurationUnit
 
+enum class AgendaDetailsScreenType {
+    TASK,
+    EVENT,
+    REMINDER,
+}
+
 data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
     val isEdit: Boolean = false,
@@ -82,8 +88,8 @@ sealed interface AgendaDetailsScreenEvent {
         val newDate: Long,
     ) : AgendaDetailsScreenEvent
 
-    data class OnReminderChange(
-        val newReminderTime: Long,
+    data class OnRemindAtChange(
+        val newRemindAtTime: Long,
     ) : AgendaDetailsScreenEvent
 }
 
@@ -191,7 +197,7 @@ private fun AgendaDetailsScreen(
                     isEdit = state.isEdit,
                     onReminderSelect = {
                         onEvent(
-                            AgendaDetailsScreenEvent.OnReminderChange(
+                            AgendaDetailsScreenEvent.OnRemindAtChange(
                                 it.duration.toLong(
                                     DurationUnit.MILLISECONDS,
                                 ),
