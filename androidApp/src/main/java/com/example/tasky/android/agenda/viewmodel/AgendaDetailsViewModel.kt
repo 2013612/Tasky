@@ -23,7 +23,8 @@ import kotlin.time.DurationUnit
 
 class AgendaDetailsViewModel(
     private val agendaId: String,
-    private val agendaType: AgendaDetailsScreenType,
+    agendaType: AgendaDetailsScreenType,
+    isEdit: Boolean,
     private val agendaRepository: IAgendaRepository,
 ) : ViewModel() {
     private val _screenStateFlow =
@@ -35,6 +36,7 @@ class AgendaDetailsViewModel(
                         AgendaDetailsScreenType.EVENT -> Event.EMPTY
                         AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY
                     },
+                isEdit = isEdit,
             ),
         )
     val screenStateFlow = _screenStateFlow.asStateFlow()
