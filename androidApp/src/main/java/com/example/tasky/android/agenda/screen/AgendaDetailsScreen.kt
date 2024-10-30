@@ -110,6 +110,7 @@ data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
     val isEdit: Boolean = false,
     val agendaEditTextType: AgendaEditTextType? = null,
+    val eventIsGoing: Boolean = true,
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -123,7 +124,7 @@ sealed interface AgendaDetailsScreenEvent {
 
     data object OnDescClick : AgendaDetailsScreenEvent
 
-    data object OnDeleteClick : AgendaDetailsScreenEvent
+    data object OnBottomTextClick : AgendaDetailsScreenEvent
 
     data object CloseEditText : AgendaDetailsScreenEvent
 
@@ -272,10 +273,12 @@ private fun AgendaDetailsScreen(
                 DetailsDeleteSection(
                     item = state.agendaItem,
                     onClick = {
-                        onEvent(AgendaDetailsScreenEvent.OnDeleteClick)
+                        onEvent(AgendaDetailsScreenEvent.OnBottomTextClick)
                     },
+                    eventIsGoing = state.eventIsGoing,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
+
                 Spacer(Modifier.height(32.dp))
             }
         }

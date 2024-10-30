@@ -35,4 +35,6 @@
     <string name="delete_task">刪除工作</string>
     <string name="delete_event">刪除活動</string>
     <string name="delete_reminder">刪除提醒</string>
+    <string name="leave_event">退出活動</string>
+    <string name="join_event">參加活動</string>
 </resources>
