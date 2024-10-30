@@ -26,7 +26,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
@@ -52,7 +51,6 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.typeOf
 import kotlin.time.DurationUnit
@@ -65,11 +63,7 @@ enum class AgendaDetailsScreenType {
 
 fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
     composable<AgendaDetails>(typeMap = AgendaDetails.typeMap) {
-        val args = it.toRoute<AgendaDetails>()
-        val viewModel: AgendaDetailsViewModel =
-            koinViewModel {
-                parametersOf(args.agendaId, args.type, args.isEdit)
-            }
+        val viewModel: AgendaDetailsViewModel = koinViewModel()
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
@@ -102,7 +96,7 @@ fun NavController.navigateToAgendaDetails(
 }
 
 @Serializable
-private data class AgendaDetails(
+data class AgendaDetails(
     val agendaId: String,
     val type: AgendaDetailsScreenType,
     val isEdit: Boolean,

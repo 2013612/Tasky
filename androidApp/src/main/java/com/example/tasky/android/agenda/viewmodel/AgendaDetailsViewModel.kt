@@ -1,8 +1,11 @@
 package com.example.tasky.android.agenda.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.example.tasky.android.agenda.components.AgendaEditTextType
+import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
@@ -22,21 +25,21 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
 class AgendaDetailsViewModel(
-    private val agendaId: String,
-    agendaType: AgendaDetailsScreenType,
-    isEdit: Boolean,
+    savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
 ) : ViewModel() {
+    private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
+
     private val _screenStateFlow =
         MutableStateFlow(
             AgendaDetailsScreenState(
                 agendaItem =
-                    when (agendaType) {
+                    when (routeArguments.type) {
                         AgendaDetailsScreenType.TASK -> Task.EMPTY
                         AgendaDetailsScreenType.EVENT -> Event.EMPTY
                         AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY
                     },
-                isEdit = isEdit,
+                isEdit = routeArguments.isEdit,
             ),
         )
     val screenStateFlow = _screenStateFlow.asStateFlow()
