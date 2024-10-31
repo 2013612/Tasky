@@ -40,4 +40,5 @@
     <string name="all">全部</string>
     <string name="going">去</string>
     <string name="not_going">不去</string>
+    <string name="creator">發起人</string>
 </resources>
