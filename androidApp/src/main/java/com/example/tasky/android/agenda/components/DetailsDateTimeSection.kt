@@ -68,11 +68,11 @@ fun DetailsDateTimeSection(
             style = typography.bodySmall,
             lineHeight = 15.sp,
             color = Black,
+            modifier = Modifier.weight(1f),
         )
-        Spacer(modifier = Modifier.width(40.dp))
         TextButton(onClick = {
             isTimeDialogOpen = true
-        }) {
+        }, modifier = Modifier.weight(3f)) {
             Text(
                 formatTime(item.getStartTime()),
                 style = typography.bodySmall,
@@ -80,10 +80,9 @@ fun DetailsDateTimeSection(
                 color = Black,
             )
         }
-        Spacer(modifier = Modifier.width(80.dp))
         TextButton(onClick = {
             isDateDialogOpen = true
-        }, enabled = isEdit) {
+        }, enabled = isEdit, modifier = Modifier.weight(4f)) {
             Text(
                 formatDate(item.getStartTime()),
                 style = typography.bodySmall,
