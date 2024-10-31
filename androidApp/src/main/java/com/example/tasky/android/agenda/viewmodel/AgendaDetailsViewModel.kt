@@ -73,6 +73,8 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
             is AgendaDetailsScreenEvent.OnEndDateChange -> updateEndDate(event.newDate)
             is AgendaDetailsScreenEvent.OnEndTimeChange -> updateEndTime(event.newHour, event.newMinute)
+            AgendaDetailsScreenEvent.OnAddPhotoClick -> TODO()
+            is AgendaDetailsScreenEvent.OnPhotoClick -> TODO()
         }
     }
 

@@ -35,6 +35,7 @@ import com.example.tasky.android.agenda.components.DetailsDateTimeSection
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
+import com.example.tasky.android.agenda.components.DetailsPhotoSection
 import com.example.tasky.android.agenda.components.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
@@ -45,6 +46,7 @@ import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.utils.serializableNavType
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
+import com.example.tasky.model.agenda.Photo
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import kotlinx.collections.immutable.toImmutableList
@@ -174,6 +176,12 @@ sealed interface AgendaDetailsScreenEvent {
     data class OnAttendeeDelete(
         val id: String,
     ) : AgendaDetailsScreenEvent
+
+    data object OnAddPhotoClick : AgendaDetailsScreenEvent
+
+    data class OnPhotoClick(
+        val photo: Photo,
+    ) : AgendaDetailsScreenEvent
 }
 
 @Composable
@@ -250,6 +258,14 @@ private fun AgendaDetailsScreen(
                             onEvent(AgendaDetailsScreenEvent.OnDescClick)
                         },
                 )
+
+                if (state.agendaItem is Event) {
+                    DetailsPhotoSection(photos = state.agendaItem.photos.toImmutableList(), isEdit = state.isEdit, onAddClick = {
+                        onEvent(AgendaDetailsScreenEvent.OnAddPhotoClick)
+                    }, onPhotoClick = {
+                        onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
+                    }, modifier = Modifier.height(120.dp))
+                }
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
