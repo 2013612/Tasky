@@ -43,12 +43,13 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsStartTimeSection(
+fun DetailsDateTimeSection(
     item: AgendaItem,
     isEdit: Boolean,
     onTimeSelect: (hour: Int, minute: Int) -> Unit,
     onDateSelect: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    isEventEndSection: Boolean = false,
 ) {
     var isDateDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isTimeDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -58,7 +59,7 @@ fun DetailsStartTimeSection(
         Text(
             stringResource(
                 when (item) {
-                    is Event -> R.string.from
+                    is Event -> if (isEventEndSection) R.string.to else R.string.from
                     is Task, is Reminder -> R.string.at
                 },
             ),
@@ -187,7 +188,7 @@ private fun formatDate(time: Long): String {
 @Composable
 private fun DetailsStartTimeSectionPreview() {
     MyApplicationTheme {
-        DetailsStartTimeSection(
+        DetailsDateTimeSection(
             Task.DUMMY,
             isEdit = true,
             onDateSelect = {},

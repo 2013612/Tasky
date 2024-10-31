@@ -31,11 +31,11 @@ import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
 import com.example.tasky.android.agenda.components.DetailsAttendeeSection
 import com.example.tasky.android.agenda.components.DetailsAttendeeSectionTabOption
+import com.example.tasky.android.agenda.components.DetailsDateTimeSection
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
 import com.example.tasky.android.agenda.components.DetailsRemindAtSection
-import com.example.tasky.android.agenda.components.DetailsStartTimeSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
@@ -149,6 +149,15 @@ sealed interface AgendaDetailsScreenEvent {
         val newDate: Long,
     ) : AgendaDetailsScreenEvent
 
+    data class OnEndTimeChange(
+        val newHour: Int,
+        val newMinute: Int,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnEndDateChange(
+        val newDate: Long,
+    ) : AgendaDetailsScreenEvent
+
     data class OnRemindAtChange(
         val newRemindAtTime: Long,
     ) : AgendaDetailsScreenEvent
@@ -245,7 +254,7 @@ private fun AgendaDetailsScreen(
                 HorizontalDivider(color = Light)
                 Spacer(Modifier.height(16.dp))
 
-                DetailsStartTimeSection(
+                DetailsDateTimeSection(
                     item = state.agendaItem,
                     isEdit = state.isEdit,
                     onDateSelect = {
@@ -260,6 +269,24 @@ private fun AgendaDetailsScreen(
                         )
                     },
                 )
+
+                if (state.agendaItem is Event) {
+                    DetailsDateTimeSection(
+                        item = state.agendaItem,
+                        isEdit = state.isEdit,
+                        onDateSelect = {
+                            onEvent(AgendaDetailsScreenEvent.OnEndDateChange(it))
+                        },
+                        onTimeSelect = { hour, minute ->
+                            onEvent(
+                                AgendaDetailsScreenEvent.OnEndTimeChange(
+                                    newHour = hour,
+                                    newMinute = minute,
+                                ),
+                            )
+                        },
+                    )
+                }
 
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)

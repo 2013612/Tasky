@@ -70,6 +70,8 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnAttendeeAdd -> addAttendee(event.email)
             is AgendaDetailsScreenEvent.OnAttendeeDelete -> deleteAttendee(event.id)
             is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
+            is AgendaDetailsScreenEvent.OnEndDateChange -> {}
+            is AgendaDetailsScreenEvent.OnEndTimeChange -> {}
         }
     }
 
