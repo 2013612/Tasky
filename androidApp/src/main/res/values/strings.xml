@@ -41,4 +41,7 @@
     <string name="going">Going</string>
     <string name="not_going">Not Going</string>
     <string name="creator">creator</string>
+    <string name="visitors">Visitors</string>
+    <string name="add">ADD</string>
+    <string name="add_visitor">Add visitor</string>
 </resources>
