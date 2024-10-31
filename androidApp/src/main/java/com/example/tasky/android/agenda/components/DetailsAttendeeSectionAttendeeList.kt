@@ -34,6 +34,7 @@ import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.model.agenda.Attendee
+import com.example.tasky.util.getAvatarDisplayName
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -66,7 +67,7 @@ fun DetailsAttendeeSectionAttendeeList(
                                 .background(Gray, CircleShape),
                     ) {
                         Text(
-                            getDisplayName(it.fullName),
+                            it.fullName.getAvatarDisplayName(),
                             style = typography.bodyMedium,
                             fontSize = 13.sp,
                             lineHeight = 15.6.sp,
@@ -95,15 +96,6 @@ fun DetailsAttendeeSectionAttendeeList(
                 }
             }
         }
-    }
-}
-
-private fun getDisplayName(fullName: String): String {
-    val splitName = fullName.trim().split(" ")
-    return when (splitName.size) {
-        0 -> ""
-        1 -> splitName[0].take(2)
-        else -> splitName[0][0].toString() + splitName.last()[0]
     }
 }
 

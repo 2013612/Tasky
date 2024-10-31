@@ -10,6 +10,7 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.onSuccess
 import com.example.tasky.repository.IAgendaRepository
+import com.example.tasky.util.getAvatarDisplayName
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,14 +83,7 @@ class AgendaViewModel(
     private fun updateName() {
         viewModelScope.launch {
             val fullName = SessionManager.getFullName() ?: return@launch
-            val splitName = fullName.trim().split(" ")
-            val displayName: String =
-                when (splitName.size) {
-                    0 -> ""
-                    1 -> splitName[0].take(2)
-                    else -> splitName[0][0].toString() + splitName.last()[0]
-                }
-            _screenStateFlow.update { it.copy(name = displayName) }
+            _screenStateFlow.update { it.copy(name = fullName.getAvatarDisplayName()) }
         }
     }
 
