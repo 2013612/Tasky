@@ -67,7 +67,18 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnStartTimeChange -> updateStartTime(event.newHour, event.newMinute)
             is AgendaDetailsScreenEvent.OnTitleChange -> updateTitle(event.newTitle)
             AgendaDetailsScreenEvent.OnTitleClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.TITLE) }
+            is AgendaDetailsScreenEvent.OnAttendeeAdd -> addAttendee(event.email)
+            is AgendaDetailsScreenEvent.OnAttendeeDelete -> deleteAttendee(event.id)
+            is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
         }
+    }
+
+    private fun addAttendee(email: String) {
+        // TODO
+    }
+
+    private fun deleteAttendee(id: String) {
+        // TODO
     }
 
     private fun toggleIsGoing() {

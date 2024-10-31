@@ -29,6 +29,8 @@ import androidx.navigation.compose.composable
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
+import com.example.tasky.android.agenda.components.DetailsAttendeeSection
+import com.example.tasky.android.agenda.components.DetailsAttendeeSectionTabOption
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
@@ -45,6 +47,7 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -111,6 +114,7 @@ data class AgendaDetailsScreenState(
     val isEdit: Boolean = false,
     val agendaEditTextType: AgendaEditTextType? = null,
     val eventIsGoing: Boolean = true,
+    val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -147,6 +151,18 @@ sealed interface AgendaDetailsScreenEvent {
 
     data class OnRemindAtChange(
         val newRemindAtTime: Long,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnAttendeeTabChange(
+        val newTab: DetailsAttendeeSectionTabOption,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnAttendeeAdd(
+        val email: String,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnAttendeeDelete(
+        val id: String,
     ) : AgendaDetailsScreenEvent
 }
 
@@ -266,6 +282,25 @@ private fun AgendaDetailsScreen(
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider(color = Light)
 
+                if (state.agendaItem is Event) {
+                    Spacer(Modifier.height(24.dp))
+                    DetailsAttendeeSection(
+                        attendees = state.agendaItem.attendees.toImmutableList(),
+                        curTab = state.curTab,
+                        isEdit = state.isEdit,
+                        onTabSelect = {
+                            onEvent(AgendaDetailsScreenEvent.OnAttendeeTabChange(it))
+                        },
+                        onAddClick = {
+                            onEvent(AgendaDetailsScreenEvent.OnAttendeeAdd(it))
+                        },
+                        onDeleteIconClick = {
+                            onEvent(AgendaDetailsScreenEvent.OnAttendeeDelete(it))
+                        },
+                        creatorId = state.agendaItem.host,
+                    )
+                }
+
                 Spacer(Modifier.weight(1f))
 
                 HorizontalDivider(color = Light)
@@ -357,5 +392,13 @@ private fun AgendaDetailsScreenEditTextPreview() {
                 ),
             onEvent = {},
         )
+    }
+}
+
+@Preview
+@Composable
+private fun AgendaDetailsScreenEventEditPreview() {
+    MyApplicationTheme {
+        AgendaDetailsScreen(state = AgendaDetailsScreenState(Event.DUMMY, true), onEvent = {})
     }
 }

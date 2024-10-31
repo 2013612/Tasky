@@ -46,7 +46,7 @@ data class Event(
                 from = 1678886400000,
                 to = 1678972800000,
                 remindAt = 1678886400000,
-                host = "host@example.com",
+                host = "user123",
                 isUserEventCreator = true,
                 attendees = Attendee.DUMMY_LIST,
                 photos = Photo.DUMMY_LIST,
