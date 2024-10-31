@@ -37,4 +37,7 @@
     <string name="delete_reminder">DELETE REMINDER</string>
     <string name="leave_event">LEAVE EVENT</string>
     <string name="join_event">JOIN EVENT</string>
+    <string name="all">All</string>
+    <string name="going">Going</string>
+    <string name="not_going">Not Going</string>
 </resources>

@@ -37,4 +37,7 @@
     <string name="delete_reminder">刪除提醒</string>
     <string name="leave_event">退出活動</string>
     <string name="join_event">參加活動</string>
+    <string name="all">全部</string>
+    <string name="going">去</string>
+    <string name="not_going">不去</string>
 </resources>
