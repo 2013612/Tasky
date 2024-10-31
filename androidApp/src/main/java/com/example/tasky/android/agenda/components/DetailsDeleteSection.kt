@@ -19,16 +19,23 @@ import com.example.tasky.model.agenda.Task
 @Composable
 fun DetailsDeleteSection(
     item: AgendaItem,
+    eventIsGoing: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TextButton(onClick = onClick, modifier = modifier) {
         Text(
             stringResource(
-                when (item) {
-                    is Event -> R.string.delete_event
-                    is Task -> R.string.delete_task
-                    is Reminder -> R.string.delete_reminder
+                if (item !is Event || item.isUserEventCreator) {
+                    when (item) {
+                        is Event -> R.string.delete_event
+                        is Task -> R.string.delete_task
+                        is Reminder -> R.string.delete_reminder
+                    }
+                } else if (eventIsGoing) {
+                    R.string.leave_event
+                } else {
+                    R.string.join_event
                 },
             ),
             style = typography.bodyMedium,
@@ -42,6 +49,6 @@ fun DetailsDeleteSection(
 @Composable
 private fun DetailsDeleteSectionPreview() {
     MyApplicationTheme {
-        DetailsDeleteSection(Task.DUMMY, {})
+        DetailsDeleteSection(Task.DUMMY, true, {})
     }
 }

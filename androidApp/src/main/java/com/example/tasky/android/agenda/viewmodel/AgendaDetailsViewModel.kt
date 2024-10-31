@@ -48,10 +48,16 @@ class AgendaDetailsViewModel(
     val isDeleteSuccess = _isDeleteSuccess.asStateFlow()
 
     fun onEvent(event: AgendaDetailsScreenEvent) {
+        val item = screenStateFlow.value.agendaItem
         when (event) {
             AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(agendaEditTextType = null) }
             AgendaDetailsScreenEvent.OnCloseClick -> {}
-            AgendaDetailsScreenEvent.OnDeleteClick -> deleteAgendaItem()
+            AgendaDetailsScreenEvent.OnBottomTextClick ->
+                if (item !is Event || item.isUserEventCreator) {
+                    deleteAgendaItem()
+                } else {
+                    toggleIsGoing()
+                }
             is AgendaDetailsScreenEvent.OnDescChange -> updateDesc(event.newDesc)
             AgendaDetailsScreenEvent.OnDescClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.DESCRIPTION) }
             AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
@@ -61,6 +67,23 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnStartTimeChange -> updateStartTime(event.newHour, event.newMinute)
             is AgendaDetailsScreenEvent.OnTitleChange -> updateTitle(event.newTitle)
             AgendaDetailsScreenEvent.OnTitleClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.TITLE) }
+            is AgendaDetailsScreenEvent.OnAttendeeAdd -> addAttendee(event.email)
+            is AgendaDetailsScreenEvent.OnAttendeeDelete -> deleteAttendee(event.id)
+            is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
+        }
+    }
+
+    private fun addAttendee(email: String) {
+        // TODO
+    }
+
+    private fun deleteAttendee(id: String) {
+        // TODO
+    }
+
+    private fun toggleIsGoing() {
+        viewModelScope.launch {
+            // TODO
         }
     }
 
