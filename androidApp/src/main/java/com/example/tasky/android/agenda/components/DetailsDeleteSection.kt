@@ -26,16 +26,15 @@ fun DetailsDeleteSection(
     TextButton(onClick = onClick, modifier = modifier) {
         Text(
             stringResource(
-                if (item !is Event || item.isUserEventCreator) {
-                    when (item) {
-                        is Event -> R.string.delete_event
-                        is Task -> R.string.delete_task
-                        is Reminder -> R.string.delete_reminder
-                    }
-                } else if (eventIsGoing) {
-                    R.string.leave_event
-                } else {
-                    R.string.join_event
+                when (item) {
+                    is Event ->
+                        when {
+                            item.isUserEventCreator -> R.string.delete_event
+                            eventIsGoing -> R.string.leave_event
+                            else -> R.string.join_event
+                        }
+                    is Task -> R.string.delete_task
+                    is Reminder -> R.string.delete_reminder
                 },
             ),
             style = typography.bodyMedium,
