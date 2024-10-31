@@ -45,4 +45,6 @@
     <string name="add">增加</string>
     <string name="add_visitor">增加訪客</string>
     <string name="to">至</string>
+    <string name="photos">相片</string>
+    <string name="add_photos">增加相片</string>
 </resources>

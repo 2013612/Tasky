@@ -45,4 +45,6 @@
     <string name="add">ADD</string>
     <string name="add_visitor">Add visitor</string>
     <string name="to">To</string>
+    <string name="photos">Photos</string>
+    <string name="add_photos">Add photos</string>
 </resources>
