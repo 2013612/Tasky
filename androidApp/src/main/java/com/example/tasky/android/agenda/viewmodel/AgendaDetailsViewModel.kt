@@ -54,10 +54,10 @@ class AgendaDetailsViewModel(
             AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(agendaEditTextType = null) }
             AgendaDetailsScreenEvent.OnCloseClick -> {}
             AgendaDetailsScreenEvent.OnBottomTextClick ->
-                if (item !is Event || item.isUserEventCreator) {
-                    deleteAgendaItem()
-                } else {
+                if (item is Event && !item.isUserEventCreator) {
                     toggleIsGoing()
+                } else {
+                    deleteAgendaItem()
                 }
             is AgendaDetailsScreenEvent.OnDescChange -> updateDesc(event.newDesc)
             AgendaDetailsScreenEvent.OnDescClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.DESCRIPTION) }
