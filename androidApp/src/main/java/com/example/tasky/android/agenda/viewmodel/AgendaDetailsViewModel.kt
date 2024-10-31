@@ -15,14 +15,15 @@ import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.agenda.copy
 import com.example.tasky.model.onSuccess
 import com.example.tasky.repository.IAgendaRepository
+import com.example.tasky.util.toLocalDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.DurationUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 
 class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -70,6 +71,10 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnAttendeeAdd -> addAttendee(event.email)
             is AgendaDetailsScreenEvent.OnAttendeeDelete -> deleteAttendee(event.id)
             is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
+            is AgendaDetailsScreenEvent.OnEndDateChange -> updateEndDate(event.newDate)
+            is AgendaDetailsScreenEvent.OnEndTimeChange -> updateEndTime(event.newHour, event.newMinute)
+            AgendaDetailsScreenEvent.OnAddPhotoClick -> TODO()
+            is AgendaDetailsScreenEvent.OnPhotoClick -> TODO()
         }
     }
 
@@ -112,22 +117,64 @@ class AgendaDetailsViewModel(
         minute: Int,
     ) {
         val agendaItem = screenStateFlow.value.agendaItem
-        val timeMilli = hour.hours.toLong(DurationUnit.MILLISECONDS) + minute.minutes.toLong(DurationUnit.MILLISECONDS)
-        val oneDayMilli = 1.days.toLong(DurationUnit.MILLISECONDS)
-        val newDateTime = agendaItem.getStartTime() / oneDayMilli * oneDayMilli + timeMilli
+        val newDateTime =
+            LocalDateTime(agendaItem.getStartTime().toLocalDateTime().date, LocalTime(hour = hour, minute = minute))
+                .toInstant(
+                    TimeZone.currentSystemDefault(),
+                ).toEpochMilliseconds()
         val remindAtDiff = agendaItem.getStartTime() - agendaItem.remindAt
         _screenStateFlow.update {
             it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime, remindAt = newDateTime - remindAtDiff))
         }
     }
 
-    private fun updateStartDate(newDate: Long) {
+    private fun updateStartDate(newDate: LocalDateTime) {
         val agendaItem = screenStateFlow.value.agendaItem
-        val oneDayMilli = 1.days.toLong(DurationUnit.MILLISECONDS)
-        val newDateTime = newDate + agendaItem.getStartTime() % oneDayMilli
+        val newDateTime =
+            LocalDateTime(newDate.date, agendaItem.getStartTime().toLocalDateTime().time)
+                .toInstant(
+                    TimeZone.currentSystemDefault(),
+                ).toEpochMilliseconds()
         val remindAtDiff = agendaItem.getStartTime() - agendaItem.remindAt
         _screenStateFlow.update {
             it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime, remindAt = newDateTime - remindAtDiff))
+        }
+    }
+
+    private fun updateEndTime(
+        hour: Int,
+        minute: Int,
+    ) {
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        val newDateTime =
+            LocalDateTime(agendaItem.to.toLocalDateTime().date, LocalTime(hour = hour, minute = minute))
+                .toInstant(
+                    TimeZone.currentSystemDefault(),
+                ).toEpochMilliseconds()
+        _screenStateFlow.update {
+            it.copy(agendaItem = agendaItem.copy(to = newDateTime))
+        }
+    }
+
+    private fun updateEndDate(newDate: LocalDateTime) {
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        val newDateTime =
+            LocalDateTime(newDate.date, agendaItem.to.toLocalDateTime().time)
+                .toInstant(
+                    TimeZone.currentSystemDefault(),
+                ).toEpochMilliseconds()
+        _screenStateFlow.update {
+            it.copy(agendaItem = agendaItem.copy(to = newDateTime))
         }
     }
 

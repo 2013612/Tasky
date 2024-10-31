@@ -31,11 +31,12 @@ import com.example.tasky.android.agenda.components.AgendaEditText
 import com.example.tasky.android.agenda.components.AgendaEditTextType
 import com.example.tasky.android.agenda.components.DetailsAttendeeSection
 import com.example.tasky.android.agenda.components.DetailsAttendeeSectionTabOption
+import com.example.tasky.android.agenda.components.DetailsDateTimeSection
 import com.example.tasky.android.agenda.components.DetailsDeleteSection
 import com.example.tasky.android.agenda.components.DetailsDescSection
 import com.example.tasky.android.agenda.components.DetailsHeaderSection
+import com.example.tasky.android.agenda.components.DetailsPhotoSection
 import com.example.tasky.android.agenda.components.DetailsRemindAtSection
-import com.example.tasky.android.agenda.components.DetailsStartTimeSection
 import com.example.tasky.android.agenda.components.DetailsTitleSection
 import com.example.tasky.android.agenda.components.DetailsTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
@@ -45,10 +46,12 @@ import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.utils.serializableNavType
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
+import com.example.tasky.model.agenda.Photo
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -146,7 +149,16 @@ sealed interface AgendaDetailsScreenEvent {
     ) : AgendaDetailsScreenEvent
 
     data class OnStartDateChange(
-        val newDate: Long,
+        val newDate: LocalDateTime,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnEndTimeChange(
+        val newHour: Int,
+        val newMinute: Int,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnEndDateChange(
+        val newDate: LocalDateTime,
     ) : AgendaDetailsScreenEvent
 
     data class OnRemindAtChange(
@@ -163,6 +175,12 @@ sealed interface AgendaDetailsScreenEvent {
 
     data class OnAttendeeDelete(
         val id: String,
+    ) : AgendaDetailsScreenEvent
+
+    data object OnAddPhotoClick : AgendaDetailsScreenEvent
+
+    data class OnPhotoClick(
+        val photo: Photo,
     ) : AgendaDetailsScreenEvent
 }
 
@@ -213,108 +231,140 @@ private fun AgendaDetailsScreen(
                         .background(
                             Color.White,
                             RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                        ).padding(top = 30.dp, start = 16.dp, end = 16.dp)
+                        ).padding(top = 30.dp)
                         .verticalScroll(rememberScrollState()),
             ) {
-                DetailsHeaderSection(item = state.agendaItem)
-                Spacer(Modifier.height(30.dp))
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    DetailsHeaderSection(item = state.agendaItem)
+                    Spacer(Modifier.height(30.dp))
 
-                DetailsTitleSection(
-                    title = state.agendaItem.title,
-                    isEdit = state.isEdit,
-                    modifier =
-                        Modifier.clickable(enabled = state.isEdit) {
-                            onEvent(AgendaDetailsScreenEvent.OnTitleClick)
-                        },
-                )
-
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = Light)
-                Spacer(Modifier.height(16.dp))
-
-                DetailsDescSection(
-                    desc = state.agendaItem.description,
-                    isEdit = state.isEdit,
-                    modifier =
-                        Modifier.clickable(enabled = state.isEdit) {
-                            onEvent(AgendaDetailsScreenEvent.OnDescClick)
-                        },
-                )
-
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = Light)
-                Spacer(Modifier.height(16.dp))
-
-                DetailsStartTimeSection(
-                    item = state.agendaItem,
-                    isEdit = state.isEdit,
-                    onDateSelect = {
-                        onEvent(AgendaDetailsScreenEvent.OnStartDateChange(it))
-                    },
-                    onTimeSelect = { hour, minute ->
-                        onEvent(
-                            AgendaDetailsScreenEvent.OnStartTimeChange(
-                                newHour = hour,
-                                newMinute = minute,
-                            ),
-                        )
-                    },
-                )
-
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = Light)
-                Spacer(Modifier.height(16.dp))
-
-                DetailsRemindAtSection(
-                    item = state.agendaItem,
-                    isEdit = state.isEdit,
-                    onRemindAtSelect = {
-                        onEvent(
-                            AgendaDetailsScreenEvent.OnRemindAtChange(
-                                it.duration.toLong(
-                                    DurationUnit.MILLISECONDS,
-                                ),
-                            ),
-                        )
-                    },
-                )
-
-                Spacer(Modifier.height(16.dp))
-                HorizontalDivider(color = Light)
-
-                if (state.agendaItem is Event) {
-                    Spacer(Modifier.height(24.dp))
-                    DetailsAttendeeSection(
-                        attendees = state.agendaItem.attendees.toImmutableList(),
-                        curTab = state.curTab,
+                    DetailsTitleSection(
+                        title = state.agendaItem.title,
                         isEdit = state.isEdit,
-                        onTabSelect = {
-                            onEvent(AgendaDetailsScreenEvent.OnAttendeeTabChange(it))
-                        },
-                        onAddClick = {
-                            onEvent(AgendaDetailsScreenEvent.OnAttendeeAdd(it))
-                        },
-                        onDeleteIconClick = {
-                            onEvent(AgendaDetailsScreenEvent.OnAttendeeDelete(it))
-                        },
-                        creatorId = state.agendaItem.host,
+                        modifier =
+                            Modifier.clickable(enabled = state.isEdit) {
+                                onEvent(AgendaDetailsScreenEvent.OnTitleClick)
+                            },
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+                    HorizontalDivider(color = Light)
+                    Spacer(Modifier.height(16.dp))
+
+                    DetailsDescSection(
+                        desc = state.agendaItem.description,
+                        isEdit = state.isEdit,
+                        modifier =
+                            Modifier.clickable(enabled = state.isEdit) {
+                                onEvent(AgendaDetailsScreenEvent.OnDescClick)
+                            },
                     )
                 }
 
-                Spacer(Modifier.weight(1f))
+                if (state.agendaItem is Event) {
+                    Spacer(Modifier.height(16.dp))
+                    DetailsPhotoSection(photos = state.agendaItem.photos.toImmutableList(), isEdit = state.isEdit, onAddClick = {
+                        onEvent(AgendaDetailsScreenEvent.OnAddPhotoClick)
+                    }, onPhotoClick = {
+                        onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
+                    }, modifier = Modifier.fillMaxWidth())
+                }
 
-                HorizontalDivider(color = Light)
-                Spacer(Modifier.height(16.dp))
-                DetailsDeleteSection(
-                    item = state.agendaItem,
-                    onClick = {
-                        onEvent(AgendaDetailsScreenEvent.OnBottomTextClick)
-                    },
-                    eventIsGoing = state.eventIsGoing,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Spacer(Modifier.height(16.dp))
+                    HorizontalDivider(color = Light)
+                    Spacer(Modifier.height(16.dp))
 
-                Spacer(Modifier.height(32.dp))
+                    DetailsDateTimeSection(
+                        item = state.agendaItem,
+                        isEdit = state.isEdit,
+                        onDateSelect = {
+                            onEvent(AgendaDetailsScreenEvent.OnStartDateChange(it))
+                        },
+                        onTimeSelect = { hour, minute ->
+                            onEvent(
+                                AgendaDetailsScreenEvent.OnStartTimeChange(
+                                    newHour = hour,
+                                    newMinute = minute,
+                                ),
+                            )
+                        },
+                    )
+
+                    if (state.agendaItem is Event) {
+                        DetailsDateTimeSection(
+                            item = state.agendaItem,
+                            isEdit = state.isEdit,
+                            onDateSelect = {
+                                onEvent(AgendaDetailsScreenEvent.OnEndDateChange(it))
+                            },
+                            onTimeSelect = { hour, minute ->
+                                onEvent(
+                                    AgendaDetailsScreenEvent.OnEndTimeChange(
+                                        newHour = hour,
+                                        newMinute = minute,
+                                    ),
+                                )
+                            },
+                            isEventEndSection = true,
+                        )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    HorizontalDivider(color = Light)
+                    Spacer(Modifier.height(16.dp))
+
+                    DetailsRemindAtSection(
+                        item = state.agendaItem,
+                        isEdit = state.isEdit,
+                        onRemindAtSelect = {
+                            onEvent(
+                                AgendaDetailsScreenEvent.OnRemindAtChange(
+                                    it.duration.toLong(
+                                        DurationUnit.MILLISECONDS,
+                                    ),
+                                ),
+                            )
+                        },
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+                    HorizontalDivider(color = Light)
+
+                    if (state.agendaItem is Event) {
+                        Spacer(Modifier.height(24.dp))
+                        DetailsAttendeeSection(
+                            attendees = state.agendaItem.attendees.toImmutableList(),
+                            curTab = state.curTab,
+                            isEdit = state.isEdit,
+                            onTabSelect = {
+                                onEvent(AgendaDetailsScreenEvent.OnAttendeeTabChange(it))
+                            },
+                            onAddClick = {
+                                onEvent(AgendaDetailsScreenEvent.OnAttendeeAdd(it))
+                            },
+                            onDeleteIconClick = {
+                                onEvent(AgendaDetailsScreenEvent.OnAttendeeDelete(it))
+                            },
+                            creatorId = state.agendaItem.host,
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    HorizontalDivider(color = Light)
+                    Spacer(Modifier.height(16.dp))
+                    DetailsDeleteSection(
+                        item = state.agendaItem,
+                        onClick = {
+                            onEvent(AgendaDetailsScreenEvent.OnBottomTextClick)
+                        },
+                        eventIsGoing = state.eventIsGoing,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
+
+                    Spacer(Modifier.height(32.dp))
+                }
             }
         }
 
