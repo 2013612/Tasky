@@ -81,7 +81,7 @@ fun DetailsAttendeeSection(
             Spacer(modifier = Modifier.height(24.dp))
             DetailsAttendeeSectionTab(curTab = curTab, onTabSelect = onTabSelect)
 
-            if (curTab != DetailsAttendeeSectionTabOption.NOT_GOING) {
+            if (curTab == DetailsAttendeeSectionTabOption.ALL || curTab == DetailsAttendeeSectionTabOption.GOING) {
                 Spacer(modifier = Modifier.height(16.dp))
                 DetailsAttendeeSectionAttendeeList(
                     titleId = R.string.going,
@@ -96,7 +96,7 @@ fun DetailsAttendeeSection(
                 )
             }
 
-            if (curTab != DetailsAttendeeSectionTabOption.GOING) {
+            if (curTab == DetailsAttendeeSectionTabOption.ALL || curTab == DetailsAttendeeSectionTabOption.NOT_GOING) {
                 Spacer(modifier = Modifier.height(16.dp))
                 DetailsAttendeeSectionAttendeeList(
                     titleId = R.string.not_going,
