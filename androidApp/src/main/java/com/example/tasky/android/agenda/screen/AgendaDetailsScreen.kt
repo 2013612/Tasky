@@ -49,6 +49,7 @@ import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -146,7 +147,7 @@ sealed interface AgendaDetailsScreenEvent {
     ) : AgendaDetailsScreenEvent
 
     data class OnStartDateChange(
-        val newDate: Long,
+        val newDate: LocalDateTime,
     ) : AgendaDetailsScreenEvent
 
     data class OnEndTimeChange(
@@ -155,7 +156,7 @@ sealed interface AgendaDetailsScreenEvent {
     ) : AgendaDetailsScreenEvent
 
     data class OnEndDateChange(
-        val newDate: Long,
+        val newDate: LocalDateTime,
     ) : AgendaDetailsScreenEvent
 
     data class OnRemindAtChange(

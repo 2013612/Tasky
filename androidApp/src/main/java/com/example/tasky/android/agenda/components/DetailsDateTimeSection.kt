@@ -35,7 +35,9 @@ import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
+import com.example.tasky.util.toLocalDateTime
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -47,7 +49,7 @@ fun DetailsDateTimeSection(
     item: AgendaItem,
     isEdit: Boolean,
     onTimeSelect: (hour: Int, minute: Int) -> Unit,
-    onDateSelect: (Long) -> Unit,
+    onDateSelect: (LocalDateTime) -> Unit,
     modifier: Modifier = Modifier,
     isEventEndSection: Boolean = false,
 ) {
@@ -142,7 +144,7 @@ fun DetailsDateTimeSection(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        datePickerState.selectedDateMillis?.let { onDateSelect(it) }
+                        datePickerState.selectedDateMillis?.let { onDateSelect(it.toLocalDateTime()) }
                         isDateDialogOpen = false
                     },
                     enabled = confirmEnabled.value,
