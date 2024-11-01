@@ -108,7 +108,8 @@ data class AgendaDetails(
     val isEdit: Boolean,
 ) {
     companion object {
-        val typeMap = mapOf(typeOf<AgendaDetailsScreenType>() to serializableNavType<AgendaDetailsScreenType>())
+        val typeMap =
+            mapOf(typeOf<AgendaDetailsScreenType>() to serializableNavType<AgendaDetailsScreenType>())
     }
 }
 
@@ -118,6 +119,7 @@ data class AgendaDetailsScreenState(
     val detailsEditTextType: DetailsEditTextType? = null,
     val eventIsGoing: Boolean = true,
     val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
+    val isCreator: Boolean = true,
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -240,9 +242,9 @@ private fun AgendaDetailsScreen(
 
                     DetailsTitleSection(
                         title = state.agendaItem.title,
-                        isEdit = state.isEdit,
+                        isEdit = state.isEdit && state.isCreator,
                         modifier =
-                            Modifier.clickable(enabled = state.isEdit) {
+                            Modifier.clickable(enabled = state.isEdit && state.isCreator) {
                                 onEvent(AgendaDetailsScreenEvent.OnTitleClick)
                             },
                     )
@@ -253,9 +255,9 @@ private fun AgendaDetailsScreen(
 
                     DetailsDescSection(
                         desc = state.agendaItem.description,
-                        isEdit = state.isEdit,
+                        isEdit = state.isEdit && state.isCreator,
                         modifier =
-                            Modifier.clickable(enabled = state.isEdit) {
+                            Modifier.clickable(enabled = state.isEdit && state.isCreator) {
                                 onEvent(AgendaDetailsScreenEvent.OnDescClick)
                             },
                     )
@@ -263,11 +265,17 @@ private fun AgendaDetailsScreen(
 
                 if (state.agendaItem is Event) {
                     Spacer(Modifier.height(16.dp))
-                    DetailsPhotoSection(photos = state.agendaItem.photos.toImmutableList(), isEdit = state.isEdit, onAddClick = {
-                        onEvent(AgendaDetailsScreenEvent.OnAddPhotoClick)
-                    }, onPhotoClick = {
-                        onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
-                    }, modifier = Modifier.fillMaxWidth())
+                    DetailsPhotoSection(
+                        photos = state.agendaItem.photos.toImmutableList(),
+                        isEdit = state.isEdit && state.isCreator,
+                        onAddClick = {
+                            onEvent(AgendaDetailsScreenEvent.OnAddPhotoClick)
+                        },
+                        onPhotoClick = {
+                            onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
 
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -277,7 +285,7 @@ private fun AgendaDetailsScreen(
 
                     DetailsDateTimeSection(
                         item = state.agendaItem,
-                        isEdit = state.isEdit,
+                        isEdit = state.isEdit && state.isCreator,
                         onDateSelect = {
                             onEvent(AgendaDetailsScreenEvent.OnStartDateChange(it))
                         },
@@ -294,7 +302,7 @@ private fun AgendaDetailsScreen(
                     if (state.agendaItem is Event) {
                         DetailsDateTimeSection(
                             item = state.agendaItem,
-                            isEdit = state.isEdit,
+                            isEdit = state.isEdit && state.isCreator,
                             onDateSelect = {
                                 onEvent(AgendaDetailsScreenEvent.OnEndDateChange(it))
                             },
@@ -336,7 +344,7 @@ private fun AgendaDetailsScreen(
                         DetailsAttendeeSection(
                             attendees = state.agendaItem.attendees.toImmutableList(),
                             curTab = state.curTab,
-                            isEdit = state.isEdit,
+                            isEdit = state.isEdit && state.isCreator,
                             onTabSelect = {
                                 onEvent(AgendaDetailsScreenEvent.OnAttendeeTabChange(it))
                             },
