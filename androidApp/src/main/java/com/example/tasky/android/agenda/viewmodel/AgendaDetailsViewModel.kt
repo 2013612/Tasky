@@ -48,6 +48,8 @@ class AgendaDetailsViewModel(
     private val _isDeleteSuccess = MutableStateFlow(false)
     val isDeleteSuccess = _isDeleteSuccess.asStateFlow()
 
+    private val deletedPhotoKeys = mutableListOf<String>()
+
     fun onEvent(event: AgendaDetailsScreenEvent) {
         val item = screenStateFlow.value.agendaItem
         when (event) {
@@ -79,7 +81,26 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnEndDateChange -> updateEndDate(event.newDate)
             is AgendaDetailsScreenEvent.OnEndTimeChange -> updateEndTime(event.newHour, event.newMinute)
             AgendaDetailsScreenEvent.OnAddPhotoClick -> TODO()
-            is AgendaDetailsScreenEvent.OnPhotoClick -> TODO()
+            is AgendaDetailsScreenEvent.OnPhotoClick -> _screenStateFlow.update { it.copy(enlargedPhoto = event.photo) }
+            AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
+            is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
+        }
+    }
+
+    private fun deletePhoto(key: String) {
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        val newPhotos = agendaItem.photos.toMutableList()
+
+        if (newPhotos.removeIf { it.key == key }) {
+            deletedPhotoKeys.add(key)
+            _screenStateFlow.update {
+                it.copy(agendaItem = agendaItem.copy(photos = newPhotos))
+            }
         }
     }
 

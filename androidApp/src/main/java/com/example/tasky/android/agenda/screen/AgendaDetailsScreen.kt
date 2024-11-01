@@ -35,6 +35,7 @@ import com.example.tasky.android.agenda.components.details.DetailsDescSection
 import com.example.tasky.android.agenda.components.details.DetailsEditText
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.components.details.DetailsHeaderSection
+import com.example.tasky.android.agenda.components.details.DetailsLargePhoto
 import com.example.tasky.android.agenda.components.details.DetailsPhotoSection
 import com.example.tasky.android.agenda.components.details.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.details.DetailsTitleSection
@@ -120,6 +121,7 @@ data class AgendaDetailsScreenState(
     val eventIsGoing: Boolean = true,
     val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
     val isCreator: Boolean = true,
+    val enlargedPhoto: Photo? = null,
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -183,6 +185,12 @@ sealed interface AgendaDetailsScreenEvent {
 
     data class OnPhotoClick(
         val photo: Photo,
+    ) : AgendaDetailsScreenEvent
+
+    data object CloseLargePhoto : AgendaDetailsScreenEvent
+
+    data class OnPhotoDelete(
+        val key: String,
     ) : AgendaDetailsScreenEvent
 }
 
@@ -408,6 +416,14 @@ private fun AgendaDetailsScreen(
                 modifier = Modifier.fillMaxSize(),
             )
         }
+
+        if (state.enlargedPhoto != null) {
+            DetailsLargePhoto(url = state.enlargedPhoto.url, isEdit = state.isEdit && state.isCreator, onCloseClick = {
+                onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
+            }, onDeleteClick = {
+                onEvent(AgendaDetailsScreenEvent.OnPhotoDelete(state.enlargedPhoto.key))
+            }, modifier = Modifier.fillMaxSize())
+        }
     }
 }
 
@@ -458,5 +474,21 @@ private fun AgendaDetailsScreenEditTextPreview() {
 private fun AgendaDetailsScreenEventEditPreview() {
     MyApplicationTheme {
         AgendaDetailsScreen(state = AgendaDetailsScreenState(Event.DUMMY, true), onEvent = {})
+    }
+}
+
+@Preview
+@Composable
+private fun AgendaDetailsScreenLargePhotoPreview() {
+    MyApplicationTheme {
+        AgendaDetailsScreen(
+            state =
+                AgendaDetailsScreenState(
+                    Event.DUMMY,
+                    true,
+                    enlargedPhoto = Photo.DUMMY_LIST.first(),
+                ),
+            onEvent = {},
+        )
     }
 }

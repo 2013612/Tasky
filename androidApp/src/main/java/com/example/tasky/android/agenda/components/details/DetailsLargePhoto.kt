@@ -25,11 +25,10 @@ import coil3.compose.AsyncImage
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.model.agenda.Photo
 
 @Composable
 fun DetailsLargePhoto(
-    photo: Photo,
+    url: String,
     isEdit: Boolean,
     onCloseClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -49,7 +48,7 @@ fun DetailsLargePhoto(
                 Icon(Icons.Outlined.Delete, contentDescription = null, tint = Color.White)
             }
         }
-        AsyncImage(model = photo.url, contentDescription = null, modifier = Modifier.fillMaxWidth())
+        AsyncImage(model = url, contentDescription = null, modifier = Modifier.fillMaxWidth())
     }
 }
 
@@ -57,7 +56,7 @@ fun DetailsLargePhoto(
 @Composable
 private fun DetailsLargePhotoPreview() {
     MyApplicationTheme {
-        DetailsLargePhoto(Photo.DUMMY_LIST.first(), false, {}, {}, Modifier.fillMaxSize())
+        DetailsLargePhoto("", false, {}, {}, Modifier.fillMaxSize())
     }
 }
 
@@ -65,6 +64,6 @@ private fun DetailsLargePhotoPreview() {
 @Composable
 private fun DetailsLargePhotoEditPreview() {
     MyApplicationTheme {
-        DetailsLargePhoto(Photo.DUMMY_LIST.first(), true, {}, {}, Modifier.fillMaxSize())
+        DetailsLargePhoto("", true, {}, {}, Modifier.fillMaxSize())
     }
 }
