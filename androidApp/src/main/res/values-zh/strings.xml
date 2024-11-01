@@ -47,4 +47,5 @@
     <string name="to">至</string>
     <string name="photos">相片</string>
     <string name="add_photos">增加相片</string>
+    <string name="photo">相片</string>
 </resources>
