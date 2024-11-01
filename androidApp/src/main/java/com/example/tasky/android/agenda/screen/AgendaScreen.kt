@@ -25,16 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
-import com.example.tasky.android.agenda.components.AgendaCard
-import com.example.tasky.android.agenda.components.AgendaDayBar
-import com.example.tasky.android.agenda.components.AgendaFloatingActionButton
-import com.example.tasky.android.agenda.components.AgendaTopBar
-import com.example.tasky.android.agenda.components.TimeNeedle
+import com.example.tasky.android.agenda.components.agenda.AgendaCard
+import com.example.tasky.android.agenda.components.agenda.AgendaDayBar
+import com.example.tasky.android.agenda.components.agenda.AgendaFloatingActionButton
+import com.example.tasky.android.agenda.components.agenda.AgendaTimeNeedle
+import com.example.tasky.android.agenda.components.agenda.AgendaTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
@@ -195,7 +194,7 @@ private fun AgendaScreen(
                     val timeNeedleIndex = getTimeNeedleDisplayIndex(state.agendas)
                     if (timeNeedleIndex < 0) {
                         item {
-                            TimeNeedle()
+                            AgendaTimeNeedle()
                         }
                     }
                     itemsIndexed(state.agendas) { index, item ->
@@ -217,7 +216,7 @@ private fun AgendaScreen(
                                     null
                                 },
                         )
-                        TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
+                        AgendaTimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
                     }
                 }
             }

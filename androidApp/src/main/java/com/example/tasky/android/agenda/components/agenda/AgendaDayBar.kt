@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.components
+package com.example.tasky.android.agenda.components.agenda
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth

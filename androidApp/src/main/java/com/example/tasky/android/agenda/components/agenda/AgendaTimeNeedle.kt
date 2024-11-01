@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.components
+package com.example.tasky.android.agenda.components.agenda
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,7 @@ import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 
 @Composable
-fun TimeNeedle(modifier: Modifier = Modifier) {
+fun AgendaTimeNeedle(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Box(modifier = Modifier.width(11.34.dp).height(10.dp).background(Black, CircleShape))
         HorizontalDivider(color = Black, modifier = Modifier.align(Alignment.Center))
@@ -24,8 +24,8 @@ fun TimeNeedle(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun TimeNeedlePreview() {
+private fun AgendaTimeNeedlePreview() {
     MyApplicationTheme {
-        TimeNeedle()
+        AgendaTimeNeedle()
     }
 }

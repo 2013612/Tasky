@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.components
+package com.example.tasky.android.agenda.components.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

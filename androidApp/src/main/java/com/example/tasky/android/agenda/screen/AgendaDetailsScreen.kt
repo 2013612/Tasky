@@ -27,18 +27,18 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
-import com.example.tasky.android.agenda.components.AgendaEditText
-import com.example.tasky.android.agenda.components.AgendaEditTextType
-import com.example.tasky.android.agenda.components.DetailsAttendeeSection
-import com.example.tasky.android.agenda.components.DetailsAttendeeSectionTabOption
-import com.example.tasky.android.agenda.components.DetailsDateTimeSection
-import com.example.tasky.android.agenda.components.DetailsDeleteSection
-import com.example.tasky.android.agenda.components.DetailsDescSection
-import com.example.tasky.android.agenda.components.DetailsHeaderSection
-import com.example.tasky.android.agenda.components.DetailsPhotoSection
-import com.example.tasky.android.agenda.components.DetailsRemindAtSection
-import com.example.tasky.android.agenda.components.DetailsTitleSection
-import com.example.tasky.android.agenda.components.DetailsTopBar
+import com.example.tasky.android.agenda.components.details.DetailsAttendeeSection
+import com.example.tasky.android.agenda.components.details.DetailsAttendeeSectionTabOption
+import com.example.tasky.android.agenda.components.details.DetailsDateTimeSection
+import com.example.tasky.android.agenda.components.details.DetailsDeleteSection
+import com.example.tasky.android.agenda.components.details.DetailsDescSection
+import com.example.tasky.android.agenda.components.details.DetailsEditText
+import com.example.tasky.android.agenda.components.details.DetailsEditTextType
+import com.example.tasky.android.agenda.components.details.DetailsHeaderSection
+import com.example.tasky.android.agenda.components.details.DetailsPhotoSection
+import com.example.tasky.android.agenda.components.details.DetailsRemindAtSection
+import com.example.tasky.android.agenda.components.details.DetailsTitleSection
+import com.example.tasky.android.agenda.components.details.DetailsTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
@@ -115,7 +115,7 @@ data class AgendaDetails(
 data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
     val isEdit: Boolean = false,
-    val agendaEditTextType: AgendaEditTextType? = null,
+    val detailsEditTextType: DetailsEditTextType? = null,
     val eventIsGoing: Boolean = true,
     val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
 )
@@ -368,27 +368,27 @@ private fun AgendaDetailsScreen(
             }
         }
 
-        if (state.agendaEditTextType != null) {
-            AgendaEditText(
+        if (state.detailsEditTextType != null) {
+            DetailsEditText(
                 initialValue =
-                    when (state.agendaEditTextType) {
-                        AgendaEditTextType.TITLE -> state.agendaItem.title
-                        AgendaEditTextType.DESCRIPTION -> state.agendaItem.description
+                    when (state.detailsEditTextType) {
+                        DetailsEditTextType.TITLE -> state.agendaItem.title
+                        DetailsEditTextType.DESCRIPTION -> state.agendaItem.description
                     },
-                type = state.agendaEditTextType,
+                type = state.detailsEditTextType,
                 onBackClick = {
                     onEvent(AgendaDetailsScreenEvent.CloseEditText)
                 },
                 onSaveClick = {
-                    when (state.agendaEditTextType) {
-                        AgendaEditTextType.TITLE ->
+                    when (state.detailsEditTextType) {
+                        DetailsEditTextType.TITLE ->
                             onEvent(
                                 AgendaDetailsScreenEvent.OnTitleChange(
                                     it,
                                 ),
                             )
 
-                        AgendaEditTextType.DESCRIPTION ->
+                        DetailsEditTextType.DESCRIPTION ->
                             onEvent(
                                 AgendaDetailsScreenEvent.OnDescChange(
                                     it,
@@ -438,7 +438,7 @@ private fun AgendaDetailsScreenEditTextPreview() {
                 AgendaDetailsScreenState(
                     Task.DUMMY,
                     true,
-                    AgendaEditTextType.TITLE,
+                    DetailsEditTextType.TITLE,
                 ),
             onEvent = {},
         )
