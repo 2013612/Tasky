@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.tasky.android.agenda.components.details.AgendaEditTextType
+import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
@@ -51,7 +51,7 @@ class AgendaDetailsViewModel(
     fun onEvent(event: AgendaDetailsScreenEvent) {
         val item = screenStateFlow.value.agendaItem
         when (event) {
-            AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(agendaEditTextType = null) }
+            AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(detailsEditTextType = null) }
             AgendaDetailsScreenEvent.OnCloseClick -> {}
             AgendaDetailsScreenEvent.OnBottomTextClick ->
                 if (item is Event && !item.isUserEventCreator) {
@@ -60,14 +60,19 @@ class AgendaDetailsViewModel(
                     deleteAgendaItem()
                 }
             is AgendaDetailsScreenEvent.OnDescChange -> updateDesc(event.newDesc)
-            AgendaDetailsScreenEvent.OnDescClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.DESCRIPTION) }
+            AgendaDetailsScreenEvent.OnDescClick ->
+                _screenStateFlow.update {
+                    it.copy(
+                        detailsEditTextType = DetailsEditTextType.DESCRIPTION,
+                    )
+                }
             AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
             is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newRemindAtTime)
             AgendaDetailsScreenEvent.OnSaveClick -> saveUpdate()
             is AgendaDetailsScreenEvent.OnStartDateChange -> updateStartDate(event.newDate)
             is AgendaDetailsScreenEvent.OnStartTimeChange -> updateStartTime(event.newHour, event.newMinute)
             is AgendaDetailsScreenEvent.OnTitleChange -> updateTitle(event.newTitle)
-            AgendaDetailsScreenEvent.OnTitleClick -> _screenStateFlow.update { it.copy(agendaEditTextType = AgendaEditTextType.TITLE) }
+            AgendaDetailsScreenEvent.OnTitleClick -> _screenStateFlow.update { it.copy(detailsEditTextType = DetailsEditTextType.TITLE) }
             is AgendaDetailsScreenEvent.OnAttendeeAdd -> addAttendee(event.email)
             is AgendaDetailsScreenEvent.OnAttendeeDelete -> deleteAttendee(event.id)
             is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }

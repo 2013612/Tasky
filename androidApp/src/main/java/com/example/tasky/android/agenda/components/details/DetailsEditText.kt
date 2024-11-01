@@ -35,7 +35,7 @@ import com.example.tasky.android.theme.Green
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.MyApplicationTheme
 
-enum class AgendaEditTextType(
+enum class DetailsEditTextType(
     @StringRes val stringId: Int,
 ) {
     TITLE(stringId = R.string.edit_title),
@@ -43,11 +43,11 @@ enum class AgendaEditTextType(
 }
 
 @Composable
-fun AgendaEditText(
+fun DetailsEditText(
     initialValue: String,
     onBackClick: () -> Unit,
     onSaveClick: (String) -> Unit,
-    type: AgendaEditTextType,
+    type: DetailsEditTextType,
     modifier: Modifier = Modifier,
 ) {
     var text by rememberSaveable {
@@ -95,8 +95,8 @@ fun AgendaEditText(
                 ),
             textStyle =
                 when (type) {
-                    AgendaEditTextType.TITLE -> typography.displaySmall.copy(fontWeight = FontWeight.Normal)
-                    AgendaEditTextType.DESCRIPTION -> typography.bodySmall
+                    DetailsEditTextType.TITLE -> typography.displaySmall.copy(fontWeight = FontWeight.Normal)
+                    DetailsEditTextType.DESCRIPTION -> typography.bodySmall
                 },
         )
     }
@@ -104,8 +104,8 @@ fun AgendaEditText(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-private fun AgendaEditTextPreview() {
+private fun DetailsEditTextPreview() {
     MyApplicationTheme {
-        AgendaEditText("Title", {}, {}, AgendaEditTextType.TITLE, Modifier.fillMaxSize())
+        DetailsEditText("Title", {}, {}, DetailsEditTextType.TITLE, Modifier.fillMaxSize())
     }
 }
