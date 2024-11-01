@@ -2,6 +2,7 @@ package com.example.tasky.android.agenda.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
 import com.example.tasky.manager.SessionManager
@@ -53,13 +54,28 @@ class AgendaViewModel(
         }
     }
 
+    private fun getTimeNeedleDisplayIndex(agendaItemsSortedByStartTime: List<AgendaItem>): Int {
+        val currentTime = System.currentTimeMillis()
+        val index = agendaItemsSortedByStartTime.indexOfFirst { it.getStartTime() > currentTime }
+
+        return if (index < 0) {
+            agendaItemsSortedByStartTime.lastIndex + 1
+        } else {
+            index
+        }
+    }
+
     private fun getAgendas(timeStamp: Long) {
         viewModelScope.launch {
             agendaRepository.getAgenda(timeStamp = timeStamp).onSuccess { data ->
-                val list =
+                val itemList =
                     (data.events + data.tasks + data.reminders)
                         .sortedBy { it.getStartTime() }
-                _screenStateFlow.update { it.copy(agendas = list.toImmutableList()) }
+                val index = getTimeNeedleDisplayIndex(itemList)
+                val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
+                itemUiList.add(index, AgendaItemUi.Needle)
+
+                _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
             }
         }
     }
@@ -74,7 +90,7 @@ class AgendaViewModel(
         viewModelScope.launch {
             agendaRepository.deleteAgenda(agendaItem).onSuccess {
                 val newList = screenStateFlow.value.agendas.toMutableList()
-                newList.remove(agendaItem)
+                newList.remove(AgendaItemUi.Item(agendaItem))
                 _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
             }
         }
@@ -92,8 +108,8 @@ class AgendaViewModel(
             val body = task.copy(isDone = task.isDone.not())
             agendaRepository.updateAgenda(body).onSuccess {
                 val newList = screenStateFlow.value.agendas.toMutableList()
-                val index = newList.indexOf(task)
-                newList[index] = body
+                val index = newList.indexOf(AgendaItemUi.Item(task))
+                newList[index] = AgendaItemUi.Item(body)
                 _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
             }
         }
