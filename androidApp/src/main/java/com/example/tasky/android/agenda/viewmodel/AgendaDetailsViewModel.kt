@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -154,10 +155,10 @@ class AgendaDetailsViewModel(
         }
     }
 
-    private fun updateStartDate(newDate: LocalDateTime) {
+    private fun updateStartDate(newDate: LocalDate) {
         val agendaItem = screenStateFlow.value.agendaItem
         val newDateTime =
-            LocalDateTime(newDate.date, agendaItem.getStartTime().toLocalDateTime().time)
+            LocalDateTime(newDate, agendaItem.getStartTime().toLocalDateTime().time)
                 .toInstant(
                     TimeZone.currentSystemDefault(),
                 ).toEpochMilliseconds()
@@ -187,7 +188,7 @@ class AgendaDetailsViewModel(
         }
     }
 
-    private fun updateEndDate(newDate: LocalDateTime) {
+    private fun updateEndDate(newDate: LocalDate) {
         val agendaItem = screenStateFlow.value.agendaItem
 
         if (agendaItem !is Event) {
@@ -195,7 +196,7 @@ class AgendaDetailsViewModel(
         }
 
         val newDateTime =
-            LocalDateTime(newDate.date, agendaItem.to.toLocalDateTime().time)
+            LocalDateTime(newDate, agendaItem.to.toLocalDateTime().time)
                 .toInstant(
                     TimeZone.currentSystemDefault(),
                 ).toEpochMilliseconds()
