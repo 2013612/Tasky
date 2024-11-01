@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.tasky.android.agenda.components.AgendaEditTextType
+import com.example.tasky.android.agenda.components.details.AgendaEditTextType
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState

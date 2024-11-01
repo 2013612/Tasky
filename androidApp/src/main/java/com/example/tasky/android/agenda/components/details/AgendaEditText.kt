@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.components
+package com.example.tasky.android.agenda.components.details
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
