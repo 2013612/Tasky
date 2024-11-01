@@ -32,8 +32,8 @@ import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.agenda.AgendaCard
 import com.example.tasky.android.agenda.components.agenda.AgendaDayBar
 import com.example.tasky.android.agenda.components.agenda.AgendaFloatingActionButton
+import com.example.tasky.android.agenda.components.agenda.AgendaTimeNeedle
 import com.example.tasky.android.agenda.components.agenda.AgendaTopBar
-import com.example.tasky.android.agenda.components.agenda.TimeNeedle
 import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
@@ -194,7 +194,7 @@ private fun AgendaScreen(
                     val timeNeedleIndex = getTimeNeedleDisplayIndex(state.agendas)
                     if (timeNeedleIndex < 0) {
                         item {
-                            TimeNeedle()
+                            AgendaTimeNeedle()
                         }
                     }
                     itemsIndexed(state.agendas) { index, item ->
@@ -216,7 +216,7 @@ private fun AgendaScreen(
                                     null
                                 },
                         )
-                        TimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
+                        AgendaTimeNeedle(modifier = Modifier.alpha(if (timeNeedleIndex == index) 1f else 0f))
                     }
                 }
             }
