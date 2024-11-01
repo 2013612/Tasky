@@ -133,7 +133,7 @@ data class Task(
     companion object {
         val DUMMY =
             Task(
-                id = "1",
+                id = "Task 1",
                 title = "Project X",
                 description = "Just work",
                 time = 1678886400000,
@@ -157,7 +157,7 @@ data class Reminder(
     companion object {
         val DUMMY =
             Reminder(
-                id = "1",
+                id = "Reminder 1",
                 title = "Meeting",
                 description = "Amet minim mollit non deserunt ullamco est",
                 time = 1678886400000,
