@@ -65,7 +65,7 @@ fun DetailsPhotoSection(
                 Text(stringResource(R.string.photos), style = typography.headlineMedium, lineHeight = 18.sp, color = Black)
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(photos) {
+                    items(photos, key = { it.key }) {
                         AsyncImage(
                             model = it.url,
                             contentDescription = null,
@@ -76,7 +76,7 @@ fun DetailsPhotoSection(
                                         width = 3.dp,
                                         color = LightBlue,
                                         shape = RoundedCornerShape(5.dp),
-                                    ).clickable(onClick = { onPhotoClick(it) }),
+                                    ).clickable(onClick = { onPhotoClick(it) }).animateItem(),
                         )
                     }
 
