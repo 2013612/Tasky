@@ -1,5 +1,6 @@
 package com.example.tasky.android.agenda.screen
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -181,7 +182,9 @@ sealed interface AgendaDetailsScreenEvent {
         val id: String,
     ) : AgendaDetailsScreenEvent
 
-    data object OnAddPhotoClick : AgendaDetailsScreenEvent
+    data class OnAddPhoto(
+        val uri: Uri,
+    ) : AgendaDetailsScreenEvent
 
     data class OnPhotoClick(
         val photo: Photo,
@@ -276,8 +279,8 @@ private fun AgendaDetailsScreen(
                     DetailsPhotoSection(
                         photos = state.agendaItem.photos.toImmutableList(),
                         isEdit = state.isEdit && state.isCreator,
-                        onAddClick = {
-                            onEvent(AgendaDetailsScreenEvent.OnAddPhotoClick)
+                        onAddPhoto = {
+                            onEvent(AgendaDetailsScreenEvent.OnAddPhoto(it))
                         },
                         onPhotoClick = {
                             onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))

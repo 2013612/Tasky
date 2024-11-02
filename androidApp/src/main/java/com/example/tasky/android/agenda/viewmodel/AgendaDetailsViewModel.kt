@@ -1,5 +1,6 @@
 package com.example.tasky.android.agenda.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.model.agenda.Event
+import com.example.tasky.model.agenda.Photo
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.agenda.copy
@@ -25,6 +27,8 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -81,11 +85,26 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnAttendeeTabChange -> _screenStateFlow.update { it.copy(curTab = event.newTab) }
             is AgendaDetailsScreenEvent.OnEndDateChange -> updateEndDate(event.newDate)
             is AgendaDetailsScreenEvent.OnEndTimeChange -> updateEndTime(event.newHour, event.newMinute)
-            AgendaDetailsScreenEvent.OnAddPhotoClick -> TODO()
+            is AgendaDetailsScreenEvent.OnAddPhoto -> addPhoto(event.uri)
             is AgendaDetailsScreenEvent.OnPhotoClick -> _screenStateFlow.update { it.copy(enlargedPhoto = event.photo) }
             AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
             is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
         }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun addPhoto(uri: Uri) {
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        val newPhotos = agendaItem.photos.toMutableList()
+        // TODO: check if uri.toString() is work
+        newPhotos.add(Photo(key = Uuid.random().toString(), url = uri.toString()))
+
+        _screenStateFlow.update { it.copy(agendaItem = agendaItem.copy(photos = newPhotos)) }
     }
 
     private fun deletePhoto(key: String) {
