@@ -1,5 +1,9 @@
 package com.example.tasky.android.agenda.components.details
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,25 +48,44 @@ import kotlinx.collections.immutable.toImmutableList
 fun DetailsPhotoSection(
     photos: ImmutableList<Photo>,
     isEdit: Boolean,
-    onAddClick: () -> Unit,
+    onAddPhoto: (Uri) -> Unit,
     onPhotoClick: (Photo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                onAddPhoto(it)
+            }
+        }
+
     Box(modifier = modifier.background(Light2)) {
         if (photos.isEmpty()) {
             Row(
                 modifier =
                     Modifier
                         .align(Alignment.Center)
-                        .clickable(onClick = onAddClick),
+                        .clickable(onClick = {
+                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }),
             ) {
                 Icon(Icons.Outlined.Add, contentDescription = null, tint = Gray)
                 Spacer(modifier = Modifier.width(16.dp))
-                Text(stringResource(R.string.add_photos), style = typography.bodyMedium, lineHeight = 18.sp, color = Gray)
+                Text(
+                    stringResource(R.string.add_photos),
+                    style = typography.bodyMedium,
+                    lineHeight = 18.sp,
+                    color = Gray,
+                )
             }
         } else {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.photos), style = typography.headlineMedium, lineHeight = 18.sp, color = Black)
+                Text(
+                    stringResource(R.string.photos),
+                    style = typography.headlineMedium,
+                    lineHeight = 18.sp,
+                    color = Black,
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(photos, key = { it.key }) {
@@ -76,7 +99,8 @@ fun DetailsPhotoSection(
                                         width = 3.dp,
                                         color = LightBlue,
                                         shape = RoundedCornerShape(5.dp),
-                                    ).clickable(onClick = { onPhotoClick(it) }).animateItem(),
+                                    ).clickable(onClick = { onPhotoClick(it) })
+                                    .animateItem(),
                         )
                     }
 
@@ -87,13 +111,17 @@ fun DetailsPhotoSection(
                                     Modifier
                                         .size(
                                             60.dp,
-                                        )
-                                        .border(
+                                        ).border(
                                             width = 3.dp,
                                             color = LightBlue,
                                             shape = RoundedCornerShape(5.dp),
-                                        )
-                                        .clickable(onClick = onAddClick),
+                                        ).clickable(onClick = {
+                                            pickMedia.launch(
+                                                PickVisualMediaRequest(
+                                                    ActivityResultContracts.PickVisualMedia.ImageOnly,
+                                                ),
+                                            )
+                                        }),
                             ) {
                                 Icon(
                                     Icons.Outlined.Add,
@@ -117,7 +145,13 @@ fun DetailsPhotoSection(
 @Composable
 private fun DetailsPhotoSectionPreview() {
     MyApplicationTheme {
-        DetailsPhotoSection(photos = Photo.DUMMY_LIST.toImmutableList(), true, {}, {}, modifier = Modifier.fillMaxWidth())
+        DetailsPhotoSection(
+            photos = Photo.DUMMY_LIST.toImmutableList(),
+            true,
+            {},
+            {},
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
