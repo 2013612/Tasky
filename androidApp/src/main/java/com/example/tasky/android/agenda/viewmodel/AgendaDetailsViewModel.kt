@@ -84,7 +84,29 @@ class AgendaDetailsViewModel(
             )
 
     private val _skippedImageCountFlow = MutableStateFlow(0)
-    val skippedImageCountFlow = _skippedImageCountFlow.asStateFlow()
+    val skippedImageCountFlow =
+        _skippedImageCountFlow
+            .map {
+                object : UiEvent<Int> {
+                    override val data: Int
+                        get() = it
+                    override val onConsume: () -> Unit
+                        get() = {
+                            _skippedImageCountFlow.update { 0 }
+                        }
+                }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.Lazily,
+                object : UiEvent<Int> {
+                    override val data: Int
+                        get() = 0
+                    override val onConsume: () -> Unit
+                        get() = {
+                            _skippedImageCountFlow.update { 0 }
+                        }
+                },
+            )
 
     private val deletedPhotoKeys = mutableListOf<String>()
 

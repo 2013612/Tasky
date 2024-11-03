@@ -91,14 +91,16 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
             isDeleteSuccess.onConsume()
         }
 
-        LaunchedEffect(skippedImageCount) {
-            if (skippedImageCount > 0) {
-                val text = context.getString(R.string.skip_photo_toast, skippedImageCount)
+        LaunchedEffect(skippedImageCount.data) {
+            if (skippedImageCount.data > 0) {
+                val text = context.getString(R.string.skip_photo_toast, skippedImageCount.data)
                 val duration = Toast.LENGTH_SHORT
 
                 val toast = Toast.makeText(context, text, duration)
                 toast.show()
             }
+
+            skippedImageCount.onConsume()
         }
 
         AgendaDetailsScreen(
