@@ -44,12 +44,23 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+sealed interface DetailsPhoto {
+    data class RemotePhoto(
+        val photo: Photo,
+    ) : DetailsPhoto
+
+    data class LocalPhoto(
+        val key: String,
+        val uri: Uri,
+    ) : DetailsPhoto
+}
+
 @Composable
 fun DetailsPhotoSection(
-    photos: ImmutableList<Photo>,
+    photos: ImmutableList<DetailsPhoto>,
     isEdit: Boolean,
     onAddPhoto: (Uri) -> Unit,
-    onPhotoClick: (Photo) -> Unit,
+    onPhotoClick: (DetailsPhoto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val pickMedia =
@@ -88,9 +99,19 @@ fun DetailsPhotoSection(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(photos, key = { it.key }) {
+                    items(photos, key = {
+                        when (it) {
+                            is DetailsPhoto.RemotePhoto -> it.photo.key
+                            is DetailsPhoto.LocalPhoto -> it.key
+                        }
+                    }) {
                         AsyncImage(
-                            model = it.url,
+                            model = {
+                                when (it) {
+                                    is DetailsPhoto.RemotePhoto -> it.photo.url
+                                    is DetailsPhoto.LocalPhoto -> it.uri
+                                }
+                            },
                             contentDescription = null,
                             modifier =
                                 Modifier
@@ -146,7 +167,7 @@ fun DetailsPhotoSection(
 private fun DetailsPhotoSectionPreview() {
     MyApplicationTheme {
         DetailsPhotoSection(
-            photos = Photo.DUMMY_LIST.toImmutableList(),
+            photos = Photo.DUMMY_LIST.map { DetailsPhoto.RemotePhoto(it) }.toImmutableList(),
             true,
             {},
             {},
