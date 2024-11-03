@@ -4,6 +4,7 @@ import com.example.tasky.manager.HttpManager
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.agenda.Agenda
+import com.example.tasky.model.agenda.CreateReminderBody
 import com.example.tasky.model.agenda.CreateTaskBody
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.EventPath
@@ -96,6 +97,13 @@ class AgendaDataSource(
     suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.post(TaskPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.post(ReminderPath()) {
                 setBody(body)
             }
         }

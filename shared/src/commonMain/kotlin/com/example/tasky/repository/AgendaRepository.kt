@@ -4,6 +4,7 @@ import com.example.tasky.dataSource.AgendaDataSource
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.agenda.AgendaItem
+import com.example.tasky.model.agenda.CreateReminderBody
 import com.example.tasky.model.agenda.CreateTaskBody
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.GetAgendaResponse
@@ -23,6 +24,8 @@ interface IAgendaRepository {
     suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError>
 
     suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError>
+
+    suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError>
 }
 
 class AgendaRepository(
@@ -44,4 +47,7 @@ class AgendaRepository(
     override suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> = agendaDataSource.updateEvent(body = body)
 
     override suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = body)
+
+    override suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
+        agendaDataSource.createReminder(body = body)
 }

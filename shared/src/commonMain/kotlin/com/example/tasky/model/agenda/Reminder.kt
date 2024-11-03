@@ -6,3 +6,5 @@ import io.ktor.resources.Resource
 class ReminderPath
 
 typealias UpdateReminderBody = Reminder
+
+typealias CreateReminderBody = Reminder
