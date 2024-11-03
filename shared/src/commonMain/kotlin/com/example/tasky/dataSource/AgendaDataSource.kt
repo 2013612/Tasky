@@ -4,6 +4,10 @@ import com.example.tasky.manager.HttpManager
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.agenda.Agenda
+import com.example.tasky.model.agenda.CreateEventBody
+import com.example.tasky.model.agenda.CreateReminderBody
+import com.example.tasky.model.agenda.CreateTaskBody
+import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
 import com.example.tasky.model.agenda.ReminderPath
@@ -15,7 +19,10 @@ import com.example.tasky.util.safeCall
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
+import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 
@@ -57,10 +64,27 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Unit, BaseError> =
+    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> =
         safeCall {
             httpClient.put(EventPath()) {
-                setBody(body)
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            append("id", body.id)
+                            append("title", body.title)
+                            append("description", body.description)
+                            append("from", body.from)
+                            append("to", body.to)
+                            append("remindAt", body.remindAt)
+                            append("attendeeIds", body.attendeeIds)
+                            append("deletedPhotoKeys", body.deletedPhotoKeys)
+                            append("isGoing", body.isGoing)
+                            body.photos.forEachIndexed { index, bytes ->
+                                append("photo$index", bytes)
+                            }
+                        },
+                    ),
+                )
             }
         }
 
@@ -68,6 +92,42 @@ class AgendaDataSource(
         safeCall {
             httpClient.put(ReminderPath()) {
                 setBody(body)
+            }
+        }
+
+    suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.post(TaskPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.post(ReminderPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> =
+        safeCall {
+            httpClient.post(EventPath()) {
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            append("id", body.id)
+                            append("title", body.title)
+                            append("description", body.description)
+                            append("from", body.from)
+                            append("to", body.to)
+                            append("remindAt", body.remindAt)
+                            append("attendeeIds", body.attendeeIds)
+                            body.photos.forEachIndexed { index, bytes ->
+                                append("photo$index", bytes)
+                            }
+                        },
+                    ),
+                )
             }
         }
 }

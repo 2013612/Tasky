@@ -14,6 +14,7 @@ import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Photo
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
+import com.example.tasky.model.agenda.UpdateEventBody
 import com.example.tasky.model.agenda.copy
 import com.example.tasky.model.onSuccess
 import com.example.tasky.repository.IAgendaRepository
@@ -232,9 +233,32 @@ class AgendaDetailsViewModel(
 
     private fun saveUpdate() {
         viewModelScope.launch {
-            agendaRepository.updateAgenda(screenStateFlow.value.agendaItem).onSuccess {
-                _screenStateFlow.update {
-                    it.copy(isEdit = false)
+            val agendaItem = screenStateFlow.value.agendaItem
+
+            when (agendaItem) {
+                is Task -> agendaRepository.updateTask(agendaItem)
+                is Reminder -> agendaRepository.updateReminder(agendaItem)
+                is Event -> {
+                    val eventIsGoing = screenStateFlow.value.eventIsGoing
+                    agendaRepository.updateEvent(
+                        body =
+                            UpdateEventBody(
+                                event = agendaItem,
+                                deletedPhotoKeys = deletedPhotoKeys,
+                                isGoing = eventIsGoing,
+                                photos = emptyList(),
+                            ),
+                    )
+                }
+            }.onSuccess {
+                if (it is Event) {
+                    _screenStateFlow.update { state ->
+                        state.copy(agendaItem = it, isEdit = false)
+                    }
+                } else {
+                    _screenStateFlow.update { state ->
+                        state.copy(isEdit = false)
+                    }
                 }
             }
         }
