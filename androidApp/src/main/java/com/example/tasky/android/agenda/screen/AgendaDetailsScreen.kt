@@ -1,6 +1,7 @@
 package com.example.tasky.android.agenda.screen
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,9 +80,22 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
 
         val isDeleteSuccess by viewModel.isDeleteSuccess.collectAsStateWithLifecycle()
 
+        val skippedImageCount by viewModel.skippedImageCountFlow.collectAsStateWithLifecycle()
+        val context = LocalContext.current
+
         LaunchedEffect(isDeleteSuccess) {
             if (isDeleteSuccess) {
                 navigateUp()
+            }
+        }
+
+        LaunchedEffect(skippedImageCount) {
+            if (skippedImageCount > 0) {
+                val text = context.getString(R.string.skip_photo_toast, skippedImageCount)
+                val duration = Toast.LENGTH_SHORT
+
+                val toast = Toast.makeText(context, text, duration)
+                toast.show()
             }
         }
 
@@ -236,7 +251,10 @@ private fun AgendaDetailsScreen(
                 onSaveClick = {
                     onEvent(AgendaDetailsScreenEvent.OnSaveClick)
                 },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
             )
             Spacer(modifier = Modifier.height(8.dp))
             Column(
@@ -246,7 +264,8 @@ private fun AgendaDetailsScreen(
                         .background(
                             Color.White,
                             RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                        ).padding(top = 30.dp)
+                        )
+                        .padding(top = 30.dp)
                         .verticalScroll(rememberScrollState()),
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
