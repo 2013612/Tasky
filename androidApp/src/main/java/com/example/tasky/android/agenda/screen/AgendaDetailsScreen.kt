@@ -303,7 +303,7 @@ private fun AgendaDetailsScreen(
                     Spacer(Modifier.height(16.dp))
                     DetailsPhotoSection(
                         photos = state.photos.toImmutableList(),
-                        isEdit = state.isEdit && state.isCreator,
+                        isEdit = state.isEdit && state.isCreator && state.photos.size < 10,
                         onAddPhoto = {
                             onEvent(AgendaDetailsScreenEvent.OnAddPhoto(it))
                         },
