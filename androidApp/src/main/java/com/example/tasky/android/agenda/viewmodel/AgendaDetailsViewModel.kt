@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
+import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
+import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.model.agenda.Event
-import com.example.tasky.model.agenda.Photo
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.agenda.UpdateEventBody
@@ -34,6 +35,7 @@ import kotlin.uuid.Uuid
 class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
+    private val imageCompressor: IImageCompressor,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
 
@@ -95,32 +97,23 @@ class AgendaDetailsViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     private fun addPhoto(uri: Uri) {
-        val agendaItem = screenStateFlow.value.agendaItem
-
-        if (agendaItem !is Event) {
-            return
-        }
-
-        val newPhotos = agendaItem.photos.toMutableList()
-        // TODO: check if uri.toString() is work
-        newPhotos.add(Photo(key = Uuid.random().toString(), url = uri.toString()))
-
-        _screenStateFlow.update { it.copy(agendaItem = agendaItem.copy(photos = newPhotos)) }
+        _screenStateFlow.update { it.copy(photos = it.photos + DetailsPhoto.LocalPhoto(uri = uri, key = Uuid.random().toString())) }
     }
 
     private fun deletePhoto(key: String) {
-        val agendaItem = screenStateFlow.value.agendaItem
+        val newPhotos = screenStateFlow.value.photos.toMutableList()
+        val isPhotoRemoved =
+            newPhotos.removeIf {
+                when (it) {
+                    is DetailsPhoto.RemotePhoto -> it.photo.key
+                    is DetailsPhoto.LocalPhoto -> it.key
+                } == key
+            }
 
-        if (agendaItem !is Event) {
-            return
-        }
-
-        val newPhotos = agendaItem.photos.toMutableList()
-
-        if (newPhotos.removeIf { it.key == key }) {
+        if (isPhotoRemoved) {
             deletedPhotoKeys.add(key)
             _screenStateFlow.update {
-                it.copy(agendaItem = agendaItem.copy(photos = newPhotos))
+                it.copy(photos = newPhotos, enlargedPhoto = null)
             }
         }
     }
@@ -240,6 +233,7 @@ class AgendaDetailsViewModel(
                 is Reminder -> agendaRepository.updateReminder(agendaItem)
                 is Event -> {
                     val eventIsGoing = screenStateFlow.value.eventIsGoing
+//                    val compressedPhotos =
                     agendaRepository.updateEvent(
                         body =
                             UpdateEventBody(
