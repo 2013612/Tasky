@@ -78,15 +78,17 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
-        val isDeleteSuccess by viewModel.isDeleteSuccess.collectAsStateWithLifecycle()
+        val isDeleteSuccess by viewModel.isDeleteSuccessFlow.collectAsStateWithLifecycle()
 
         val skippedImageCount by viewModel.skippedImageCountFlow.collectAsStateWithLifecycle()
         val context = LocalContext.current
 
-        LaunchedEffect(isDeleteSuccess) {
-            if (isDeleteSuccess) {
+        LaunchedEffect(isDeleteSuccess.data) {
+            if (isDeleteSuccess.data) {
                 navigateUp()
             }
+
+            isDeleteSuccess.onConsume()
         }
 
         LaunchedEffect(skippedImageCount) {
@@ -264,8 +266,7 @@ private fun AgendaDetailsScreen(
                         .background(
                             Color.White,
                             RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                        )
-                        .padding(top = 30.dp)
+                        ).padding(top = 30.dp)
                         .verticalScroll(rememberScrollState()),
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
