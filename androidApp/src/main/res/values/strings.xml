@@ -48,4 +48,5 @@
     <string name="photos">Photos</string>
     <string name="add_photos">Add photos</string>
     <string name="photo">Photo</string>
+    <string name="skip_photo_toast">%1$d photos were skipped because they were too large</string>
 </resources>

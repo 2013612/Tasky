@@ -48,4 +48,5 @@
     <string name="photos">相片</string>
     <string name="add_photos">增加相片</string>
     <string name="photo">相片</string>
+    <string name="skip_photo_toast">有%1$d張照片因過大而被跳過。</string>
 </resources>
