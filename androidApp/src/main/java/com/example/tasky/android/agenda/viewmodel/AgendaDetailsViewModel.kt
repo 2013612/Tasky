@@ -56,6 +56,9 @@ class AgendaDetailsViewModel(
     private val _isDeleteSuccess = MutableStateFlow(false)
     val isDeleteSuccess = _isDeleteSuccess.asStateFlow()
 
+    private val _skippedImageCountFlow = MutableStateFlow(0)
+    val skippedImageCountFlow = _skippedImageCountFlow.asStateFlow()
+
     private val deletedPhotoKeys = mutableListOf<String>()
 
     fun onEvent(event: AgendaDetailsScreenEvent) {
@@ -227,20 +230,31 @@ class AgendaDetailsViewModel(
     private fun saveUpdate() {
         viewModelScope.launch {
             val agendaItem = screenStateFlow.value.agendaItem
+            var skippedImageCount = 0
 
             when (agendaItem) {
                 is Task -> agendaRepository.updateTask(agendaItem)
                 is Reminder -> agendaRepository.updateReminder(agendaItem)
                 is Event -> {
                     val eventIsGoing = screenStateFlow.value.eventIsGoing
-//                    val compressedPhotos =
+                    val localPhotos = screenStateFlow.value.photos.filterIsInstance<DetailsPhoto.LocalPhoto>()
+                    val compressedPhotos =
+                        localPhotos
+                            .mapNotNull {
+                                imageCompressor.compressImage(
+                                    it.uri,
+                                    1024L,
+                                )
+                            }.filter { it.size <= 1024 }
+                    skippedImageCount = localPhotos.size - compressedPhotos.size
+
                     agendaRepository.updateEvent(
                         body =
                             UpdateEventBody(
                                 event = agendaItem,
                                 deletedPhotoKeys = deletedPhotoKeys,
                                 isGoing = eventIsGoing,
-                                photos = emptyList(),
+                                photos = compressedPhotos,
                             ),
                     )
                 }
@@ -249,6 +263,7 @@ class AgendaDetailsViewModel(
                     _screenStateFlow.update { state ->
                         state.copy(agendaItem = it, isEdit = false)
                     }
+                    _skippedImageCountFlow.update { skippedImageCount }
                 } else {
                     _screenStateFlow.update { state ->
                         state.copy(isEdit = false)
