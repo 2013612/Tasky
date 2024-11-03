@@ -58,7 +58,7 @@ sealed interface DetailsPhoto {
 @Composable
 fun DetailsPhotoSection(
     photos: ImmutableList<DetailsPhoto>,
-    isEdit: Boolean,
+    showAddButton: Boolean,
     onAddPhoto: (Uri) -> Unit,
     onPhotoClick: (DetailsPhoto) -> Unit,
     modifier: Modifier = Modifier,
@@ -125,7 +125,7 @@ fun DetailsPhotoSection(
                         )
                     }
 
-                    if (isEdit) {
+                    if (showAddButton) {
                         item {
                             Box(
                                 modifier =
