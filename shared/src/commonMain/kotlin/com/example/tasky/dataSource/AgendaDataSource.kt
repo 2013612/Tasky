@@ -4,6 +4,7 @@ import com.example.tasky.manager.HttpManager
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
 import com.example.tasky.model.agenda.Agenda
+import com.example.tasky.model.agenda.CreateTaskBody
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
@@ -16,6 +17,7 @@ import com.example.tasky.util.safeCall
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
+import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -87,6 +89,13 @@ class AgendaDataSource(
     suspend fun updateReminder(body: UpdateReminderBody): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.put(ReminderPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.post(TaskPath()) {
                 setBody(body)
             }
         }

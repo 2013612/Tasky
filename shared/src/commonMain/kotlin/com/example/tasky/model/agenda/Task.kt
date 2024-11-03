@@ -6,3 +6,5 @@ import io.ktor.resources.Resource
 class TaskPath
 
 typealias UpdateTaskBody = Task
+
+typealias CreateTaskBody = Task
