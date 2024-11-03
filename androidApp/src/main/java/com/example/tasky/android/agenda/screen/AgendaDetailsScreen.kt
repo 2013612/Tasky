@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -298,7 +299,7 @@ private fun AgendaDetailsScreen(
                     )
                 }
 
-                if (state.agendaItem is Event) {
+                if (state.agendaItem is Event && (state.isEdit || state.photos.isNotEmpty())) {
                     Spacer(Modifier.height(16.dp))
                     DetailsPhotoSection(
                         photos = state.photos.toImmutableList(),
@@ -309,7 +310,7 @@ private fun AgendaDetailsScreen(
                         onPhotoClick = {
                             onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 110.dp),
                     )
                 }
 
