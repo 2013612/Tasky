@@ -32,3 +32,25 @@ data class UpdateEventBody(
         photos = photos,
     )
 }
+
+data class CreateEventBody(
+    val id: String,
+    val title: String,
+    val description: String,
+    val from: Long,
+    val to: Long,
+    val remindAt: Long,
+    val attendeeIds: List<String>,
+    val photos: List<ByteArray>,
+) {
+    constructor(event: Event, photos: List<ByteArray>) : this(
+        id = event.id,
+        title = event.title,
+        description = event.description,
+        from = event.from,
+        to = event.to,
+        remindAt = event.remindAt,
+        attendeeIds = event.attendees.map { it.userId },
+        photos = photos,
+    )
+}
