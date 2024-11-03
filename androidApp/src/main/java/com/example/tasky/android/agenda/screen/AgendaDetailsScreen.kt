@@ -37,6 +37,7 @@ import com.example.tasky.android.agenda.components.details.DetailsEditText
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.components.details.DetailsHeaderSection
 import com.example.tasky.android.agenda.components.details.DetailsLargePhoto
+import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.components.details.DetailsPhotoSection
 import com.example.tasky.android.agenda.components.details.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.details.DetailsTitleSection
@@ -122,7 +123,8 @@ data class AgendaDetailsScreenState(
     val eventIsGoing: Boolean = true,
     val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
     val isCreator: Boolean = true,
-    val enlargedPhoto: Photo? = null,
+    val enlargedPhoto: DetailsPhoto? = null,
+    val photos: List<DetailsPhoto> = emptyList(),
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -187,7 +189,7 @@ sealed interface AgendaDetailsScreenEvent {
     ) : AgendaDetailsScreenEvent
 
     data class OnPhotoClick(
-        val photo: Photo,
+        val photo: DetailsPhoto,
     ) : AgendaDetailsScreenEvent
 
     data object CloseLargePhoto : AgendaDetailsScreenEvent
@@ -277,7 +279,7 @@ private fun AgendaDetailsScreen(
                 if (state.agendaItem is Event) {
                     Spacer(Modifier.height(16.dp))
                     DetailsPhotoSection(
-                        photos = state.agendaItem.photos.toImmutableList(),
+                        photos = state.photos.toImmutableList(),
                         isEdit = state.isEdit && state.isCreator,
                         onAddPhoto = {
                             onEvent(AgendaDetailsScreenEvent.OnAddPhoto(it))
@@ -421,10 +423,17 @@ private fun AgendaDetailsScreen(
         }
 
         if (state.enlargedPhoto != null) {
-            DetailsLargePhoto(url = state.enlargedPhoto.url, isEdit = state.isEdit && state.isCreator, onCloseClick = {
+            DetailsLargePhoto(photo = state.enlargedPhoto, isEdit = state.isEdit && state.isCreator, onCloseClick = {
                 onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
             }, onDeleteClick = {
-                onEvent(AgendaDetailsScreenEvent.OnPhotoDelete(state.enlargedPhoto.key))
+                onEvent(
+                    AgendaDetailsScreenEvent.OnPhotoDelete(
+                        when (state.enlargedPhoto) {
+                            is DetailsPhoto.RemotePhoto -> state.enlargedPhoto.photo.key
+                            is DetailsPhoto.LocalPhoto -> state.enlargedPhoto.key
+                        },
+                    ),
+                )
             }, modifier = Modifier.fillMaxSize())
         }
     }
@@ -489,7 +498,7 @@ private fun AgendaDetailsScreenLargePhotoPreview() {
                 AgendaDetailsScreenState(
                     Event.DUMMY,
                     true,
-                    enlargedPhoto = Photo.DUMMY_LIST.first(),
+                    enlargedPhoto = DetailsPhoto.RemotePhoto(Photo.DUMMY_LIST.first()),
                 ),
             onEvent = {},
         )

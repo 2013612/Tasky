@@ -1,5 +1,6 @@
 package com.example.tasky.android.agenda.components.details
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,7 @@ import com.example.tasky.android.theme.MyApplicationTheme
 
 @Composable
 fun DetailsLargePhoto(
-    url: String,
+    photo: DetailsPhoto,
     isEdit: Boolean,
     onCloseClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -48,7 +49,12 @@ fun DetailsLargePhoto(
                 Icon(Icons.Outlined.Delete, contentDescription = null, tint = Color.White)
             }
         }
-        AsyncImage(model = url, contentDescription = null, modifier = Modifier.fillMaxWidth().weight(1f))
+        AsyncImage(model = {
+            when (photo) {
+                is DetailsPhoto.RemotePhoto -> photo.photo.url
+                is DetailsPhoto.LocalPhoto -> photo.uri
+            }
+        }, contentDescription = null, modifier = Modifier.fillMaxWidth().weight(1f))
     }
 }
 
@@ -56,7 +62,7 @@ fun DetailsLargePhoto(
 @Composable
 private fun DetailsLargePhotoPreview() {
     MyApplicationTheme {
-        DetailsLargePhoto("", false, {}, {}, Modifier.fillMaxSize())
+        DetailsLargePhoto(DetailsPhoto.LocalPhoto("", Uri.EMPTY), false, {}, {}, Modifier.fillMaxSize())
     }
 }
 
@@ -64,6 +70,6 @@ private fun DetailsLargePhotoPreview() {
 @Composable
 private fun DetailsLargePhotoEditPreview() {
     MyApplicationTheme {
-        DetailsLargePhoto("", true, {}, {}, Modifier.fillMaxSize())
+        DetailsLargePhoto(DetailsPhoto.LocalPhoto("", Uri.EMPTY), true, {}, {}, Modifier.fillMaxSize())
     }
 }
