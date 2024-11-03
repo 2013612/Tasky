@@ -106,7 +106,7 @@ class AgendaViewModel(
     private fun toggleTaskIsDone(task: Task) {
         viewModelScope.launch {
             val body = task.copy(isDone = task.isDone.not())
-            agendaRepository.updateAgenda(body).onSuccess {
+            agendaRepository.updateTask(body).onSuccess {
                 val newList = screenStateFlow.value.agendas.toMutableList()
                 val index = newList.indexOf(AgendaItemUi.Item(task))
                 newList[index] = AgendaItemUi.Item(body)
