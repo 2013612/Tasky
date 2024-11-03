@@ -261,7 +261,7 @@ class AgendaDetailsViewModel(
             }.onSuccess {
                 if (it is Event) {
                     _screenStateFlow.update { state ->
-                        state.copy(agendaItem = it, isEdit = false)
+                        state.copy(agendaItem = it, photos = it.photos.map { photo -> DetailsPhoto.RemotePhoto(photo) }, isEdit = false)
                     }
                     _skippedImageCountFlow.update { skippedImageCount }
                 } else {
