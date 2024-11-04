@@ -13,6 +13,8 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.android.utils.UiEvent
+import com.example.tasky.manager.SessionManager
+import com.example.tasky.model.agenda.Attendee
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
@@ -29,14 +31,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
@@ -109,6 +115,51 @@ class AgendaDetailsViewModel(
             )
 
     private val deletedPhotoKeys = mutableListOf<String>()
+
+    init {
+        if (routeArguments.agendaId.isEmpty()) {
+            createLocalAgenda()
+        }
+    }
+
+    private fun createLocalAgenda() {
+        viewModelScope.launch {
+            val id = Uuid.random().toString()
+            val now = Clock.System.now().toEpochMilliseconds()
+            val remindAt = now - 10.minutes.toLong(DurationUnit.MILLISECONDS)
+
+            _screenStateFlow.update {
+                it.copy(
+                    agendaItem =
+                        when (routeArguments.type) {
+                            AgendaDetailsScreenType.TASK -> Task.EMPTY.copy(id = id, time = now, remindAt = remindAt)
+                            AgendaDetailsScreenType.EVENT -> {
+                                val userId = SessionManager.getUserId() ?: ""
+                                val attendee =
+                                    Attendee(
+                                        email = "",
+                                        fullName = SessionManager.getFullName() ?: "",
+                                        userId = SessionManager.getUserId() ?: "",
+                                        eventId = id,
+                                        isGoing = true,
+                                        remindAt = remindAt,
+                                    )
+
+                                Event.EMPTY.copy(
+                                    id = id,
+                                    from = now,
+                                    to = now,
+                                    remindAt = remindAt,
+                                    host = userId,
+                                    attendees = listOf(attendee),
+                                )
+                            }
+                            AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY.copy(id = id, time = now, remindAt = remindAt)
+                        },
+                )
+            }
+        }
+    }
 
     fun onEvent(event: AgendaDetailsScreenEvent) {
         val item = screenStateFlow.value.agendaItem
