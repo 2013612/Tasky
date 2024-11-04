@@ -95,4 +95,16 @@ object SessionManager {
             println("cannot get name: $e")
             null
         }
+
+    suspend fun getUserId(): String? =
+        try {
+            val loginResponse = loadLoginResponse()
+
+            loginResponse?.userId
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
+            println("cannot get userId: $e")
+            null
+        }
 }
