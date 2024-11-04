@@ -29,6 +29,12 @@ interface IAgendaRepository {
     suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError>
 
     suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError>
+
+    suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError>
+
+    suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError>
+
+    suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError>
 }
 
 class AgendaRepository(
@@ -55,4 +61,11 @@ class AgendaRepository(
         agendaDataSource.createReminder(body = body)
 
     override suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> = agendaDataSource.createEvent(body = body)
+
+    override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> = agendaDataSource.getTask(taskId = taskId)
+
+    override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> = agendaDataSource.getEvent(eventId = eventId)
+
+    override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
+        agendaDataSource.getReminder(reminderId = reminderId)
 }
