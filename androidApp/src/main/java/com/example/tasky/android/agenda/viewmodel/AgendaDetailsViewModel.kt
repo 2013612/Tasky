@@ -120,6 +120,8 @@ class AgendaDetailsViewModel(
     init {
         if (routeArguments.agendaId.isEmpty()) {
             createLocalAgenda()
+        } else {
+            fetchRemoteAgenda()
         }
     }
 
@@ -158,6 +160,39 @@ class AgendaDetailsViewModel(
                             AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY.copy(id = id, time = now, remindAt = remindAt)
                         },
                 )
+            }
+        }
+    }
+
+    private fun fetchRemoteAgenda() {
+        viewModelScope.launch {
+            when (routeArguments.type) {
+                AgendaDetailsScreenType.TASK -> agendaRepository.getTask(taskId = routeArguments.agendaId)
+                AgendaDetailsScreenType.EVENT -> agendaRepository.getEvent(eventId = routeArguments.agendaId)
+                AgendaDetailsScreenType.REMINDER -> agendaRepository.getReminder(reminderId = routeArguments.agendaId)
+            }.onSuccess { agendaItem ->
+                when (agendaItem) {
+                    is Task, is Reminder ->
+                        _screenStateFlow.update {
+                            it.copy(agendaItem = agendaItem)
+                        }
+
+                    is Event -> {
+                        val userId = SessionManager.getUserId()
+                        val eventIsGoing = agendaItem.attendees.firstOrNull { it.userId == userId }?.isGoing ?: true
+                        _screenStateFlow.update {
+                            it.copy(
+                                agendaItem = agendaItem,
+                                photos =
+                                    agendaItem.photos.map { photo ->
+                                        DetailsPhoto.RemotePhoto(photo)
+                                    },
+                                isCreator = agendaItem.isUserEventCreator,
+                                eventIsGoing = eventIsGoing,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
