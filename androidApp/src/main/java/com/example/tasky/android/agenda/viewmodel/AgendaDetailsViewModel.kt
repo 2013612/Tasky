@@ -15,6 +15,7 @@ import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.android.utils.UiEvent
 import com.example.tasky.manager.SessionManager
 import com.example.tasky.model.agenda.Attendee
+import com.example.tasky.model.agenda.CreateEventBody
 import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.Reminder
 import com.example.tasky.model.agenda.Task
@@ -181,7 +182,7 @@ class AgendaDetailsViewModel(
                 }
             AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
             is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newRemindAtTime)
-            AgendaDetailsScreenEvent.OnSaveClick -> saveUpdate()
+            AgendaDetailsScreenEvent.OnSaveClick -> saveAgenda()
             is AgendaDetailsScreenEvent.OnStartDateChange -> updateStartDate(event.newDate)
             is AgendaDetailsScreenEvent.OnStartTimeChange -> updateStartTime(event.newHour, event.newMinute)
             is AgendaDetailsScreenEvent.OnTitleChange -> updateTitle(event.newTitle)
@@ -327,7 +328,15 @@ class AgendaDetailsViewModel(
         }
     }
 
-    private fun saveUpdate() {
+    private fun saveAgenda() {
+        if (routeArguments.agendaId.isEmpty()) {
+            createRemoteAgenda()
+        } else {
+            updateRemoteAgenda()
+        }
+    }
+
+    private fun updateRemoteAgenda() {
         viewModelScope.launch {
             val agendaItem = screenStateFlow.value.agendaItem
             var skippedImageCount = 0
@@ -354,6 +363,49 @@ class AgendaDetailsViewModel(
                                 event = agendaItem,
                                 deletedPhotoKeys = deletedPhotoKeys,
                                 isGoing = eventIsGoing,
+                                photos = compressedPhotos,
+                            ),
+                    )
+                }
+            }.onSuccess {
+                if (it is Event) {
+                    _screenStateFlow.update { state ->
+                        state.copy(agendaItem = it, photos = it.photos.map { photo -> DetailsPhoto.RemotePhoto(photo) }, isEdit = false)
+                    }
+                    _skippedImageCountFlow.update { skippedImageCount }
+                } else {
+                    _screenStateFlow.update { state ->
+                        state.copy(isEdit = false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createRemoteAgenda() {
+        viewModelScope.launch {
+            val agendaItem = screenStateFlow.value.agendaItem
+            var skippedImageCount = 0
+
+            when (agendaItem) {
+                is Task -> agendaRepository.createTask(agendaItem)
+                is Reminder -> agendaRepository.createReminder(agendaItem)
+                is Event -> {
+                    val localPhotos = screenStateFlow.value.photos.filterIsInstance<DetailsPhoto.LocalPhoto>()
+                    val compressedPhotos =
+                        localPhotos
+                            .mapNotNull {
+                                imageCompressor.compressImage(
+                                    it.uri,
+                                    1024L,
+                                )
+                            }.filter { it.size <= 1024 }
+                    skippedImageCount = localPhotos.size - compressedPhotos.size
+
+                    agendaRepository.createEvent(
+                        body =
+                            CreateEventBody(
+                                event = agendaItem,
                                 photos = compressedPhotos,
                             ),
                     )
