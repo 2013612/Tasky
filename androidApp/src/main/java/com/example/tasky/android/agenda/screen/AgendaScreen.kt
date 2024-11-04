@@ -54,9 +54,7 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.agendaScreen(
-    navigateToCreateEvent: () -> Unit,
-    navigateToCreateTask: () -> Unit,
-    navigateToCreateReminder: () -> Unit,
+    navigateToCreateAgenda: (AgendaDetailsScreenType) -> Unit,
     navigateToAgendaDetails: (AgendaItem) -> Unit,
     navigateToEditAgenda: (AgendaItem) -> Unit,
 ) {
@@ -71,9 +69,7 @@ fun NavGraphBuilder.agendaScreen(
 
         AgendaScreen(screenState, onEvent = { event ->
             when (event) {
-                AgendaScreenEvent.OnClickToCreateEvent -> navigateToCreateEvent()
-                AgendaScreenEvent.OnClickToCreateReminder -> navigateToCreateReminder()
-                AgendaScreenEvent.OnClickToCreateTask -> navigateToCreateTask()
+                is AgendaScreenEvent.OnCreateClick -> navigateToCreateAgenda(event.type)
                 is AgendaScreenEvent.OnEditClick -> navigateToEditAgenda(event.agendaItem)
                 is AgendaScreenEvent.OnOpenClick -> navigateToAgendaDetails(event.agendaItem)
                 else -> viewModel.onEvent(event)
@@ -100,11 +96,7 @@ data class AgendaScreenState(
 sealed interface AgendaScreenEvent {
     data object OnClickLogout : AgendaScreenEvent
 
-    data object OnClickToCreateTask : AgendaScreenEvent
-
-    data object OnClickToCreateEvent : AgendaScreenEvent
-
-    data object OnClickToCreateReminder : AgendaScreenEvent
+    data class OnCreateClick(val type: AgendaDetailsScreenType) : AgendaScreenEvent
 
     data class OnDateSelect(
         val newDate: Long,
@@ -227,13 +219,13 @@ private fun AgendaScreen(
 
         AgendaFloatingActionButton(
             onEventClick = {
-                onEvent(AgendaScreenEvent.OnClickToCreateEvent)
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.EVENT))
             },
             onTaskClick = {
-                onEvent(AgendaScreenEvent.OnClickToCreateTask)
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.TASK))
             },
             onReminderClick = {
-                onEvent(AgendaScreenEvent.OnClickToCreateReminder)
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.REMINDER))
             },
             modifier =
                 Modifier
