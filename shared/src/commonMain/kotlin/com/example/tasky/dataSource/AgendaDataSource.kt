@@ -11,6 +11,7 @@ import com.example.tasky.model.agenda.Event
 import com.example.tasky.model.agenda.EventPath
 import com.example.tasky.model.agenda.GetAgendaResponse
 import com.example.tasky.model.agenda.ReminderPath
+import com.example.tasky.model.agenda.Task
 import com.example.tasky.model.agenda.TaskPath
 import com.example.tasky.model.agenda.UpdateEventBody
 import com.example.tasky.model.agenda.UpdateReminderBody
@@ -135,6 +136,13 @@ class AgendaDataSource(
         safeCall {
             httpClient.get(EventPath()) {
                 parameter("eventId", eventId)
+            }
+        }
+
+    suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
+        safeCall {
+            httpClient.get(TaskPath()) {
+                parameter("taskId", taskId)
             }
         }
 }
