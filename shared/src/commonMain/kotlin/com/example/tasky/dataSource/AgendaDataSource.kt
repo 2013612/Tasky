@@ -130,4 +130,11 @@ class AgendaDataSource(
                 )
             }
         }
+
+    suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
+        safeCall {
+            httpClient.get(EventPath()) {
+                parameter("eventId", eventId)
+            }
+        }
 }
