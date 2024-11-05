@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.agenda.domain.model.copy
@@ -33,7 +34,6 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -85,13 +85,12 @@ class AgendaDetailsViewModel(
         viewModelScope.launch {
             val id = Uuid.random().toString()
             val now = Clock.System.now().toEpochMilliseconds()
-            val remindAt = now - 10.minutes.toLong(DurationUnit.MILLISECONDS)
 
             _screenStateFlow.update {
                 it.copy(
                     agendaItem =
                         when (routeArguments.type) {
-                            AgendaDetailsScreenType.TASK -> Task.EMPTY.copy(id = id, time = now, remindAt = remindAt)
+                            AgendaDetailsScreenType.TASK -> Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
                             AgendaDetailsScreenType.EVENT -> {
                                 val userId = SessionManager.getUserId() ?: ""
                                 val attendee =
@@ -101,19 +100,19 @@ class AgendaDetailsViewModel(
                                         userId = SessionManager.getUserId() ?: "",
                                         eventId = id,
                                         isGoing = true,
-                                        remindAt = remindAt,
+                                        remindAt = now + RemindAtType.TEN_MINUTE.duration.toLong(DurationUnit.MILLISECONDS),
                                     )
 
                                 Event.EMPTY.copy(
                                     id = id,
                                     from = now,
                                     to = now,
-                                    remindAt = remindAt,
+                                    remindAt = RemindAtType.TEN_MINUTE,
                                     host = userId,
                                     attendees = listOf(attendee),
                                 )
                             }
-                            AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY.copy(id = id, time = now, remindAt = remindAt)
+                            AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
                         },
                 )
             }
@@ -172,7 +171,7 @@ class AgendaDetailsViewModel(
                     )
                 }
             AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
-            is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newRemindAtTime)
+            is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newType)
             AgendaDetailsScreenEvent.OnSaveClick -> saveAgenda()
             is AgendaDetailsScreenEvent.OnStartDateChange -> updateStartDate(event.newDate)
             is AgendaDetailsScreenEvent.OnStartTimeChange -> updateStartTime(event.newHour, event.newMinute)
@@ -257,9 +256,8 @@ class AgendaDetailsViewModel(
                 .toInstant(
                     TimeZone.currentSystemDefault(),
                 ).toEpochMilliseconds()
-        val remindAtDiff = agendaItem.getStartTime() - agendaItem.remindAt
         _screenStateFlow.update {
-            it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime, remindAt = newDateTime - remindAtDiff))
+            it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime))
         }
     }
 
@@ -270,9 +268,8 @@ class AgendaDetailsViewModel(
                 .toInstant(
                     TimeZone.currentSystemDefault(),
                 ).toEpochMilliseconds()
-        val remindAtDiff = agendaItem.getStartTime() - agendaItem.remindAt
         _screenStateFlow.update {
-            it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime, remindAt = newDateTime - remindAtDiff))
+            it.copy(agendaItem = it.agendaItem.copy(startTime = newDateTime))
         }
     }
 
@@ -313,9 +310,9 @@ class AgendaDetailsViewModel(
         }
     }
 
-    private fun updateRemindAt(newRemindAt: Long) {
+    private fun updateRemindAt(newRemindAt: RemindAtType) {
         _screenStateFlow.update {
-            it.copy(agendaItem = it.agendaItem.copy(remindAt = it.agendaItem.getStartTime() - newRemindAt))
+            it.copy(agendaItem = it.agendaItem.copy(remindAt = newRemindAt))
         }
     }
 

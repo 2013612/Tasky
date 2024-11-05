@@ -1,6 +1,5 @@
 package com.example.tasky.android.agenda.components.details
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,28 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.MyApplicationTheme
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.DurationUnit
-
-enum class RemindAtType(
-    val duration: Duration,
-    @StringRes val stringId: Int,
-) {
-    TEN_MINUTE(10.minutes, R.string._10_minutes_before),
-    THIRTY_MINUTE(30.minutes, R.string._30_minutes_before),
-    ONE_HOUR(1.hours, R.string._1_hour_before),
-    SIX_HOUR(6.hours, R.string._6_hours_before),
-    ONE_DAY(1.days, R.string._1_day_before),
-}
 
 @Composable
 fun DetailsRemindAtSection(
@@ -85,7 +69,7 @@ fun DetailsRemindAtSection(
             }
             Spacer(Modifier.width(8.dp))
             Text(
-                stringResource(getRemindAtTextId(item.getStartTime() - item.remindAt)),
+                stringResource(getRemindAtTextId(item.remindAt)),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -103,7 +87,7 @@ fun DetailsRemindAtSection(
         ) {
             RemindAtType.entries.map {
                 DropdownMenuItem(text = {
-                    Text(stringResource(it.stringId))
+                    Text(stringResource(getRemindAtTextId(it)))
                 }, onClick = {
                     onRemindAtSelect(it)
                     isMenuOpen = false
@@ -113,9 +97,14 @@ fun DetailsRemindAtSection(
     }
 }
 
-private fun getRemindAtTextId(time: Long): Int =
-    RemindAtType.entries.firstOrNull { it.duration.toLong(DurationUnit.MILLISECONDS) == time }?.stringId
-        ?: R.string._10_minutes_before
+private fun getRemindAtTextId(type: RemindAtType): Int =
+    when (type) {
+        RemindAtType.TEN_MINUTE -> R.string._10_minutes_before
+        RemindAtType.THIRTY_MINUTE -> R.string._30_minutes_before
+        RemindAtType.ONE_HOUR -> R.string._1_hour_before
+        RemindAtType.SIX_HOUR -> R.string._6_hours_before
+        RemindAtType.ONE_DAY -> R.string._1_day_before
+    }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
