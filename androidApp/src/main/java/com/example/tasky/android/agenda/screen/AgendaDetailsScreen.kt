@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,10 +44,12 @@ import com.example.tasky.android.agenda.components.details.DetailsPhotoSection
 import com.example.tasky.android.agenda.components.details.DetailsRemindAtSection
 import com.example.tasky.android.agenda.components.details.DetailsTitleSection
 import com.example.tasky.android.agenda.components.details.DetailsTopBar
+import com.example.tasky.android.agenda.viewmodel.AgendaDetailsOneTimeEvent
 import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.android.utils.ObserveAsEvents
 import com.example.tasky.android.utils.serializableNavType
 import com.example.tasky.model.agenda.AgendaItem
 import com.example.tasky.model.agenda.Event
@@ -79,29 +80,19 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
-        val isDeleteSuccess by viewModel.isDeleteSuccessFlow.collectAsStateWithLifecycle()
-
-        val skippedImageCount by viewModel.skippedImageCountFlow.collectAsStateWithLifecycle()
         val context = LocalContext.current
 
-        LaunchedEffect(isDeleteSuccess.data) {
-            if (isDeleteSuccess.data) {
-                navigateUp()
+        ObserveAsEvents(viewModel.eventsFlow) { event ->
+            when (event) {
+                AgendaDetailsOneTimeEvent.OnDeleteSuccess -> navigateUp()
+                is AgendaDetailsOneTimeEvent.OnPhotoSkipped -> {
+                    val text = context.getString(R.string.skip_photo_toast, event.skippedPhotoCount)
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(context, text, duration)
+                    toast.show()
+                }
             }
-
-            isDeleteSuccess.onConsume()
-        }
-
-        LaunchedEffect(skippedImageCount.data) {
-            if (skippedImageCount.data > 0) {
-                val text = context.getString(R.string.skip_photo_toast, skippedImageCount.data)
-                val duration = Toast.LENGTH_SHORT
-
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-            }
-
-            skippedImageCount.onConsume()
         }
 
         AgendaDetailsScreen(

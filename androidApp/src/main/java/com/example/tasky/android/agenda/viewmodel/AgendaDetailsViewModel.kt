@@ -12,7 +12,6 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.utils.IImageCompressor
-import com.example.tasky.android.utils.UiEvent
 import com.example.tasky.manager.SessionManager
 import com.example.tasky.model.agenda.Attendee
 import com.example.tasky.model.agenda.CreateEventBody
@@ -24,12 +23,11 @@ import com.example.tasky.model.agenda.copy
 import com.example.tasky.model.onSuccess
 import com.example.tasky.repository.IAgendaRepository
 import com.example.tasky.util.toLocalDateTime
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -42,6 +40,14 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
+sealed interface AgendaDetailsOneTimeEvent {
+    data object OnDeleteSuccess : AgendaDetailsOneTimeEvent
+
+    data class OnPhotoSkipped(
+        val skippedPhotoCount: Int,
+    ) : AgendaDetailsOneTimeEvent
+}
 
 @OptIn(ExperimentalUuidApi::class)
 class AgendaDetailsViewModel(
@@ -65,55 +71,8 @@ class AgendaDetailsViewModel(
         )
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
-    private val _isDeleteSuccessFlow = MutableStateFlow(false)
-    val isDeleteSuccessFlow: StateFlow<UiEvent<Boolean>> =
-        _isDeleteSuccessFlow
-            .map {
-                object : UiEvent<Boolean> {
-                    override val data: Boolean
-                        get() = it
-                    override val onConsume: () -> Unit
-                        get() = {
-                            _isDeleteSuccessFlow.update { false }
-                        }
-                }
-            }.stateIn(
-                viewModelScope,
-                SharingStarted.Lazily,
-                object : UiEvent<Boolean> {
-                    override val data: Boolean
-                        get() = false
-                    override val onConsume: () -> Unit
-                        get() = {
-                            _isDeleteSuccessFlow.update { false }
-                        }
-                },
-            )
-
-    private val _skippedImageCountFlow = MutableStateFlow(0)
-    val skippedImageCountFlow =
-        _skippedImageCountFlow
-            .map {
-                object : UiEvent<Int> {
-                    override val data: Int
-                        get() = it
-                    override val onConsume: () -> Unit
-                        get() = {
-                            _skippedImageCountFlow.update { 0 }
-                        }
-                }
-            }.stateIn(
-                viewModelScope,
-                SharingStarted.Lazily,
-                object : UiEvent<Int> {
-                    override val data: Int
-                        get() = 0
-                    override val onConsume: () -> Unit
-                        get() = {
-                            _skippedImageCountFlow.update { 0 }
-                        }
-                },
-            )
+    private val eventsChannel = Channel<AgendaDetailsOneTimeEvent>()
+    val eventsFlow = eventsChannel.receiveAsFlow()
 
     private val deletedPhotoKeys = mutableListOf<String>()
 
@@ -274,7 +233,7 @@ class AgendaDetailsViewModel(
     private fun deleteAgendaItem() {
         viewModelScope.launch {
             agendaRepository.deleteAgenda(screenStateFlow.value.agendaItem).onSuccess {
-                _isDeleteSuccessFlow.update { true }
+                eventsChannel.send(AgendaDetailsOneTimeEvent.OnDeleteSuccess)
             }
         }
     }
@@ -407,7 +366,10 @@ class AgendaDetailsViewModel(
                     _screenStateFlow.update { state ->
                         state.copy(agendaItem = it, photos = it.photos.map { photo -> DetailsPhoto.RemotePhoto(photo) }, isEdit = false)
                     }
-                    _skippedImageCountFlow.update { skippedImageCount }
+
+                    if (skippedImageCount > 0) {
+                        eventsChannel.send(AgendaDetailsOneTimeEvent.OnPhotoSkipped(skippedImageCount))
+                    }
                 } else {
                     _screenStateFlow.update { state ->
                         state.copy(isEdit = false)
@@ -450,7 +412,10 @@ class AgendaDetailsViewModel(
                     _screenStateFlow.update { state ->
                         state.copy(agendaItem = it, photos = it.photos.map { photo -> DetailsPhoto.RemotePhoto(photo) }, isEdit = false)
                     }
-                    _skippedImageCountFlow.update { skippedImageCount }
+
+                    if (skippedImageCount > 0) {
+                        eventsChannel.send(AgendaDetailsOneTimeEvent.OnPhotoSkipped(skippedImageCount))
+                    }
                 } else {
                     _screenStateFlow.update { state ->
                         state.copy(isEdit = false)
