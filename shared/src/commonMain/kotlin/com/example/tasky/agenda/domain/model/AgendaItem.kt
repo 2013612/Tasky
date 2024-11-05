@@ -1,10 +1,12 @@
 package com.example.tasky.agenda.domain.model
 
 import com.example.tasky.agenda.data.model.Attendee
+import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.agenda.data.model.UpdateEventBody
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -54,6 +56,36 @@ data class Event(
         attendees = remoteEvent.attendees,
         photos = remoteEvent.photos,
     )
+
+    fun toUpdateEventBody(
+        deletedPhotoKeys: List<String>,
+        isGoing: Boolean,
+        photos: List<ByteArray>,
+    ): UpdateEventBody =
+        UpdateEventBody(
+            id = id,
+            title = title,
+            description = description,
+            from = from,
+            to = to,
+            remindAt = remindAt,
+            attendeeIds = attendees.map { it.userId },
+            deletedPhotoKeys = deletedPhotoKeys,
+            isGoing = isGoing,
+            photos = photos,
+        )
+
+    fun toCreateEventBody(photos: List<ByteArray>): CreateEventBody =
+        CreateEventBody(
+            id = id,
+            title = title,
+            description = description,
+            from = from,
+            to = to,
+            remindAt = remindAt,
+            attendeeIds = attendees.map { it.userId },
+            photos = photos,
+        )
 
     companion object {
         val DUMMY =
