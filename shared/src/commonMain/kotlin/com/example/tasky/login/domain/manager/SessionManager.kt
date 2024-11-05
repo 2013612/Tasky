@@ -30,6 +30,7 @@ object SessionManager {
             if (e is CancellationException) throw e
 
             println("no loginResponse: $e")
+            settings.remove(SettingsKey.LOGIN_RESPONSE.name)
             null
         }
 
