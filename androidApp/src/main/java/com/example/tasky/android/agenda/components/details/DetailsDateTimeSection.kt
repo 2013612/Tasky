@@ -35,7 +35,7 @@ import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.util.toLocalDateTime
+import com.example.tasky.common.util.toLocalDateTime
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone

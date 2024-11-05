@@ -1,4 +1,4 @@
-package com.example.tasky.util
+package com.example.tasky.common.util
 
 fun String.getAvatarDisplayName(): String {
     val splitName = this.trim().split(" ")

@@ -1,4 +1,4 @@
-package com.example.tasky.model
+package com.example.tasky.common.model
 
 sealed interface ResultWrapper<out D, out E : BaseError> {
     data class Success<out D>(

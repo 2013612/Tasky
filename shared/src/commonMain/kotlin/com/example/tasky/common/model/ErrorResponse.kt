@@ -1,4 +1,4 @@
-package com.example.tasky.model
+package com.example.tasky.common.model
 
 import kotlinx.serialization.Serializable
 
