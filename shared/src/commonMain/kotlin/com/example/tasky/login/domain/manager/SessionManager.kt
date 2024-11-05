@@ -1,4 +1,4 @@
-package com.example.tasky.login.domain
+package com.example.tasky.login.domain.manager
 
 import com.example.tasky.common.manager.HttpManager.json
 import com.example.tasky.dataStore.SettingsKey

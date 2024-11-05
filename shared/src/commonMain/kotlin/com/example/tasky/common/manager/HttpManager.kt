@@ -5,7 +5,7 @@ import com.example.tasky.common.model.ErrorResponse
 import com.example.tasky.common.util.isSuccess
 import com.example.tasky.login.data.model.AccessToken
 import com.example.tasky.login.data.model.AccessTokenResponse
-import com.example.tasky.login.domain.SessionManager
+import com.example.tasky.login.domain.manager.SessionManager
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import io.ktor.client.HttpClient

@@ -1,4 +1,4 @@
-package com.example.tasky.common.util
+package com.example.tasky.login.domain.util
 
 object Validator {
     private val emailAddressRegex =

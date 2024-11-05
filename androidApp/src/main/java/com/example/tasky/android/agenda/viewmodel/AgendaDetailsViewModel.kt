@@ -22,7 +22,7 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.common.model.onSuccess
 import com.example.tasky.common.util.toLocalDateTime
-import com.example.tasky.login.domain.SessionManager
+import com.example.tasky.login.domain.manager.SessionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

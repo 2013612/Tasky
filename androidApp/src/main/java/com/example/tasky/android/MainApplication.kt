@@ -6,9 +6,9 @@ import com.example.tasky.android.agenda.di.agendaModule
 import com.example.tasky.android.login.di.registerModule
 import com.example.tasky.dataStore.createSettings
 import com.example.tasky.getDataStore
-import com.example.tasky.login.domain.LoginManager
 import com.example.tasky.login.domain.LoginRepository
-import com.example.tasky.login.domain.loginManager
+import com.example.tasky.login.domain.manager.LoginManager
+import com.example.tasky.login.domain.manager.loginManager
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import org.koin.android.ext.koin.androidContext

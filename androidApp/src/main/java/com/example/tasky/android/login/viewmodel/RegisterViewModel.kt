@@ -6,9 +6,9 @@ import com.example.tasky.android.login.screen.RegisterScreenEvent
 import com.example.tasky.android.login.screen.RegisterScreenState
 import com.example.tasky.common.model.onError
 import com.example.tasky.common.model.onSuccess
-import com.example.tasky.common.util.Validator
 import com.example.tasky.login.data.model.RegisterBody
 import com.example.tasky.login.domain.ILoginRepository
+import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

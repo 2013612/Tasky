@@ -1,10 +1,11 @@
-package com.example.tasky.login.domain
+package com.example.tasky.login.domain.manager
 
 import com.example.tasky.common.manager.HttpManager
 import com.example.tasky.common.model.ResultWrapper
 import com.example.tasky.common.model.onSuccess
 import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.login.data.model.LoginBody
+import com.example.tasky.login.domain.ILoginRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
