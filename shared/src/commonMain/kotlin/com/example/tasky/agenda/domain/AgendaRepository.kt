@@ -80,7 +80,7 @@ class AgendaRepository(
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.createEvent(body = event.toCreateEventBody(photos)).map {
+        agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
             Event(it)
         }
 

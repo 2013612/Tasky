@@ -75,7 +75,7 @@ data class Event(
             isGoing = isGoing,
         )
 
-    fun toCreateEventBody(photos: List<ByteArray>): CreateEventBody =
+    fun toCreateEventBody(): CreateEventBody =
         CreateEventBody(
             id = id,
             title = title,
@@ -84,7 +84,6 @@ data class Event(
             to = to,
             remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
             attendeeIds = attendees.map { it.userId },
-            photos = photos,
         )
 
     companion object {
