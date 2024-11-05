@@ -4,6 +4,7 @@ import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
+import com.example.tasky.agenda.data.model.RemoteTask
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -95,6 +96,27 @@ data class Task(
     override val remindAt: Long,
     val isDone: Boolean,
 ) : AgendaItem() {
+    constructor(
+        task: RemoteTask,
+    ) : this(
+        id = task.id,
+        title = task.title,
+        description = task.description,
+        time = task.time,
+        remindAt = task.remindAt,
+        isDone = task.isDone,
+    )
+
+    fun toRemoteTask(): RemoteTask =
+        RemoteTask(
+            id = this.id,
+            title = this.title,
+            description = this.description,
+            time = this.time,
+            remindAt = this.remindAt,
+            isDone = this.isDone,
+        )
+
     companion object {
         val DUMMY =
             Task(

@@ -9,11 +9,11 @@ import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.data.model.ReminderPath
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
+import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.TaskPath
 import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.data.model.UpdateReminderBody
 import com.example.tasky.agenda.data.model.UpdateTaskBody
-import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.manager.HttpManager
 import com.example.tasky.common.model.BaseError
 import com.example.tasky.common.model.ResultWrapper
@@ -140,7 +140,7 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
+    suspend fun getTask(taskId: String): ResultWrapper<RemoteTask, BaseError> =
         safeCall {
             httpClient.get(TaskPath()) {
                 parameter("taskId", taskId)

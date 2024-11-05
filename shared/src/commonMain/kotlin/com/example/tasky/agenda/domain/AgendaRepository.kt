@@ -2,7 +2,6 @@ package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
 import com.example.tasky.agenda.data.model.CreateEventBody
-import com.example.tasky.agenda.data.model.CreateTaskBody
 import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.domain.model.AgendaItem
@@ -24,7 +23,7 @@ interface IAgendaRepository {
 
     suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError>
 
-    suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError>
+    suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError>
 
     suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError>
 
@@ -49,7 +48,7 @@ class AgendaRepository(
             is Reminder -> agendaDataSource.deleteReminder(agendaItem.id)
         }
 
-    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task)
+    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task.toRemoteTask())
 
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
         agendaDataSource.updateReminder(reminder.toRemoteReminder())
@@ -59,7 +58,7 @@ class AgendaRepository(
             Event(it)
         }
 
-    override suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = body)
+    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = task.toRemoteTask())
 
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
         agendaDataSource.createReminder(body = reminder.toRemoteReminder())
@@ -69,7 +68,10 @@ class AgendaRepository(
             Event(it)
         }
 
-    override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> = agendaDataSource.getTask(taskId = taskId)
+    override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
+        agendaDataSource.getTask(taskId = taskId).map {
+            Task(it)
+        }
 
     override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
         agendaDataSource.getEvent(eventId = eventId).map {
