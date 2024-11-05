@@ -1,7 +1,6 @@
 package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
-import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
@@ -11,7 +10,7 @@ import com.example.tasky.common.model.ResultWrapper
 import com.example.tasky.common.model.map
 
 interface IAgendaRepository {
-    suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError>
+    suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
 
     suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError>
 
@@ -45,7 +44,10 @@ interface IAgendaRepository {
 class AgendaRepository(
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
 ) : IAgendaRepository {
-    override suspend fun getAgenda(timeStamp: Long) = agendaDataSource.getAgenda(timeStamp = timeStamp)
+    override suspend fun getAgenda(timeStamp: Long) =
+        agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
+            response.events.map { Event(it) } + response.tasks.map { Task(it) } + response.reminders.map { Reminder(it) }
+        }
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> =
         when (agendaItem) {
