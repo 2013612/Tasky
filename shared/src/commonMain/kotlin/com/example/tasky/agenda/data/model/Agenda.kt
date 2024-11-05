@@ -1,6 +1,5 @@
 package com.example.tasky.agenda.data.model
 
-import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import io.ktor.resources.Resource
 import kotlinx.serialization.Serializable
@@ -12,5 +11,5 @@ class Agenda
 data class GetAgendaResponse(
     val events: List<RemoteEvent>,
     val tasks: List<Task>,
-    val reminders: List<Reminder>,
+    val reminders: List<RemoteReminder>,
 )

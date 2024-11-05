@@ -2,7 +2,6 @@ package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
 import com.example.tasky.agenda.data.model.CreateEventBody
-import com.example.tasky.agenda.data.model.CreateReminderBody
 import com.example.tasky.agenda.data.model.CreateTaskBody
 import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.data.model.UpdateEventBody
@@ -27,7 +26,7 @@ interface IAgendaRepository {
 
     suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError>
 
-    suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError>
+    suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError>
 
     suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError>
 
@@ -52,7 +51,8 @@ class AgendaRepository(
 
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task)
 
-    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> = agendaDataSource.updateReminder(reminder)
+    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
+        agendaDataSource.updateReminder(reminder.toRemoteReminder())
 
     override suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> =
         agendaDataSource.updateEvent(body = body).map {
@@ -61,8 +61,8 @@ class AgendaRepository(
 
     override suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = body)
 
-    override suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
-        agendaDataSource.createReminder(body = body)
+    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
+        agendaDataSource.createReminder(body = reminder.toRemoteReminder())
 
     override suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> =
         agendaDataSource.createEvent(body = body).map {
@@ -77,5 +77,7 @@ class AgendaRepository(
         }
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
-        agendaDataSource.getReminder(reminderId = reminderId)
+        agendaDataSource.getReminder(reminderId = reminderId).map {
+            Reminder(it)
+        }
 }

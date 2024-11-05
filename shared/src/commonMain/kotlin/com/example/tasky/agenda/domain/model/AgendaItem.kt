@@ -3,6 +3,7 @@ package com.example.tasky.agenda.domain.model
 import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.data.model.RemoteEvent
+import com.example.tasky.agenda.data.model.RemoteReminder
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -118,6 +119,25 @@ data class Reminder(
     val time: Long,
     override val remindAt: Long,
 ) : AgendaItem() {
+    constructor(
+        reminder: RemoteReminder,
+    ) : this(
+        id = reminder.id,
+        title = reminder.title,
+        description = reminder.description,
+        time = reminder.time,
+        remindAt = reminder.remindAt,
+    )
+
+    fun toRemoteReminder(): RemoteReminder =
+        RemoteReminder(
+            id = this.id,
+            title = this.title,
+            description = this.description,
+            time = this.time,
+            remindAt = this.remindAt,
+        )
+
     companion object {
         val DUMMY =
             Reminder(
