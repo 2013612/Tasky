@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
@@ -66,7 +67,6 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 import kotlin.reflect.typeOf
-import kotlin.time.DurationUnit
 
 enum class AgendaDetailsScreenType {
     TASK,
@@ -180,7 +180,7 @@ sealed interface AgendaDetailsScreenEvent {
     ) : AgendaDetailsScreenEvent
 
     data class OnRemindAtChange(
-        val newRemindAtTime: Long,
+        val newType: RemindAtType,
     ) : AgendaDetailsScreenEvent
 
     data class OnAttendeeTabChange(
@@ -355,9 +355,7 @@ private fun AgendaDetailsScreen(
                         onRemindAtSelect = {
                             onEvent(
                                 AgendaDetailsScreenEvent.OnRemindAtChange(
-                                    it.duration.toLong(
-                                        DurationUnit.MILLISECONDS,
-                                    ),
+                                    it,
                                 ),
                             )
                         },

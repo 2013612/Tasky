@@ -7,14 +7,16 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.UpdateEventBody
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
+import kotlin.time.DurationUnit
 
 @Serializable
 sealed class AgendaItem {
     abstract val id: String
     abstract val title: String
     abstract val description: String
-    abstract val remindAt: Long
+    abstract val remindAt: RemindAtType
 
     abstract fun getStartTime(): Long
 }
@@ -22,7 +24,7 @@ sealed class AgendaItem {
 fun AgendaItem.copy(
     title: String = this.title,
     description: String = this.description,
-    remindAt: Long = this.remindAt,
+    remindAt: RemindAtType = this.remindAt,
     startTime: Long = this.getStartTime(),
 ): AgendaItem =
     when (this) {
@@ -38,7 +40,7 @@ data class Event(
     override val description: String,
     val from: Long,
     val to: Long,
-    override val remindAt: Long,
+    override val remindAt: RemindAtType,
     val host: String,
     val isUserEventCreator: Boolean,
     val attendees: List<Attendee>,
@@ -50,7 +52,7 @@ data class Event(
         description = remoteEvent.description,
         from = remoteEvent.from,
         to = remoteEvent.to,
-        remindAt = remoteEvent.remindAt,
+        remindAt = getRemindAtType(remoteEvent.from, remoteEvent.remindAt),
         host = remoteEvent.host,
         isUserEventCreator = remoteEvent.isUserEventCreator,
         attendees = remoteEvent.attendees,
@@ -68,7 +70,7 @@ data class Event(
             description = description,
             from = from,
             to = to,
-            remindAt = remindAt,
+            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
             attendeeIds = attendees.map { it.userId },
             deletedPhotoKeys = deletedPhotoKeys,
             isGoing = isGoing,
@@ -82,7 +84,7 @@ data class Event(
             description = description,
             from = from,
             to = to,
-            remindAt = remindAt,
+            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
             attendeeIds = attendees.map { it.userId },
             photos = photos,
         )
@@ -95,7 +97,7 @@ data class Event(
                 description = "Fixed Event Description",
                 from = 1678886400000,
                 to = 1678972800000,
-                remindAt = 1678886400000,
+                remindAt = RemindAtType.TEN_MINUTE,
                 host = "user123",
                 isUserEventCreator = true,
                 attendees = Attendee.DUMMY_LIST,
@@ -106,9 +108,9 @@ data class Event(
                 id = "",
                 title = "",
                 description = "",
-                from = 0,
-                to = 0,
-                remindAt = 0,
+                from = Clock.System.now().toEpochMilliseconds(),
+                to = Clock.System.now().toEpochMilliseconds(),
+                remindAt = RemindAtType.TEN_MINUTE,
                 host = "",
                 isUserEventCreator = false,
                 attendees = emptyList(),
@@ -125,7 +127,7 @@ data class Task(
     override val title: String,
     override val description: String,
     val time: Long,
-    override val remindAt: Long,
+    override val remindAt: RemindAtType,
     val isDone: Boolean,
 ) : AgendaItem() {
     constructor(
@@ -135,7 +137,7 @@ data class Task(
         title = task.title,
         description = task.description,
         time = task.time,
-        remindAt = task.remindAt,
+        remindAt = getRemindAtType(task.time, task.remindAt),
         isDone = task.isDone,
     )
 
@@ -145,7 +147,7 @@ data class Task(
             title = this.title,
             description = this.description,
             time = this.time,
-            remindAt = this.remindAt,
+            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
             isDone = this.isDone,
         )
 
@@ -156,10 +158,18 @@ data class Task(
                 title = "Project X",
                 description = "Just work",
                 time = 1678886400000,
-                remindAt = 1678886400000,
+                remindAt = RemindAtType.TEN_MINUTE,
                 isDone = true,
             )
-        val EMPTY = Task(id = "", title = "", description = "", time = 0, remindAt = 0, isDone = false)
+        val EMPTY =
+            Task(
+                id = "",
+                title = "",
+                description = "",
+                time = Clock.System.now().toEpochMilliseconds(),
+                remindAt = RemindAtType.TEN_MINUTE,
+                isDone = false,
+            )
     }
 
     override fun getStartTime(): Long = time
@@ -171,7 +181,7 @@ data class Reminder(
     override val title: String,
     override val description: String,
     val time: Long,
-    override val remindAt: Long,
+    override val remindAt: RemindAtType,
 ) : AgendaItem() {
     constructor(
         reminder: RemoteReminder,
@@ -180,7 +190,7 @@ data class Reminder(
         title = reminder.title,
         description = reminder.description,
         time = reminder.time,
-        remindAt = reminder.remindAt,
+        remindAt = getRemindAtType(reminder.time, reminder.remindAt),
     )
 
     fun toRemoteReminder(): RemoteReminder =
@@ -189,7 +199,7 @@ data class Reminder(
             title = this.title,
             description = this.description,
             time = this.time,
-            remindAt = this.remindAt,
+            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
         )
 
     companion object {
@@ -199,9 +209,16 @@ data class Reminder(
                 title = "Meeting",
                 description = "Amet minim mollit non deserunt ullamco est",
                 time = 1678886400000,
-                remindAt = 1678886400000,
+                remindAt = RemindAtType.TEN_MINUTE,
             )
-        val EMPTY = Reminder(id = "", title = "", description = "", time = 0, remindAt = 0)
+        val EMPTY =
+            Reminder(
+                id = "",
+                title = "",
+                description = "",
+                time = Clock.System.now().toEpochMilliseconds(),
+                remindAt = RemindAtType.TEN_MINUTE,
+            )
     }
 
     override fun getStartTime(): Long = time
