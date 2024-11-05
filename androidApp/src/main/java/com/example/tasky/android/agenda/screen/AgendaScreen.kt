@@ -28,6 +28,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.tasky.agenda.data.model.AgendaItem
+import com.example.tasky.agenda.data.model.Event
+import com.example.tasky.agenda.data.model.Reminder
+import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.agenda.AgendaCard
 import com.example.tasky.android.agenda.components.agenda.AgendaDayBar
@@ -37,10 +41,6 @@ import com.example.tasky.android.agenda.components.agenda.AgendaTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.model.agenda.AgendaItem
-import com.example.tasky.model.agenda.Event
-import com.example.tasky.model.agenda.Reminder
-import com.example.tasky.model.agenda.Task
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -96,7 +96,9 @@ data class AgendaScreenState(
 sealed interface AgendaScreenEvent {
     data object OnClickLogout : AgendaScreenEvent
 
-    data class OnCreateClick(val type: AgendaDetailsScreenType) : AgendaScreenEvent
+    data class OnCreateClick(
+        val type: AgendaDetailsScreenType,
+    ) : AgendaScreenEvent
 
     data class OnDateSelect(
         val newDate: Long,

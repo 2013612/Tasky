@@ -15,16 +15,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.agenda.data.model.AgendaItem
+import com.example.tasky.agenda.data.model.Event
+import com.example.tasky.agenda.data.model.Reminder
+import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.DarkGray
 import com.example.tasky.android.theme.Green
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.LightGreen
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.model.agenda.AgendaItem
-import com.example.tasky.model.agenda.Event
-import com.example.tasky.model.agenda.Reminder
-import com.example.tasky.model.agenda.Task
 
 @Composable
 fun DetailsHeaderSection(

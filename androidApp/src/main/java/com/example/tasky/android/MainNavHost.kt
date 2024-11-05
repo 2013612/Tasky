@@ -9,7 +9,7 @@ import com.example.tasky.android.agenda.AgendaGraph
 import com.example.tasky.android.agenda.agendaGraph
 import com.example.tasky.android.login.LoginGraph
 import com.example.tasky.android.login.loginGraph
-import com.example.tasky.manager.loginManager
+import com.example.tasky.login.domain.manager.loginManager
 
 @Composable
 fun MainNavHost(
