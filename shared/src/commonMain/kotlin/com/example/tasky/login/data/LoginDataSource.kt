@@ -1,13 +1,13 @@
-package com.example.tasky.dataSource
+package com.example.tasky.login.data
 
+import com.example.tasky.login.data.model.Login
+import com.example.tasky.login.data.model.LoginBody
+import com.example.tasky.login.data.model.LoginResponse
+import com.example.tasky.login.data.model.Register
+import com.example.tasky.login.data.model.RegisterBody
 import com.example.tasky.manager.HttpManager
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
-import com.example.tasky.model.login.Login
-import com.example.tasky.model.login.LoginBody
-import com.example.tasky.model.login.LoginResponse
-import com.example.tasky.model.login.Register
-import com.example.tasky.model.login.RegisterBody
 import com.example.tasky.util.safeCall
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.post

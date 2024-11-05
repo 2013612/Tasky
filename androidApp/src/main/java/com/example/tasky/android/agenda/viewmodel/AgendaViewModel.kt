@@ -8,8 +8,8 @@ import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
-import com.example.tasky.manager.SessionManager
-import com.example.tasky.manager.loginManager
+import com.example.tasky.login.domain.SessionManager
+import com.example.tasky.login.domain.loginManager
 import com.example.tasky.model.onSuccess
 import com.example.tasky.util.getAvatarDisplayName
 import kotlinx.collections.immutable.toImmutableList

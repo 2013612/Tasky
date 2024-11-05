@@ -1,9 +1,10 @@
 package com.example.tasky.manager
 
 import com.example.tasky.BuildKonfig.API_KEY
+import com.example.tasky.login.data.model.AccessToken
+import com.example.tasky.login.data.model.AccessTokenResponse
+import com.example.tasky.login.domain.SessionManager
 import com.example.tasky.model.ErrorResponse
-import com.example.tasky.model.login.AccessToken
-import com.example.tasky.model.login.AccessTokenResponse
 import com.example.tasky.util.isSuccess
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ExperimentalSettingsImplementation
