@@ -1,5 +1,12 @@
-package com.example.tasky.agenda.data.model
+package com.example.tasky.agenda.domain.model
 
+import com.example.tasky.agenda.data.model.Attendee
+import com.example.tasky.agenda.data.model.CreateEventBody
+import com.example.tasky.agenda.data.model.Photo
+import com.example.tasky.agenda.data.model.RemoteEvent
+import com.example.tasky.agenda.data.model.RemoteReminder
+import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.agenda.data.model.UpdateEventBody
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,6 +44,49 @@ data class Event(
     val attendees: List<Attendee>,
     val photos: List<Photo>,
 ) : AgendaItem() {
+    constructor(remoteEvent: RemoteEvent) : this(
+        id = remoteEvent.id,
+        title = remoteEvent.title,
+        description = remoteEvent.description,
+        from = remoteEvent.from,
+        to = remoteEvent.to,
+        remindAt = remoteEvent.remindAt,
+        host = remoteEvent.host,
+        isUserEventCreator = remoteEvent.isUserEventCreator,
+        attendees = remoteEvent.attendees,
+        photos = remoteEvent.photos,
+    )
+
+    fun toUpdateEventBody(
+        deletedPhotoKeys: List<String>,
+        isGoing: Boolean,
+        photos: List<ByteArray>,
+    ): UpdateEventBody =
+        UpdateEventBody(
+            id = id,
+            title = title,
+            description = description,
+            from = from,
+            to = to,
+            remindAt = remindAt,
+            attendeeIds = attendees.map { it.userId },
+            deletedPhotoKeys = deletedPhotoKeys,
+            isGoing = isGoing,
+            photos = photos,
+        )
+
+    fun toCreateEventBody(photos: List<ByteArray>): CreateEventBody =
+        CreateEventBody(
+            id = id,
+            title = title,
+            description = description,
+            from = from,
+            to = to,
+            remindAt = remindAt,
+            attendeeIds = attendees.map { it.userId },
+            photos = photos,
+        )
+
     companion object {
         val DUMMY =
             Event(
@@ -70,58 +120,6 @@ data class Event(
 }
 
 @Serializable
-data class Attendee(
-    val email: String,
-    val fullName: String,
-    val userId: String,
-    val eventId: String,
-    val isGoing: Boolean,
-    val remindAt: Long,
-) {
-    companion object {
-        val DUMMY_LIST =
-            listOf(
-                Attendee(
-                    email = "attendee1@example.com",
-                    fullName = "Attendee 1 Name",
-                    userId = "user123",
-                    eventId = "event123",
-                    isGoing = true,
-                    remindAt = 1678886400000,
-                ),
-                Attendee(
-                    email = "attendee2@example.com",
-                    fullName = "Attendee 2 Name",
-                    userId = "user456",
-                    eventId = "event123",
-                    isGoing = false,
-                    remindAt = 1678886400000,
-                ),
-            )
-    }
-}
-
-@Serializable
-data class Photo(
-    val key: String,
-    val url: String,
-) {
-    companion object {
-        val DUMMY_LIST =
-            listOf(
-                Photo(
-                    key = "photoKey1",
-                    url = "https://example.com/photo1.jpg",
-                ),
-                Photo(
-                    key = "photoKey2",
-                    url = "https://example.com/photo2.jpg",
-                ),
-            )
-    }
-}
-
-@Serializable
 data class Task(
     override val id: String,
     override val title: String,
@@ -130,6 +128,27 @@ data class Task(
     override val remindAt: Long,
     val isDone: Boolean,
 ) : AgendaItem() {
+    constructor(
+        task: RemoteTask,
+    ) : this(
+        id = task.id,
+        title = task.title,
+        description = task.description,
+        time = task.time,
+        remindAt = task.remindAt,
+        isDone = task.isDone,
+    )
+
+    fun toRemoteTask(): RemoteTask =
+        RemoteTask(
+            id = this.id,
+            title = this.title,
+            description = this.description,
+            time = this.time,
+            remindAt = this.remindAt,
+            isDone = this.isDone,
+        )
+
     companion object {
         val DUMMY =
             Task(
@@ -154,6 +173,25 @@ data class Reminder(
     val time: Long,
     override val remindAt: Long,
 ) : AgendaItem() {
+    constructor(
+        reminder: RemoteReminder,
+    ) : this(
+        id = reminder.id,
+        title = reminder.title,
+        description = reminder.description,
+        time = reminder.time,
+        remindAt = reminder.remindAt,
+    )
+
+    fun toRemoteReminder(): RemoteReminder =
+        RemoteReminder(
+            id = this.id,
+            title = this.title,
+            description = this.description,
+            time = this.time,
+            remindAt = this.remindAt,
+        )
+
     companion object {
         val DUMMY =
             Reminder(

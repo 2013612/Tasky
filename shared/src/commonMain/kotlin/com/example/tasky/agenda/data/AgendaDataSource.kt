@@ -4,12 +4,12 @@ import com.example.tasky.agenda.data.model.Agenda
 import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.CreateReminderBody
 import com.example.tasky.agenda.data.model.CreateTaskBody
-import com.example.tasky.agenda.data.model.Event
 import com.example.tasky.agenda.data.model.EventPath
 import com.example.tasky.agenda.data.model.GetAgendaResponse
-import com.example.tasky.agenda.data.model.Reminder
 import com.example.tasky.agenda.data.model.ReminderPath
-import com.example.tasky.agenda.data.model.Task
+import com.example.tasky.agenda.data.model.RemoteEvent
+import com.example.tasky.agenda.data.model.RemoteReminder
+import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.TaskPath
 import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.data.model.UpdateReminderBody
@@ -66,7 +66,7 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> =
+    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
             httpClient.put(EventPath()) {
                 setBody(
@@ -111,7 +111,7 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> =
+    suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
             httpClient.post(EventPath()) {
                 setBody(
@@ -133,21 +133,21 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
+    suspend fun getEvent(eventId: String): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
             httpClient.get(EventPath()) {
                 parameter("eventId", eventId)
             }
         }
 
-    suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
+    suspend fun getTask(taskId: String): ResultWrapper<RemoteTask, BaseError> =
         safeCall {
             httpClient.get(TaskPath()) {
                 parameter("taskId", taskId)
             }
         }
 
-    suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
+    suspend fun getReminder(reminderId: String): ResultWrapper<RemoteReminder, BaseError> =
         safeCall {
             httpClient.get(ReminderPath()) {
                 parameter("reminderId", reminderId)

@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasky.agenda.data.model.AgendaItem
-import com.example.tasky.agenda.data.model.Task
+import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray

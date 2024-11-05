@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.data.model.Attendee
-import com.example.tasky.agenda.data.model.CreateEventBody
-import com.example.tasky.agenda.data.model.Event
-import com.example.tasky.agenda.data.model.Reminder
-import com.example.tasky.agenda.data.model.Task
-import com.example.tasky.agenda.data.model.UpdateEventBody
-import com.example.tasky.agenda.data.model.copy
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.Reminder
+import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.agenda.domain.model.copy
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
@@ -351,13 +349,10 @@ class AgendaDetailsViewModel(
                     skippedImageCount = localPhotos.size - compressedPhotos.size
 
                     agendaRepository.updateEvent(
-                        body =
-                            UpdateEventBody(
-                                event = agendaItem,
-                                deletedPhotoKeys = deletedPhotoKeys,
-                                isGoing = eventIsGoing,
-                                photos = compressedPhotos,
-                            ),
+                        event = agendaItem,
+                        deletedPhotoKeys = deletedPhotoKeys,
+                        isGoing = eventIsGoing,
+                        photos = compressedPhotos,
                     )
                 }
             }.onSuccess {
@@ -399,11 +394,8 @@ class AgendaDetailsViewModel(
                     skippedImageCount = localPhotos.size - compressedPhotos.size
 
                     agendaRepository.createEvent(
-                        body =
-                            CreateEventBody(
-                                event = agendaItem,
-                                photos = compressedPhotos,
-                            ),
+                        event = agendaItem,
+                        photos = compressedPhotos,
                     )
                 }
             }.onSuccess {

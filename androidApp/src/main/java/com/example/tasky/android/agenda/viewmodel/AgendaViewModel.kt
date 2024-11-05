@@ -2,9 +2,9 @@ package com.example.tasky.android.agenda.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.agenda.data.model.AgendaItem
-import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
@@ -37,9 +37,7 @@ class AgendaViewModel(
     fun onEvent(event: AgendaScreenEvent) {
         when (event) {
             AgendaScreenEvent.OnClickLogout -> logout()
-            AgendaScreenEvent.OnClickToCreateEvent -> {}
-            AgendaScreenEvent.OnClickToCreateReminder -> {}
-            AgendaScreenEvent.OnClickToCreateTask -> {}
+            is AgendaScreenEvent.OnCreateClick -> {}
             is AgendaScreenEvent.OnDateSelect ->
                 _screenStateFlow.update {
                     it.copy(
@@ -68,9 +66,7 @@ class AgendaViewModel(
     private fun getAgendas(timeStamp: Long) {
         viewModelScope.launch {
             agendaRepository.getAgenda(timeStamp = timeStamp).onSuccess { data ->
-                val itemList =
-                    (data.events + data.tasks + data.reminders)
-                        .sortedBy { it.getStartTime() }
+                val itemList = data.sortedBy { it.getStartTime() }
                 val index = getTimeNeedleDisplayIndex(itemList)
                 val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
                 itemUiList.add(index, AgendaItemUi.Needle)

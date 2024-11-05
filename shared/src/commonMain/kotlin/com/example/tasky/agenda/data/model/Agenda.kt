@@ -8,7 +8,7 @@ class Agenda
 
 @Serializable
 data class GetAgendaResponse(
-    val events: List<Event>,
-    val tasks: List<Task>,
-    val reminders: List<Reminder>,
+    val events: List<RemoteEvent>,
+    val tasks: List<RemoteTask>,
+    val reminders: List<RemoteReminder>,
 )
