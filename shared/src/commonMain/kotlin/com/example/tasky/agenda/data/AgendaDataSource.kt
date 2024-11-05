@@ -23,10 +23,14 @@ import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
-import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import kotlinx.serialization.encodeToString
 
 class AgendaDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
@@ -66,27 +70,31 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun updateEvent(
+        body: UpdateEventBody,
+        photos: List<ByteArray>,
+    ): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
-            httpClient.put(EventPath()) {
-                setBody(
-                    MultiPartFormDataContent(
-                        formData {
-                            append("id", body.id)
-                            append("title", body.title)
-                            append("description", body.description)
-                            append("from", body.from)
-                            append("to", body.to)
-                            append("remindAt", body.remindAt)
-                            append("attendeeIds", body.attendeeIds)
-                            append("deletedPhotoKeys", body.deletedPhotoKeys)
-                            append("isGoing", body.isGoing)
-                            body.photos.forEachIndexed { index, bytes ->
-                                append("photo$index", bytes)
-                            }
-                        },
-                    ),
-                )
+            val updateEventJson = HttpManager.json.encodeToString(body)
+            httpClient.submitFormWithBinaryData(
+                url = "/event",
+                formData =
+                    formData {
+                        photos.forEachIndexed { index, photoByteArray ->
+                            append("photo$index", photoByteArray)
+                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                        }
+                        append(
+                            "update_event_request",
+                            updateEventJson,
+                            Headers.build {
+                                append(HttpHeaders.ContentType, "text/plain")
+                                append(HttpHeaders.ContentDisposition, "form-data; name=\"update_event_request\"")
+                            },
+                        )
+                    },
+            ) {
+                method = HttpMethod.Put
             }
         }
 
@@ -111,25 +119,31 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun createEvent(
+        body: CreateEventBody,
+        photos: List<ByteArray>,
+    ): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
-            httpClient.post(EventPath()) {
-                setBody(
-                    MultiPartFormDataContent(
-                        formData {
-                            append("id", body.id)
-                            append("title", body.title)
-                            append("description", body.description)
-                            append("from", body.from)
-                            append("to", body.to)
-                            append("remindAt", body.remindAt)
-                            append("attendeeIds", body.attendeeIds)
-                            body.photos.forEachIndexed { index, bytes ->
-                                append("photo$index", bytes)
-                            }
-                        },
-                    ),
-                )
+            val createEventJson = HttpManager.json.encodeToString(body)
+            httpClient.submitFormWithBinaryData(
+                url = "/event",
+                formData =
+                    formData {
+                        photos.forEachIndexed { index, photoByteArray ->
+                            append("photo$index", photoByteArray)
+                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                        }
+                        append(
+                            "create_event_request",
+                            createEventJson,
+                            Headers.build {
+                                append(HttpHeaders.ContentType, "text/plain")
+                                append(HttpHeaders.ContentDisposition, "form-data; name=\"create_event_request\"")
+                            },
+                        )
+                    },
+            ) {
+                method = HttpMethod.Post
             }
         }
 

@@ -62,7 +62,6 @@ data class Event(
     fun toUpdateEventBody(
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
-        photos: List<ByteArray>,
     ): UpdateEventBody =
         UpdateEventBody(
             id = id,
@@ -74,10 +73,9 @@ data class Event(
             attendeeIds = attendees.map { it.userId },
             deletedPhotoKeys = deletedPhotoKeys,
             isGoing = isGoing,
-            photos = photos,
         )
 
-    fun toCreateEventBody(photos: List<ByteArray>): CreateEventBody =
+    fun toCreateEventBody(): CreateEventBody =
         CreateEventBody(
             id = id,
             title = title,
@@ -86,7 +84,6 @@ data class Event(
             to = to,
             remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
             attendeeIds = attendees.map { it.userId },
-            photos = photos,
         )
 
     companion object {

@@ -67,7 +67,7 @@ class AgendaRepository(
         isGoing: Boolean,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.updateEvent(body = event.toUpdateEventBody(deletedPhotoKeys, isGoing, photos)).map {
+        agendaDataSource.updateEvent(body = event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos = photos).map {
             Event(it)
         }
 
@@ -80,7 +80,7 @@ class AgendaRepository(
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.createEvent(body = event.toCreateEventBody(photos)).map {
+        agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
             Event(it)
         }
 

@@ -83,9 +83,9 @@ data class UpdateEventBody(
     val attendeeIds: List<String>,
     val deletedPhotoKeys: List<String>,
     val isGoing: Boolean,
-    val photos: List<ByteArray>,
 )
 
+@Serializable
 data class CreateEventBody(
     val id: String,
     val title: String,
@@ -94,5 +94,4 @@ data class CreateEventBody(
     val to: Long,
     val remindAt: Long,
     val attendeeIds: List<String>,
-    val photos: List<ByteArray>,
 )
