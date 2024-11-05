@@ -5,10 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.domain.IAgendaRepository
-import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task

@@ -12,6 +12,7 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.model.BaseError
 import com.example.tasky.common.model.ResultWrapper
+import com.example.tasky.common.model.map
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError>
@@ -53,18 +54,27 @@ class AgendaRepository(
 
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> = agendaDataSource.updateReminder(reminder)
 
-    override suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> = agendaDataSource.updateEvent(body = body)
+    override suspend fun updateEvent(body: UpdateEventBody): ResultWrapper<Event, BaseError> =
+        agendaDataSource.updateEvent(body = body).map {
+            Event(it)
+        }
 
     override suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = body)
 
     override suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
         agendaDataSource.createReminder(body = body)
 
-    override suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> = agendaDataSource.createEvent(body = body)
+    override suspend fun createEvent(body: CreateEventBody): ResultWrapper<Event, BaseError> =
+        agendaDataSource.createEvent(body = body).map {
+            Event(it)
+        }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> = agendaDataSource.getTask(taskId = taskId)
 
-    override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> = agendaDataSource.getEvent(eventId = eventId)
+    override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
+        agendaDataSource.getEvent(eventId = eventId).map {
+            Event(it)
+        }
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
         agendaDataSource.getReminder(reminderId = reminderId)

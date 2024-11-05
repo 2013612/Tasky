@@ -1,5 +1,8 @@
 package com.example.tasky.agenda.domain.model
 
+import com.example.tasky.agenda.data.model.Attendee
+import com.example.tasky.agenda.data.model.Photo
+import com.example.tasky.agenda.data.model.RemoteEvent
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,6 +40,19 @@ data class Event(
     val attendees: List<Attendee>,
     val photos: List<Photo>,
 ) : AgendaItem() {
+    constructor(remoteEvent: RemoteEvent) : this(
+        id = remoteEvent.id,
+        title = remoteEvent.title,
+        description = remoteEvent.description,
+        from = remoteEvent.from,
+        to = remoteEvent.to,
+        remindAt = remoteEvent.remindAt,
+        host = remoteEvent.host,
+        isUserEventCreator = remoteEvent.isUserEventCreator,
+        attendees = remoteEvent.attendees,
+        photos = remoteEvent.photos,
+    )
+
     companion object {
         val DUMMY =
             Event(
@@ -67,58 +83,6 @@ data class Event(
     }
 
     override fun getStartTime(): Long = from
-}
-
-@Serializable
-data class Attendee(
-    val email: String,
-    val fullName: String,
-    val userId: String,
-    val eventId: String,
-    val isGoing: Boolean,
-    val remindAt: Long,
-) {
-    companion object {
-        val DUMMY_LIST =
-            listOf(
-                Attendee(
-                    email = "attendee1@example.com",
-                    fullName = "Attendee 1 Name",
-                    userId = "user123",
-                    eventId = "event123",
-                    isGoing = true,
-                    remindAt = 1678886400000,
-                ),
-                Attendee(
-                    email = "attendee2@example.com",
-                    fullName = "Attendee 2 Name",
-                    userId = "user456",
-                    eventId = "event123",
-                    isGoing = false,
-                    remindAt = 1678886400000,
-                ),
-            )
-    }
-}
-
-@Serializable
-data class Photo(
-    val key: String,
-    val url: String,
-) {
-    companion object {
-        val DUMMY_LIST =
-            listOf(
-                Photo(
-                    key = "photoKey1",
-                    url = "https://example.com/photo1.jpg",
-                ),
-                Photo(
-                    key = "photoKey2",
-                    url = "https://example.com/photo2.jpg",
-                ),
-            )
-    }
 }
 
 @Serializable
