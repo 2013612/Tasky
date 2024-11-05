@@ -83,7 +83,6 @@ data class UpdateEventBody(
     val attendeeIds: List<String>,
     val deletedPhotoKeys: List<String>,
     val isGoing: Boolean,
-    val photos: List<ByteArray>,
 )
 
 data class CreateEventBody(
