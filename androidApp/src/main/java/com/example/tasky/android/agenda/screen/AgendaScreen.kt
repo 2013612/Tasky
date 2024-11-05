@@ -28,10 +28,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.tasky.agenda.data.model.AgendaItem
-import com.example.tasky.agenda.data.model.Event
-import com.example.tasky.agenda.data.model.Reminder
-import com.example.tasky.agenda.data.model.Task
+import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.Reminder
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.components.agenda.AgendaCard
 import com.example.tasky.android.agenda.components.agenda.AgendaDayBar

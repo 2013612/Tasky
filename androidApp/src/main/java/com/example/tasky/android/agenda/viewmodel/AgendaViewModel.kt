@@ -2,9 +2,9 @@ package com.example.tasky.android.agenda.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.agenda.data.model.AgendaItem
-import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState

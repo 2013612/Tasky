@@ -1,15 +1,15 @@
 package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
-import com.example.tasky.agenda.data.model.AgendaItem
 import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.CreateReminderBody
 import com.example.tasky.agenda.data.model.CreateTaskBody
-import com.example.tasky.agenda.data.model.Event
 import com.example.tasky.agenda.data.model.GetAgendaResponse
-import com.example.tasky.agenda.data.model.Reminder
-import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.agenda.data.model.UpdateEventBody
+import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.Reminder
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.model.BaseError
 import com.example.tasky.common.model.ResultWrapper
 

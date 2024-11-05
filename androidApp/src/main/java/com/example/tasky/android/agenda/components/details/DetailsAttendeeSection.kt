@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.tasky.agenda.data.model.Attendee
+import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light2
