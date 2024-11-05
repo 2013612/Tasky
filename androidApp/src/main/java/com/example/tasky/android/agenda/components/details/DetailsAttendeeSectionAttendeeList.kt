@@ -27,13 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.DarkGray
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.model.agenda.Attendee
 import com.example.tasky.util.getAvatarDisplayName
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList

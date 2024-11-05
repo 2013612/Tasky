@@ -1,17 +1,17 @@
-package com.example.tasky.repository
+package com.example.tasky.agenda.domain
 
-import com.example.tasky.dataSource.AgendaDataSource
+import com.example.tasky.agenda.data.AgendaDataSource
+import com.example.tasky.agenda.data.model.AgendaItem
+import com.example.tasky.agenda.data.model.CreateEventBody
+import com.example.tasky.agenda.data.model.CreateReminderBody
+import com.example.tasky.agenda.data.model.CreateTaskBody
+import com.example.tasky.agenda.data.model.Event
+import com.example.tasky.agenda.data.model.GetAgendaResponse
+import com.example.tasky.agenda.data.model.Reminder
+import com.example.tasky.agenda.data.model.Task
+import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.model.BaseError
 import com.example.tasky.model.ResultWrapper
-import com.example.tasky.model.agenda.AgendaItem
-import com.example.tasky.model.agenda.CreateEventBody
-import com.example.tasky.model.agenda.CreateReminderBody
-import com.example.tasky.model.agenda.CreateTaskBody
-import com.example.tasky.model.agenda.Event
-import com.example.tasky.model.agenda.GetAgendaResponse
-import com.example.tasky.model.agenda.Reminder
-import com.example.tasky.model.agenda.Task
-import com.example.tasky.model.agenda.UpdateEventBody
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError>

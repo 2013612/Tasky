@@ -28,13 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.agenda.data.model.AgendaItem
+import com.example.tasky.agenda.data.model.Event
+import com.example.tasky.agenda.data.model.Reminder
+import com.example.tasky.agenda.data.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.model.agenda.AgendaItem
-import com.example.tasky.model.agenda.Event
-import com.example.tasky.model.agenda.Reminder
-import com.example.tasky.model.agenda.Task
 import com.example.tasky.util.toLocalDateTime
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
