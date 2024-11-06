@@ -1,6 +1,5 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.RemoteAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
@@ -57,17 +56,6 @@ data class Event(
         attendees = remoteEvent.attendees.map { Attendee(it) },
         photos = remoteEvent.photos.map { Photo(it) },
     )
-
-    fun toCreateEventBody(): CreateEventBody =
-        CreateEventBody(
-            id = id,
-            title = title,
-            description = description,
-            from = from,
-            to = to,
-            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            attendeeIds = attendees.map { it.userId },
-        )
 
     companion object {
         val DUMMY =
