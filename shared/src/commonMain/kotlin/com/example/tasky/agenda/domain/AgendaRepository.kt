@@ -5,9 +5,9 @@ import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.common.model.BaseError
-import com.example.tasky.common.model.ResultWrapper
-import com.example.tasky.common.model.map
+import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.domain.model.ResultWrapper
+import com.example.tasky.common.domain.model.map
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>

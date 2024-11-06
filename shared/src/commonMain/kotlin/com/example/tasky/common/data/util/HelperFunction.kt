@@ -1,7 +1,7 @@
 package com.example.tasky.common.data.util
 
-import com.example.tasky.common.model.DataError
-import com.example.tasky.common.model.ResultWrapper
+import com.example.tasky.common.data.model.DataError
+import com.example.tasky.common.domain.model.ResultWrapper
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException

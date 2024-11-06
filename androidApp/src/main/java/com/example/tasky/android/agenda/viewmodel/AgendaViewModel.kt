@@ -8,7 +8,7 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
-import com.example.tasky.common.model.onSuccess
+import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.login.domain.manager.SessionManager
 import com.example.tasky.login.domain.manager.loginManager
 import com.example.tasky.login.domain.util.getAvatarDisplayName

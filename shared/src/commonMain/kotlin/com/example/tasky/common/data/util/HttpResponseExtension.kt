@@ -1,7 +1,7 @@
 package com.example.tasky.common.data.util
 
-import com.example.tasky.common.model.DataError
-import com.example.tasky.common.model.ResultWrapper
+import com.example.tasky.common.data.model.DataError
+import com.example.tasky.common.domain.model.ResultWrapper
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 

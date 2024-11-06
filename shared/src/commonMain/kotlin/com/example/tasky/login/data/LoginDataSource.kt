@@ -1,9 +1,9 @@
 package com.example.tasky.login.data
 
 import com.example.tasky.common.data.manager.HttpManager
+import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.data.util.safeCall
-import com.example.tasky.common.model.BaseError
-import com.example.tasky.common.model.ResultWrapper
+import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.login.data.model.Login
 import com.example.tasky.login.data.model.LoginBody
 import com.example.tasky.login.data.model.LoginResponse
