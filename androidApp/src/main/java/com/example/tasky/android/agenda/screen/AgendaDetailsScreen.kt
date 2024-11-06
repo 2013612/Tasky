@@ -29,9 +29,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.Photo
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task

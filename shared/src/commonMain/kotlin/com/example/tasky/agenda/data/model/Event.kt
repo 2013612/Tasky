@@ -17,7 +17,7 @@ data class RemoteEvent(
     val host: String,
     val isUserEventCreator: Boolean,
     val attendees: List<RemoteAttendee>,
-    val photos: List<Photo>,
+    val photos: List<RemotePhoto>,
 )
 
 @Serializable
@@ -31,24 +31,10 @@ data class RemoteAttendee(
 )
 
 @Serializable
-data class Photo(
+data class RemotePhoto(
     val key: String,
     val url: String,
-) {
-    companion object {
-        val DUMMY_LIST =
-            listOf(
-                Photo(
-                    key = "photoKey1",
-                    url = "https://example.com/photo1.jpg",
-                ),
-                Photo(
-                    key = "photoKey2",
-                    url = "https://example.com/photo2.jpg",
-                ),
-            )
-    }
-}
+)
 
 @Serializable
 data class UpdateEventBody(

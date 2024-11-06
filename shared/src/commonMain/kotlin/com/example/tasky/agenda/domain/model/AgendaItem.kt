@@ -1,9 +1,9 @@
 package com.example.tasky.agenda.domain.model
 
 import com.example.tasky.agenda.data.model.CreateEventBody
-import com.example.tasky.agenda.data.model.Photo
 import com.example.tasky.agenda.data.model.RemoteAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
+import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.UpdateEventBody
@@ -56,7 +56,7 @@ data class Event(
         host = remoteEvent.host,
         isUserEventCreator = remoteEvent.isUserEventCreator,
         attendees = remoteEvent.attendees.map { Attendee(it) },
-        photos = remoteEvent.photos,
+        photos = remoteEvent.photos.map { Photo(it) },
     )
 
     fun toUpdateEventBody(
@@ -154,6 +154,31 @@ data class Attendee(
                     eventId = "event123",
                     isGoing = false,
                     remindAt = 1678886400000,
+                ),
+            )
+    }
+}
+
+@Serializable
+data class Photo(
+    val key: String,
+    val url: String,
+) {
+    constructor(remotePhoto: RemotePhoto) : this(
+        key = remotePhoto.key,
+        url = remotePhoto.url,
+    )
+
+    companion object {
+        val DUMMY_LIST =
+            listOf(
+                Photo(
+                    key = "photoKey1",
+                    url = "https://example.com/photo1.jpg",
+                ),
+                Photo(
+                    key = "photoKey2",
+                    url = "https://example.com/photo2.jpg",
                 ),
             )
     }
