@@ -1,4 +1,4 @@
-package com.example.tasky.common.manager
+package com.example.tasky.common.data.manager
 
 import com.example.tasky.BuildKonfig.API_KEY
 import com.example.tasky.common.data.util.isSuccess
