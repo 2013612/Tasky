@@ -1,4 +1,4 @@
-package com.example.tasky.common.model
+package com.example.tasky.common.data.model
 
 interface BaseError
 

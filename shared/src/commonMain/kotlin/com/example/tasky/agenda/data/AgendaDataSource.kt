@@ -14,10 +14,10 @@ import com.example.tasky.agenda.data.model.TaskPath
 import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.data.model.UpdateReminderBody
 import com.example.tasky.agenda.data.model.UpdateTaskBody
-import com.example.tasky.common.manager.HttpManager
-import com.example.tasky.common.model.BaseError
-import com.example.tasky.common.model.ResultWrapper
-import com.example.tasky.common.util.safeCall
+import com.example.tasky.common.data.manager.HttpManager
+import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.util.safeCall
+import com.example.tasky.common.domain.model.ResultWrapper
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
