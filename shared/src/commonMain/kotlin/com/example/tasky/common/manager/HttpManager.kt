@@ -1,8 +1,8 @@
 package com.example.tasky.common.manager
 
 import com.example.tasky.BuildKonfig.API_KEY
+import com.example.tasky.common.data.util.isSuccess
 import com.example.tasky.common.model.ErrorResponse
-import com.example.tasky.common.util.isSuccess
 import com.example.tasky.login.data.model.AccessToken
 import com.example.tasky.login.data.model.AccessTokenResponse
 import com.example.tasky.login.domain.manager.SessionManager

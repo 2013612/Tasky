@@ -1,4 +1,4 @@
-package com.example.tasky.common.util
+package com.example.tasky.common.data.util
 
 import com.example.tasky.common.model.DataError
 import com.example.tasky.common.model.ResultWrapper
