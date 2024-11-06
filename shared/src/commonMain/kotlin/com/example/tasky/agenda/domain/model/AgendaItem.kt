@@ -1,15 +1,12 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.RemoteAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
-import com.example.tasky.agenda.data.model.UpdateEventBody
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import kotlin.time.DurationUnit
 
 @Serializable
 sealed class AgendaItem {
@@ -58,33 +55,6 @@ data class Event(
         attendees = remoteEvent.attendees.map { Attendee(it) },
         photos = remoteEvent.photos.map { Photo(it) },
     )
-
-    fun toUpdateEventBody(
-        deletedPhotoKeys: List<String>,
-        isGoing: Boolean,
-    ): UpdateEventBody =
-        UpdateEventBody(
-            id = id,
-            title = title,
-            description = description,
-            from = from,
-            to = to,
-            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            attendeeIds = attendees.map { it.userId },
-            deletedPhotoKeys = deletedPhotoKeys,
-            isGoing = isGoing,
-        )
-
-    fun toCreateEventBody(): CreateEventBody =
-        CreateEventBody(
-            id = id,
-            title = title,
-            description = description,
-            from = from,
-            to = to,
-            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            attendeeIds = attendees.map { it.userId },
-        )
 
     companion object {
         val DUMMY =
@@ -204,16 +174,6 @@ data class Task(
         isDone = task.isDone,
     )
 
-    fun toRemoteTask(): RemoteTask =
-        RemoteTask(
-            id = this.id,
-            title = this.title,
-            description = this.description,
-            time = this.time,
-            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            isDone = this.isDone,
-        )
-
     companion object {
         val DUMMY =
             Task(
@@ -255,15 +215,6 @@ data class Reminder(
         time = reminder.time,
         remindAt = getRemindAtType(reminder.time, reminder.remindAt),
     )
-
-    fun toRemoteReminder(): RemoteReminder =
-        RemoteReminder(
-            id = this.id,
-            title = this.title,
-            description = this.description,
-            time = this.time,
-            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-        )
 
     companion object {
         val DUMMY =
