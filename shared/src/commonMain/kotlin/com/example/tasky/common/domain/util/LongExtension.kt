@@ -1,4 +1,4 @@
-package com.example.tasky.common.util
+package com.example.tasky.common.domain.util
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
