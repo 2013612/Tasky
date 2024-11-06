@@ -175,16 +175,6 @@ data class Task(
         isDone = task.isDone,
     )
 
-    fun toRemoteTask(): RemoteTask =
-        RemoteTask(
-            id = this.id,
-            title = this.title,
-            description = this.description,
-            time = this.time,
-            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            isDone = this.isDone,
-        )
-
     companion object {
         val DUMMY =
             Task(
