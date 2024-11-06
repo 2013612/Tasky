@@ -1,8 +1,8 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.model.Attendee
 import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.Photo
+import com.example.tasky.agenda.data.model.RemoteAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
@@ -55,7 +55,7 @@ data class Event(
         remindAt = getRemindAtType(remoteEvent.from, remoteEvent.remindAt),
         host = remoteEvent.host,
         isUserEventCreator = remoteEvent.isUserEventCreator,
-        attendees = remoteEvent.attendees,
+        attendees = remoteEvent.attendees.map { Attendee(it) },
         photos = remoteEvent.photos,
     )
 
@@ -116,6 +116,47 @@ data class Event(
     }
 
     override fun getStartTime(): Long = from
+}
+
+@Serializable
+data class Attendee(
+    val email: String,
+    val fullName: String,
+    val userId: String,
+    val eventId: String,
+    val isGoing: Boolean,
+    val remindAt: Long,
+) {
+    constructor(remoteAttendee: RemoteAttendee) : this(
+        email = remoteAttendee.email,
+        fullName = remoteAttendee.fullName,
+        userId = remoteAttendee.userId,
+        eventId = remoteAttendee.eventId,
+        isGoing = remoteAttendee.isGoing,
+        remindAt = remoteAttendee.remindAt,
+    )
+
+    companion object {
+        val DUMMY_LIST =
+            listOf(
+                Attendee(
+                    email = "attendee1@example.com",
+                    fullName = "Attendee 1 Name",
+                    userId = "user123",
+                    eventId = "event123",
+                    isGoing = true,
+                    remindAt = 1678886400000,
+                ),
+                Attendee(
+                    email = "attendee2@example.com",
+                    fullName = "Attendee 2 Name",
+                    userId = "user456",
+                    eventId = "event123",
+                    isGoing = false,
+                    remindAt = 1678886400000,
+                ),
+            )
+    }
 }
 
 @Serializable
