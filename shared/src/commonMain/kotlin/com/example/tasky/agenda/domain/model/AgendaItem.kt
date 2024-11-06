@@ -6,7 +6,6 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
-import com.example.tasky.agenda.data.model.UpdateEventBody
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlin.time.DurationUnit
@@ -58,22 +57,6 @@ data class Event(
         attendees = remoteEvent.attendees.map { Attendee(it) },
         photos = remoteEvent.photos.map { Photo(it) },
     )
-
-    fun toUpdateEventBody(
-        deletedPhotoKeys: List<String>,
-        isGoing: Boolean,
-    ): UpdateEventBody =
-        UpdateEventBody(
-            id = id,
-            title = title,
-            description = description,
-            from = from,
-            to = to,
-            remindAt = from - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-            attendeeIds = attendees.map { it.userId },
-            deletedPhotoKeys = deletedPhotoKeys,
-            isGoing = isGoing,
-        )
 
     fun toCreateEventBody(): CreateEventBody =
         CreateEventBody(
