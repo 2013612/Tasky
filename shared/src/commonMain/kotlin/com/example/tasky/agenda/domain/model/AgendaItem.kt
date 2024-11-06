@@ -7,7 +7,6 @@ import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import kotlin.time.DurationUnit
 
 @Serializable
 sealed class AgendaItem {
@@ -216,15 +215,6 @@ data class Reminder(
         time = reminder.time,
         remindAt = getRemindAtType(reminder.time, reminder.remindAt),
     )
-
-    fun toRemoteReminder(): RemoteReminder =
-        RemoteReminder(
-            id = this.id,
-            title = this.title,
-            description = this.description,
-            time = this.time,
-            remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
-        )
 
     companion object {
         val DUMMY =
