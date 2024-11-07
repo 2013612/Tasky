@@ -1,14 +1,15 @@
-package com.example.tasky.agenda.domain.mapper
+package com.example.tasky.agenda.data.mapper
 
-import com.example.tasky.agenda.data.model.RemoteReminder
-import com.example.tasky.agenda.domain.model.Reminder
+import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.agenda.domain.model.Task
 import kotlin.time.DurationUnit
 
-fun Reminder.toRemoteReminder(): RemoteReminder =
-    RemoteReminder(
+fun Task.toRemoteTask(): RemoteTask =
+    RemoteTask(
         id = this.id,
         title = this.title,
         description = this.description,
         time = this.time,
         remindAt = time - remindAt.duration.toLong(DurationUnit.MILLISECONDS),
+        isDone = this.isDone,
     )
