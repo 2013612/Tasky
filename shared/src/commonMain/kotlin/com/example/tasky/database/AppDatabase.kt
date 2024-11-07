@@ -6,16 +6,20 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.tasky.database.dao.ReminderDao
+import com.example.tasky.database.dao.TaskDao
 import com.example.tasky.database.model.ReminderEntity
+import com.example.tasky.database.model.TaskEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 internal lateinit var database: AppDatabase
 
-@Database(entities = [ReminderEntity::class], version = 1)
+@Database(entities = [ReminderEntity::class, TaskEntity::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
+
+    abstract fun taskDao(): TaskDao
 }
 
 // The Room compiler generates the `actual` implementations.
