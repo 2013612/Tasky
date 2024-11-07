@@ -5,7 +5,9 @@ import com.example.tasky.android.agenda.di.agendaDetailsModule
 import com.example.tasky.android.agenda.di.agendaModule
 import com.example.tasky.android.login.di.registerModule
 import com.example.tasky.dataStore.createSettings
+import com.example.tasky.database.createDatabase
 import com.example.tasky.getDataStore
+import com.example.tasky.getDatabaseBuilder
 import com.example.tasky.login.domain.LoginRepository
 import com.example.tasky.login.domain.manager.LoginManager
 import com.example.tasky.login.domain.manager.loginManager
@@ -19,6 +21,7 @@ class MainApplication : Application() {
     @OptIn(ExperimentalSettingsApi::class, ExperimentalSettingsImplementation::class)
     override fun onCreate() {
         super.onCreate()
+        createDatabase(getDatabaseBuilder(this))
         startKoin {
             androidLogger()
             androidContext(this@MainApplication)
