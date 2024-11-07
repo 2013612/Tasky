@@ -6,9 +6,7 @@ import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import kotlinx.datetime.Clock
-import kotlinx.serialization.Serializable
 
-@Serializable
 sealed class AgendaItem {
     abstract val id: String
     abstract val title: String
@@ -30,7 +28,6 @@ fun AgendaItem.copy(
         is Task -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
     }
 
-@Serializable
 data class Event(
     override val id: String,
     override val title: String,
@@ -88,7 +85,6 @@ data class Event(
     override fun getStartTime(): Long = from
 }
 
-@Serializable
 data class Attendee(
     val email: String,
     val fullName: String,
@@ -129,7 +125,6 @@ data class Attendee(
     }
 }
 
-@Serializable
 data class Photo(
     val key: String,
     val url: String,
@@ -154,7 +149,6 @@ data class Photo(
     }
 }
 
-@Serializable
 data class Task(
     override val id: String,
     override val title: String,
@@ -198,7 +192,6 @@ data class Task(
     override fun getStartTime(): Long = time
 }
 
-@Serializable
 data class Reminder(
     override val id: String,
     override val title: String,
