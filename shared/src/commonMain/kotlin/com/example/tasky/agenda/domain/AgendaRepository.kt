@@ -91,8 +91,13 @@ class AgendaRepository(
 
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = task.toRemoteTask())
 
-    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
-        agendaDataSource.createReminder(body = reminder.toRemoteReminder())
+    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+        database.reminderDao().upsert(
+            reminder.toReminderEntity(),
+        )
+
+        return agendaDataSource.createReminder(body = reminder.toRemoteReminder())
+    }
 
     override suspend fun createEvent(
         event: Event,
