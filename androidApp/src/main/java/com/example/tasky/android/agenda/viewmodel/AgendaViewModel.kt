@@ -9,8 +9,8 @@ import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
 import com.example.tasky.common.domain.model.onSuccess
+import com.example.tasky.login.domain.manager.LoginManager
 import com.example.tasky.login.domain.manager.SessionManager
-import com.example.tasky.login.domain.manager.loginManager
 import com.example.tasky.login.domain.util.getAvatarDisplayName
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +21,7 @@ import kotlinx.datetime.Instant
 
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
+    private val loginManager: LoginManager,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6

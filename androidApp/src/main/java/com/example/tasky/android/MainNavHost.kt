@@ -9,12 +9,14 @@ import com.example.tasky.android.agenda.AgendaGraph
 import com.example.tasky.android.agenda.agendaGraph
 import com.example.tasky.android.login.LoginGraph
 import com.example.tasky.android.login.loginGraph
-import com.example.tasky.login.domain.manager.loginManager
+import com.example.tasky.login.domain.manager.LoginManager
+import org.koin.compose.koinInject
 
 @Composable
 fun MainNavHost(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
+    loginManager: LoginManager = koinInject(),
 ) {
     val isLogin = loginManager.isLoginFlow.collectAsState(false).value
 

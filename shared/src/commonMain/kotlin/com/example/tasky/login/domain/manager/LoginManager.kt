@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.encodeToString
 
-lateinit var loginManager: LoginManager
-
 @OptIn(ExperimentalSettingsApi::class)
 class LoginManager(
     private val settings: FlowSettings,
