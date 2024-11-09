@@ -1,20 +1,9 @@
 package com.example.tasky.database.model
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 import com.example.tasky.agenda.domain.model.RemindAtType
-
-data class EventWithAttendeeAndPhoto(
-    @Embedded val eventEntity: EventEntity,
-    @Relation(parentColumn = "id", entityColumn = "eventId")
-    val attendees: List<AttendeeEntity>,
-    @Relation(parentColumn = "id", entityColumn = "eventId")
-    val photos: List<PhotoEntity>,
-)
+import kotlinx.serialization.Serializable
 
 @Entity
 data class EventEntity(
@@ -26,41 +15,23 @@ data class EventEntity(
     val remindAt: RemindAtType,
     val host: String,
     val isUserEventCreator: Boolean,
+    val photos: List<PhotoSerialized>,
+    val attendees: List<AttendeeSerialized>,
 )
 
-@Entity(
-    primaryKeys = ["userId", "eventId"],
-    foreignKeys = [
-        ForeignKey(
-            entity = EventEntity::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("eventId"),
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
-    indices = [Index("eventId")],
-)
-data class AttendeeEntity(
-    val email: String,
-    val fullName: String,
+@Serializable
+data class AttendeeSerialized(
     val userId: String,
+    val email: String,
+    val name: String,
     val eventId: String,
     val isGoing: Boolean,
+    val remindAt: Long,
+    val isCreator: Boolean,
 )
 
-@Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = EventEntity::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("eventId"),
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
-    indices = [Index("eventId")],
-)
-data class PhotoEntity(
-    val eventId: String,
-    @PrimaryKey val key: String,
+@Serializable
+data class PhotoSerialized(
+    val key: String,
     val url: String,
 )

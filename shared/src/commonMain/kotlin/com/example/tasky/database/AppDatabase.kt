@@ -4,13 +4,13 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.example.tasky.database.converter.ListConverter
 import com.example.tasky.database.dao.EventDao
 import com.example.tasky.database.dao.ReminderDao
 import com.example.tasky.database.dao.TaskDao
-import com.example.tasky.database.model.AttendeeEntity
 import com.example.tasky.database.model.EventEntity
-import com.example.tasky.database.model.PhotoEntity
 import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,8 @@ import kotlinx.coroutines.IO
 
 internal lateinit var database: AppDatabase
 
-@Database(entities = [ReminderEntity::class, TaskEntity::class, EventEntity::class, AttendeeEntity::class, PhotoEntity::class], version = 1)
+@Database(entities = [ReminderEntity::class, TaskEntity::class, EventEntity::class], version = 1)
+@TypeConverters(ListConverter::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
