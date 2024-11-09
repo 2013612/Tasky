@@ -94,10 +94,15 @@ class AgendaRepository(
     override suspend fun createEvent(
         event: Event,
         photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
+    ): ResultWrapper<Event, BaseError> {
+        database.eventDao().upsertEvent(
+            event.toEventEntity(),
+        )
+
+        return agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
             Event(it)
         }
+    }
 
     @OptIn(ExperimentalUuidApi::class)
     override suspend fun createLocalEvent(): Event {
