@@ -27,7 +27,6 @@ data class AttendeeSerialized(
     val eventId: String,
     val isGoing: Boolean,
     val remindAt: Long,
-    val isCreator: Boolean,
 )
 
 @Serializable

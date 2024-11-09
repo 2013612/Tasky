@@ -6,12 +6,23 @@ import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.data.mapper.toUpdateEventBody
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
+import com.example.tasky.database.database
+import com.example.tasky.database.mapper.toEventEntity
+import com.example.tasky.database.mapper.toReminderEntity
+import com.example.tasky.database.mapper.toTaskEntity
+import com.example.tasky.login.domain.manager.SessionManager
+import kotlinx.datetime.Clock
+import kotlin.time.DurationUnit
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -37,6 +48,12 @@ interface IAgendaRepository {
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError>
+
+    suspend fun createLocalEvent(): Event
+
+    suspend fun createLocalReminder(): Reminder
+
+    suspend fun createLocalTask(): Task
 
     suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError>
 
@@ -75,18 +92,86 @@ class AgendaRepository(
             Event(it)
         }
 
-    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.createTask(body = task.toRemoteTask())
+    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
+        database.taskDao().upsert(task.toTaskEntity())
 
-    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
-        agendaDataSource.createReminder(body = reminder.toRemoteReminder())
+        return agendaDataSource.createTask(body = task.toRemoteTask())
+    }
+
+    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+        database.reminderDao().upsert(
+            reminder.toReminderEntity(),
+        )
+
+        return agendaDataSource.createReminder(body = reminder.toRemoteReminder())
+    }
 
     override suspend fun createEvent(
         event: Event,
         photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
+    ): ResultWrapper<Event, BaseError> {
+        database.eventDao().upsertEvent(
+            event.toEventEntity(),
+        )
+
+        return agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
             Event(it)
         }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun createLocalEvent(): Event {
+        val id = Uuid.random().toString()
+        val now = Clock.System.now().toEpochMilliseconds()
+        val userId = SessionManager.getUserId() ?: ""
+        val attendee =
+            Attendee(
+                email = "",
+                fullName = SessionManager.getFullName() ?: "",
+                userId = SessionManager.getUserId() ?: "",
+                eventId = id,
+                isGoing = true,
+                remindAt = now + RemindAtType.TEN_MINUTE.duration.toLong(DurationUnit.MILLISECONDS),
+            )
+
+        val event =
+            Event.EMPTY
+                .copy(
+                    id = id,
+                    from = now,
+                    to = now,
+                    host = userId,
+                    attendees = listOf(attendee),
+                )
+
+        database.eventDao().upsertEvent(
+            event.toEventEntity(),
+        )
+
+        return event
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun createLocalReminder(): Reminder {
+        val id = Uuid.random().toString()
+        val now = Clock.System.now().toEpochMilliseconds()
+        val reminder = Reminder.EMPTY.copy(id = id, time = now)
+
+        database.reminderDao().upsert(reminder.toReminderEntity())
+
+        return reminder
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun createLocalTask(): Task {
+        val id = Uuid.random().toString()
+        val now = Clock.System.now().toEpochMilliseconds()
+        val task = Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
+
+        database.taskDao().upsert(task.toTaskEntity())
+
+        return task
+    }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
         agendaDataSource.getTask(taskId = taskId).map {
