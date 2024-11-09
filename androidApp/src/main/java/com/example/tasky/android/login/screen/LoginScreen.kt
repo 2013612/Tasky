@@ -40,10 +40,11 @@ import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.loginScreen(navigateToSignUp: () -> Unit) {
     composable<Login> {
-        val viewModel: LoginViewModel = viewModel()
+        val viewModel: LoginViewModel = koinViewModel()
 
         val loginState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 

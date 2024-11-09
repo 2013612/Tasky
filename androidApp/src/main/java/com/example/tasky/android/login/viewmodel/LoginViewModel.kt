@@ -5,14 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
 import com.example.tasky.login.data.model.LoginBody
-import com.example.tasky.login.domain.manager.loginManager
+import com.example.tasky.login.domain.manager.LoginManager
 import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val loginManager: LoginManager,
+) : ViewModel() {
     private val _screenStateFlow = MutableStateFlow(LoginScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
