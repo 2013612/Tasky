@@ -17,6 +17,7 @@ import com.example.tasky.common.domain.model.map
 import com.example.tasky.database.database
 import com.example.tasky.database.mapper.toEventEntity
 import com.example.tasky.database.mapper.toReminderEntity
+import com.example.tasky.database.mapper.toTaskEntity
 import com.example.tasky.login.domain.manager.SessionManager
 import kotlinx.datetime.Clock
 import kotlin.time.DurationUnit
@@ -51,6 +52,8 @@ interface IAgendaRepository {
     suspend fun createLocalEvent(): Event
 
     suspend fun createLocalReminder(): Reminder
+
+    suspend fun createLocalTask(): Task
 
     suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError>
 
@@ -153,6 +156,17 @@ class AgendaRepository(
         database.reminderDao().upsert(reminder.toReminderEntity())
 
         return reminder
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun createLocalTask(): Task {
+        val id = Uuid.random().toString()
+        val now = Clock.System.now().toEpochMilliseconds()
+        val task = Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
+
+        database.taskDao().upsert(task.toTaskEntity())
+
+        return task
     }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
