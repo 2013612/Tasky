@@ -1,6 +1,7 @@
 package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
+import com.example.tasky.agenda.data.AgendaLocalDataSource
 import com.example.tasky.agenda.data.mapper.toCreateEventBody
 import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
@@ -12,10 +13,6 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
-import com.example.tasky.database.database
-import com.example.tasky.database.mapper.toEventEntity
-import com.example.tasky.database.mapper.toReminderEntity
-import com.example.tasky.database.mapper.toTaskEntity
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -51,6 +48,7 @@ interface IAgendaRepository {
 
 class AgendaRepository(
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
+    private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) =
         agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
@@ -80,15 +78,13 @@ class AgendaRepository(
         }
 
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
-        database.taskDao().upsert(task.toTaskEntity())
+        agendaLocalDataSource.upsertTask(task)
 
         return agendaDataSource.createTask(body = task.toRemoteTask())
     }
 
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
-        database.reminderDao().upsert(
-            reminder.toReminderEntity(),
-        )
+        agendaLocalDataSource.upsertReminder(reminder)
 
         return agendaDataSource.createReminder(body = reminder.toRemoteReminder())
     }
@@ -97,9 +93,7 @@ class AgendaRepository(
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> {
-        database.eventDao().upsertEvent(
-            event.toEventEntity(),
-        )
+        agendaLocalDataSource.upsertEvent(event)
 
         return agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
             Event(it)
