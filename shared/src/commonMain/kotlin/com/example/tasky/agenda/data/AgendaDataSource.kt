@@ -122,20 +122,13 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createEvent(
-        event: Event,
-        photos: List<ByteArray>,
-    ): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
             val createEventJson = HttpManager.json.encodeToString(event.toCreateEventBody())
             httpClient.submitFormWithBinaryData(
                 url = "/event",
                 formData =
                     formData {
-                        photos.forEachIndexed { index, photoByteArray ->
-                            append("photo$index", photoByteArray)
-                            append(HttpHeaders.ContentDisposition, "filename=${event.id}_picture$index.jpg")
-                        }
                         append(
                             "create_event_request",
                             createEventJson,

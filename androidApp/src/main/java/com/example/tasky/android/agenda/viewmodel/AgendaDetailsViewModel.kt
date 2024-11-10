@@ -392,7 +392,6 @@ class AgendaDetailsViewModel(
 
                     agendaRepository.createEvent(
                         event = agendaItem,
-                        photos = compressedPhotos,
                     )
                 }
             }.onSuccess {

@@ -31,10 +31,7 @@ interface IAgendaRepository {
 
     suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError>
 
-    suspend fun createEvent(
-        event: Event,
-        photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError>
+    suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError>
 
     suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError>
 
@@ -112,13 +109,10 @@ class AgendaRepository(
         return agendaDataSource.createReminder(reminder)
     }
 
-    override suspend fun createEvent(
-        event: Event,
-        photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> {
+    override suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError> {
         agendaLocalDataSource.upsertEvent(event = event, isGoing = true)
 
-        return agendaDataSource.createEvent(event = event, photos = photos).map {
+        return agendaDataSource.createEvent(event = event).map {
             Event(it)
         }
     }
