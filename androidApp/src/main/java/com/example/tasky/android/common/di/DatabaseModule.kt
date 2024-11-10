@@ -7,7 +7,7 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val databaseModule =
-    module {
+    module(createdAtStart = true) {
         single<AppDatabase> {
             createDatabase(getDatabaseBuilder(androidApplication()))
         }
