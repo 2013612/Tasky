@@ -19,9 +19,9 @@ object AgendaGraph
 fun NavGraphBuilder.agendaGraph(navController: NavController) {
     navigation<AgendaGraph>(startDestination = Agenda) {
         agendaScreen(
-            navigateToCreateAgenda = { type ->
+            navigateToCreateAgenda = { id, type ->
                 navController.navigateToAgendaDetails(
-                    agendaId = "",
+                    agendaId = id,
                     type = type,
                     isEdit = true,
                 )

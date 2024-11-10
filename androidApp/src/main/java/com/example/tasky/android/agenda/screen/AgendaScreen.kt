@@ -38,9 +38,11 @@ import com.example.tasky.android.agenda.components.agenda.AgendaDayBar
 import com.example.tasky.android.agenda.components.agenda.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.components.agenda.AgendaTimeNeedle
 import com.example.tasky.android.agenda.components.agenda.AgendaTopBar
+import com.example.tasky.android.agenda.viewmodel.AgendaOneTimeEvent
 import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.android.utils.ObserveAsEvents
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -54,7 +56,7 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.agendaScreen(
-    navigateToCreateAgenda: (AgendaDetailsScreenType) -> Unit,
+    navigateToCreateAgenda: (String, AgendaDetailsScreenType) -> Unit,
     navigateToAgendaDetails: (AgendaItem) -> Unit,
     navigateToEditAgenda: (AgendaItem) -> Unit,
 ) {
@@ -63,13 +65,20 @@ fun NavGraphBuilder.agendaScreen(
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
+        ObserveAsEvents(viewModel.eventsFlow) { event ->
+            when (event) {
+                is AgendaOneTimeEvent.OnAgendaCreate -> {
+                    navigateToCreateAgenda(event.id, event.type)
+                }
+            }
+        }
+
         LaunchedEffect(true) {
             viewModel.initState()
         }
 
         AgendaScreen(screenState, onEvent = { event ->
             when (event) {
-                is AgendaScreenEvent.OnCreateClick -> navigateToCreateAgenda(event.type)
                 is AgendaScreenEvent.OnEditClick -> navigateToEditAgenda(event.agendaItem)
                 is AgendaScreenEvent.OnOpenClick -> navigateToAgendaDetails(event.agendaItem)
                 else -> viewModel.onEvent(event)
