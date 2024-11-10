@@ -4,7 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Attendee
+import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.RemindAtType
+import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
@@ -13,11 +18,24 @@ import com.example.tasky.login.domain.manager.LoginManager
 import com.example.tasky.login.domain.manager.SessionManager
 import com.example.tasky.login.domain.util.getAvatarDisplayName
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.time.DurationUnit
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+sealed interface AgendaOneTimeEvent {
+    data class OnAgendaCreate(
+        val id: String,
+        val type: AgendaDetailsScreenType,
+    ) : AgendaOneTimeEvent
+}
 
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
@@ -30,7 +48,10 @@ class AgendaViewModel(
     private val _screenStateFlow = MutableStateFlow(AgendaScreenState(numberOfDateShown = DEFAULT_DAYS_TO_SHOW))
     val screenStateFlow = _screenStateFlow.asStateFlow()
 
-    fun initState() {
+    private val eventsChannel = Channel<AgendaOneTimeEvent>()
+    val eventsFlow = eventsChannel.receiveAsFlow()
+
+    init {
         getAgendas(System.currentTimeMillis())
         updateName()
     }
@@ -38,7 +59,7 @@ class AgendaViewModel(
     fun onEvent(event: AgendaScreenEvent) {
         when (event) {
             AgendaScreenEvent.OnClickLogout -> logout()
-            is AgendaScreenEvent.OnCreateClick -> {}
+            is AgendaScreenEvent.OnCreateClick -> createAgendaItem(event.type)
             is AgendaScreenEvent.OnDateSelect ->
                 _screenStateFlow.update {
                     it.copy(
@@ -108,6 +129,54 @@ class AgendaViewModel(
                 val index = newList.indexOf(AgendaItemUi.Item(task))
                 newList[index] = AgendaItemUi.Item(body)
                 _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun createAgendaItem(type: AgendaDetailsScreenType) {
+        viewModelScope.launch {
+            val id = Uuid.random().toString()
+            val now = Clock.System.now().toEpochMilliseconds()
+
+            when (type) {
+                AgendaDetailsScreenType.TASK ->
+                    agendaRepository.createTask(
+                        Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
+                    )
+                AgendaDetailsScreenType.EVENT -> {
+                    val userId = SessionManager.getUserId() ?: ""
+                    val attendee =
+                        Attendee(
+                            email = "",
+                            fullName = SessionManager.getFullName() ?: "",
+                            userId = SessionManager.getUserId() ?: "",
+                            eventId = id,
+                            isGoing = true,
+                            remindAt =
+                                now +
+                                    RemindAtType.TEN_MINUTE.duration.toLong(
+                                        DurationUnit.MILLISECONDS,
+                                    ),
+                        )
+
+                    agendaRepository.createEvent(
+                        Event.EMPTY.copy(
+                            id = id,
+                            from = now,
+                            to = now,
+                            remindAt = RemindAtType.TEN_MINUTE,
+                            host = userId,
+                            attendees = listOf(attendee),
+                        ),
+                    )
+                }
+                AgendaDetailsScreenType.REMINDER ->
+                    agendaRepository.createReminder(
+                        Reminder.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
+                    )
+            }.onSuccess {
+                eventsChannel.send(AgendaOneTimeEvent.OnAgendaCreate(id, type))
             }
         }
     }

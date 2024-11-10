@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.domain.IAgendaRepository
-import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
@@ -28,13 +27,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlin.time.DurationUnit
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -74,52 +71,10 @@ class AgendaDetailsViewModel(
     private val deletedPhotoKeys = mutableListOf<String>()
 
     init {
-        if (routeArguments.agendaId.isEmpty()) {
-            createLocalAgenda()
-        } else {
-            fetchRemoteAgenda()
-        }
+        getAgenda()
     }
 
-    private fun createLocalAgenda() {
-        viewModelScope.launch {
-            val id = Uuid.random().toString()
-            val now = Clock.System.now().toEpochMilliseconds()
-
-            _screenStateFlow.update {
-                it.copy(
-                    agendaItem =
-                        when (routeArguments.type) {
-                            AgendaDetailsScreenType.TASK -> Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
-                            AgendaDetailsScreenType.EVENT -> {
-                                val userId = SessionManager.getUserId() ?: ""
-                                val attendee =
-                                    Attendee(
-                                        email = "",
-                                        fullName = SessionManager.getFullName() ?: "",
-                                        userId = SessionManager.getUserId() ?: "",
-                                        eventId = id,
-                                        isGoing = true,
-                                        remindAt = now + RemindAtType.TEN_MINUTE.duration.toLong(DurationUnit.MILLISECONDS),
-                                    )
-
-                                Event.EMPTY.copy(
-                                    id = id,
-                                    from = now,
-                                    to = now,
-                                    remindAt = RemindAtType.TEN_MINUTE,
-                                    host = userId,
-                                    attendees = listOf(attendee),
-                                )
-                            }
-                            AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
-                        },
-                )
-            }
-        }
-    }
-
-    private fun fetchRemoteAgenda() {
+    private fun getAgenda() {
         viewModelScope.launch {
             when (routeArguments.type) {
                 AgendaDetailsScreenType.TASK -> agendaRepository.getTask(taskId = routeArguments.agendaId)
@@ -317,11 +272,7 @@ class AgendaDetailsViewModel(
     }
 
     private fun saveAgenda() {
-        if (routeArguments.agendaId.isEmpty()) {
-            createRemoteAgenda()
-        } else {
-            updateRemoteAgenda()
-        }
+        updateRemoteAgenda()
     }
 
     private fun updateRemoteAgenda() {
@@ -349,49 +300,6 @@ class AgendaDetailsViewModel(
                         event = agendaItem,
                         deletedPhotoKeys = deletedPhotoKeys,
                         isGoing = eventIsGoing,
-                        photos = compressedPhotos,
-                    )
-                }
-            }.onSuccess {
-                if (it is Event) {
-                    _screenStateFlow.update { state ->
-                        state.copy(agendaItem = it, photos = it.photos.map { photo -> DetailsPhoto.RemotePhoto(photo) }, isEdit = false)
-                    }
-
-                    if (skippedImageCount > 0) {
-                        eventsChannel.send(AgendaDetailsOneTimeEvent.OnPhotoSkipped(skippedImageCount))
-                    }
-                } else {
-                    _screenStateFlow.update { state ->
-                        state.copy(isEdit = false)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun createRemoteAgenda() {
-        viewModelScope.launch {
-            val agendaItem = screenStateFlow.value.agendaItem
-            var skippedImageCount = 0
-
-            when (agendaItem) {
-                is Task -> agendaRepository.createTask(agendaItem)
-                is Reminder -> agendaRepository.createReminder(agendaItem)
-                is Event -> {
-                    val localPhotos = screenStateFlow.value.photos.filterIsInstance<DetailsPhoto.LocalPhoto>()
-                    val compressedPhotos =
-                        localPhotos
-                            .mapNotNull {
-                                imageCompressor.compressImage(
-                                    it.uri,
-                                    1024L,
-                                )
-                            }.filter { it.size <= 1024 }
-                    skippedImageCount = localPhotos.size - compressedPhotos.size
-
-                    agendaRepository.createEvent(
-                        event = agendaItem,
                         photos = compressedPhotos,
                     )
                 }
