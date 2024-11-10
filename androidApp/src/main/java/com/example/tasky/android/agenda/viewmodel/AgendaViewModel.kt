@@ -51,7 +51,7 @@ class AgendaViewModel(
     private val eventsChannel = Channel<AgendaOneTimeEvent>()
     val eventsFlow = eventsChannel.receiveAsFlow()
 
-    fun initState() {
+    init {
         getAgendas(System.currentTimeMillis())
         updateName()
     }
