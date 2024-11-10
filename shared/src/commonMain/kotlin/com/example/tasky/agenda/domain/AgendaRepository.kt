@@ -53,9 +53,18 @@ class AgendaRepository(
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> =
         when (agendaItem) {
-            is Event -> agendaDataSource.deleteEvent(agendaItem.id)
-            is Task -> agendaDataSource.deleteTask(agendaItem.id)
-            is Reminder -> agendaDataSource.deleteReminder(agendaItem.id)
+            is Event -> {
+                agendaLocalDataSource.deleteEvent(agendaItem.id)
+                agendaDataSource.deleteEvent(agendaItem.id)
+            }
+            is Task -> {
+                agendaLocalDataSource.deleteTask(agendaItem.id)
+                agendaDataSource.deleteTask(agendaItem.id)
+            }
+            is Reminder -> {
+                agendaLocalDataSource.deleteReminder(agendaItem.id)
+                agendaDataSource.deleteReminder(agendaItem.id)
+            }
         }
 
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task)
