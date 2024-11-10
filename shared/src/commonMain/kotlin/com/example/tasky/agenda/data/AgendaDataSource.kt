@@ -1,9 +1,10 @@
 package com.example.tasky.agenda.data
 
+import com.example.tasky.agenda.data.mapper.toCreateEventBody
+import com.example.tasky.agenda.data.mapper.toRemoteReminder
+import com.example.tasky.agenda.data.mapper.toRemoteTask
+import com.example.tasky.agenda.data.mapper.toUpdateEventBody
 import com.example.tasky.agenda.data.model.Agenda
-import com.example.tasky.agenda.data.model.CreateEventBody
-import com.example.tasky.agenda.data.model.CreateReminderBody
-import com.example.tasky.agenda.data.model.CreateTaskBody
 import com.example.tasky.agenda.data.model.EventPath
 import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.data.model.ReminderPath
@@ -11,9 +12,9 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.TaskPath
-import com.example.tasky.agenda.data.model.UpdateEventBody
-import com.example.tasky.agenda.data.model.UpdateReminderBody
-import com.example.tasky.agenda.data.model.UpdateTaskBody
+import com.example.tasky.agenda.domain.model.Event
+import com.example.tasky.agenda.domain.model.Reminder
+import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.manager.HttpManager
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.data.util.safeCall
@@ -63,26 +64,28 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateTask(body: UpdateTaskBody): ResultWrapper<Unit, BaseError> =
+    suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.put(TaskPath()) {
-                setBody(body)
+                setBody(task.toRemoteTask())
             }
         }
 
     suspend fun updateEvent(
-        body: UpdateEventBody,
+        event: Event,
+        deletedPhotoKeys: List<String>,
+        isGoing: Boolean,
         photos: List<ByteArray>,
     ): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
-            val updateEventJson = HttpManager.json.encodeToString(body)
+            val updateEventJson = HttpManager.json.encodeToString(event.toUpdateEventBody(deletedPhotoKeys, isGoing))
             httpClient.submitFormWithBinaryData(
                 url = "/event",
                 formData =
                     formData {
                         photos.forEachIndexed { index, photoByteArray ->
                             append("photo$index", photoByteArray)
-                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                            append(HttpHeaders.ContentDisposition, "filename=${event.id}_picture$index.jpg")
                         }
                         append(
                             "update_event_request",
@@ -98,40 +101,40 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateReminder(body: UpdateReminderBody): ResultWrapper<Unit, BaseError> =
+    suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.put(ReminderPath()) {
-                setBody(body)
+                setBody(reminder.toRemoteReminder())
             }
         }
 
-    suspend fun createTask(body: CreateTaskBody): ResultWrapper<Unit, BaseError> =
+    suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.post(TaskPath()) {
-                setBody(body)
+                setBody(task.toRemoteTask())
             }
         }
 
-    suspend fun createReminder(body: CreateReminderBody): ResultWrapper<Unit, BaseError> =
+    suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.post(ReminderPath()) {
-                setBody(body)
+                setBody(reminder.toRemoteReminder())
             }
         }
 
     suspend fun createEvent(
-        body: CreateEventBody,
+        event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
-            val createEventJson = HttpManager.json.encodeToString(body)
+            val createEventJson = HttpManager.json.encodeToString(event.toCreateEventBody())
             httpClient.submitFormWithBinaryData(
                 url = "/event",
                 formData =
                     formData {
                         photos.forEachIndexed { index, photoByteArray ->
                             append("photo$index", photoByteArray)
-                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                            append(HttpHeaders.ContentDisposition, "filename=${event.id}_picture$index.jpg")
                         }
                         append(
                             "create_event_request",
