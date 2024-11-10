@@ -1,28 +1,15 @@
 package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
-import com.example.tasky.agenda.data.mapper.toCreateEventBody
-import com.example.tasky.agenda.data.mapper.toRemoteReminder
-import com.example.tasky.agenda.data.mapper.toRemoteTask
-import com.example.tasky.agenda.data.mapper.toUpdateEventBody
+import com.example.tasky.agenda.data.AgendaLocalDataSource
 import com.example.tasky.agenda.domain.model.AgendaItem
-import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
-import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
-import com.example.tasky.database.database
-import com.example.tasky.database.mapper.toEventEntity
-import com.example.tasky.database.mapper.toReminderEntity
-import com.example.tasky.database.mapper.toTaskEntity
-import com.example.tasky.login.domain.manager.SessionManager
-import kotlinx.datetime.Clock
-import kotlin.time.DurationUnit
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import com.example.tasky.common.domain.model.onSuccess
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -49,12 +36,6 @@ interface IAgendaRepository {
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError>
 
-    suspend fun createLocalEvent(): Event
-
-    suspend fun createLocalReminder(): Reminder
-
-    suspend fun createLocalTask(): Task
-
     suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError>
 
     suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError>
@@ -64,6 +45,7 @@ interface IAgendaRepository {
 
 class AgendaRepository(
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
+    private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) =
         agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
@@ -72,105 +54,73 @@ class AgendaRepository(
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> =
         when (agendaItem) {
-            is Event -> agendaDataSource.deleteEvent(agendaItem.id)
-            is Task -> agendaDataSource.deleteTask(agendaItem.id)
-            is Reminder -> agendaDataSource.deleteReminder(agendaItem.id)
+            is Event -> {
+                agendaLocalDataSource.deleteEvent(agendaItem.id)
+                agendaDataSource.deleteEvent(agendaItem.id)
+            }
+            is Task -> {
+                agendaLocalDataSource.deleteTask(agendaItem.id)
+                agendaDataSource.deleteTask(agendaItem.id)
+            }
+            is Reminder -> {
+                agendaLocalDataSource.deleteReminder(agendaItem.id)
+                agendaDataSource.deleteReminder(agendaItem.id)
+            }
         }
 
-    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task.toRemoteTask())
+    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
+        agendaLocalDataSource.upsertTask(task)
 
-    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
-        agendaDataSource.updateReminder(reminder.toRemoteReminder())
+        return agendaDataSource.updateTask(task)
+    }
+
+    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+        agendaLocalDataSource.upsertReminder(reminder)
+
+        return agendaDataSource.updateReminder(reminder)
+    }
 
     override suspend fun updateEvent(
         event: Event,
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
         photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.updateEvent(body = event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos = photos).map {
-            Event(it)
+    ): ResultWrapper<Event, BaseError> {
+        agendaLocalDataSource.upsertEvent(event, isGoing)
+
+        val result =
+            agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
+                Event(it)
+            }
+
+        result.onSuccess {
+            agendaLocalDataSource.upsertEvent(it, isGoing)
         }
 
-    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
-        database.taskDao().upsert(task.toTaskEntity())
+        return result
+    }
 
-        return agendaDataSource.createTask(body = task.toRemoteTask())
+    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
+        agendaLocalDataSource.upsertTask(task)
+
+        return agendaDataSource.createTask(task)
     }
 
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
-        database.reminderDao().upsert(
-            reminder.toReminderEntity(),
-        )
+        agendaLocalDataSource.upsertReminder(reminder)
 
-        return agendaDataSource.createReminder(body = reminder.toRemoteReminder())
+        return agendaDataSource.createReminder(reminder)
     }
 
     override suspend fun createEvent(
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> {
-        database.eventDao().upsertEvent(
-            event.toEventEntity(),
-        )
+        agendaLocalDataSource.upsertEvent(event = event, isGoing = true)
 
-        return agendaDataSource.createEvent(body = event.toCreateEventBody(), photos = photos).map {
+        return agendaDataSource.createEvent(event = event, photos = photos).map {
             Event(it)
         }
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    override suspend fun createLocalEvent(): Event {
-        val id = Uuid.random().toString()
-        val now = Clock.System.now().toEpochMilliseconds()
-        val userId = SessionManager.getUserId() ?: ""
-        val attendee =
-            Attendee(
-                email = "",
-                fullName = SessionManager.getFullName() ?: "",
-                userId = SessionManager.getUserId() ?: "",
-                eventId = id,
-                isGoing = true,
-                remindAt = now + RemindAtType.TEN_MINUTE.duration.toLong(DurationUnit.MILLISECONDS),
-            )
-
-        val event =
-            Event.EMPTY
-                .copy(
-                    id = id,
-                    from = now,
-                    to = now,
-                    host = userId,
-                    attendees = listOf(attendee),
-                )
-
-        database.eventDao().upsertEvent(
-            event.toEventEntity(),
-        )
-
-        return event
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    override suspend fun createLocalReminder(): Reminder {
-        val id = Uuid.random().toString()
-        val now = Clock.System.now().toEpochMilliseconds()
-        val reminder = Reminder.EMPTY.copy(id = id, time = now)
-
-        database.reminderDao().upsert(reminder.toReminderEntity())
-
-        return reminder
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    override suspend fun createLocalTask(): Task {
-        val id = Uuid.random().toString()
-        val now = Clock.System.now().toEpochMilliseconds()
-        val task = Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE)
-
-        database.taskDao().upsert(task.toTaskEntity())
-
-        return task
     }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
