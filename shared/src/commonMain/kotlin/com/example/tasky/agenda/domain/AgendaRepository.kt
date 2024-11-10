@@ -9,6 +9,7 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
+import com.example.tasky.common.domain.model.onSuccess
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -67,19 +68,37 @@ class AgendaRepository(
             }
         }
 
-    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> = agendaDataSource.updateTask(task)
+    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
+        agendaLocalDataSource.upsertTask(task)
 
-    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> = agendaDataSource.updateReminder(reminder)
+        return agendaDataSource.updateTask(task)
+    }
+
+    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+        agendaLocalDataSource.upsertReminder(reminder)
+
+        return agendaDataSource.updateReminder(reminder)
+    }
 
     override suspend fun updateEvent(
         event: Event,
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
         photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> =
-        agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
-            Event(it)
+    ): ResultWrapper<Event, BaseError> {
+        agendaLocalDataSource.upsertEvent(event, isGoing)
+
+        val result =
+            agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
+                Event(it)
+            }
+
+        result.onSuccess {
+            agendaLocalDataSource.upsertEvent(it, isGoing)
         }
+
+        return result
+    }
 
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)
@@ -97,7 +116,7 @@ class AgendaRepository(
         event: Event,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> {
-        agendaLocalDataSource.upsertEvent(event)
+        agendaLocalDataSource.upsertEvent(event = event, isGoing = true)
 
         return agendaDataSource.createEvent(event = event, photos = photos).map {
             Event(it)
