@@ -23,4 +23,20 @@ class AgendaLocalDataSource(
     fun deleteReminder(reminderId: String) {
         appDatabase.reminderDao().delete(Reminder.EMPTY.copy(id = reminderId).toReminderEntity())
     }
+
+    fun upsertEvent(event: Event) {
+        appDatabase.eventDao().upsertEvent(
+            event.toEventEntity(),
+        )
+    }
+
+    fun upsertTask(task: Task) {
+        appDatabase.taskDao().upsert(task.toTaskEntity())
+    }
+
+    fun upsertReminder(reminder: Reminder) {
+        appDatabase.reminderDao().upsert(
+            reminder.toReminderEntity(),
+        )
+    }
 }
