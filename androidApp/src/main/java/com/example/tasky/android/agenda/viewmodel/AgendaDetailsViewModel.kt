@@ -168,7 +168,21 @@ class AgendaDetailsViewModel(
     }
 
     private fun addAttendee(email: String) {
-        // TODO
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        viewModelScope.launch {
+            agendaRepository.getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from).onSuccess {
+                it?.let { newAttendee ->
+                    _screenStateFlow.update { state ->
+                        state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + newAttendee))
+                    }
+                }
+            }
+        }
     }
 
     private fun deleteAttendee(id: String) {
