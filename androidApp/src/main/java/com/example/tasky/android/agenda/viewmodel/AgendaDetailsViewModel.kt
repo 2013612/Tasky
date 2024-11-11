@@ -176,8 +176,26 @@ class AgendaDetailsViewModel(
     }
 
     private fun toggleIsGoing() {
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
         viewModelScope.launch {
-            // TODO
+            val userId = SessionManager.getUserId() ?: ""
+            val newAttendees = agendaItem.attendees.toMutableList()
+            val attendeeIndex = newAttendees.indexOfFirst { it.userId == userId }
+            if (attendeeIndex >= 0) {
+                val newAttendee = newAttendees[attendeeIndex].copy(isGoing = !newAttendees[attendeeIndex].isGoing)
+                newAttendees[attendeeIndex] = newAttendee
+                _screenStateFlow.update {
+                    it.copy(
+                        agendaItem = agendaItem.copy(attendees = newAttendees),
+                        eventIsGoing = newAttendee.isGoing,
+                    )
+                }
+            }
         }
     }
 

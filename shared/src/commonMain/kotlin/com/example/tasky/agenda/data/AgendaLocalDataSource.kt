@@ -8,7 +8,6 @@ import com.example.tasky.database.database
 import com.example.tasky.database.mapper.toEventEntity
 import com.example.tasky.database.mapper.toReminderEntity
 import com.example.tasky.database.mapper.toTaskEntity
-import com.example.tasky.login.domain.manager.SessionManager
 
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
@@ -25,20 +24,9 @@ class AgendaLocalDataSource(
         appDatabase.reminderDao().delete(Reminder.EMPTY.copy(id = reminderId).toReminderEntity())
     }
 
-    suspend fun upsertEvent(
-        event: Event,
-        isGoing: Boolean,
-    ) {
-        val userId = SessionManager.getUserId() ?: ""
-        val newAttendees = event.attendees.toMutableList()
-        val attendeeIndex = newAttendees.indexOfFirst { it.userId == userId }
-        if (attendeeIndex >= 0) {
-            val newAttendee = newAttendees[attendeeIndex].copy(isGoing = isGoing)
-            newAttendees[attendeeIndex] = newAttendee
-        }
-
+    fun upsertEvent(event: Event) {
         appDatabase.eventDao().upsertEvent(
-            event.copy(attendees = newAttendees).toEventEntity(),
+            event.toEventEntity(),
         )
     }
 
