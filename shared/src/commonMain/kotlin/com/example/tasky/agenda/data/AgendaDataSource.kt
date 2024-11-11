@@ -7,6 +7,7 @@ import com.example.tasky.agenda.data.mapper.toUpdateEventBody
 import com.example.tasky.agenda.data.model.Agenda
 import com.example.tasky.agenda.data.model.EventPath
 import com.example.tasky.agenda.data.model.GetAgendaResponse
+import com.example.tasky.agenda.data.model.GetAttendeeResponse
 import com.example.tasky.agenda.data.model.ReminderPath
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
@@ -161,6 +162,13 @@ class AgendaDataSource(
         safeCall {
             httpClient.get(ReminderPath()) {
                 parameter("reminderId", reminderId)
+            }
+        }
+
+    suspend fun getAttendee(email: String): ResultWrapper<GetAttendeeResponse, BaseError> =
+        safeCall {
+            httpClient.get("/attendee") {
+                parameter("email", email)
             }
         }
 }

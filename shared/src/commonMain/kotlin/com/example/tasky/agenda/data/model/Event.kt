@@ -59,3 +59,16 @@ data class CreateEventBody(
     val remindAt: Long,
     val attendeeIds: List<String>,
 )
+
+@Serializable
+data class GetAttendeeResponse(
+    val doesUserExist: Boolean,
+    val attendee: GetAttendeeResponseAttendee,
+)
+
+@Serializable
+data class GetAttendeeResponseAttendee(
+    val email: String,
+    val fullName: String,
+    val userId: String,
+)
