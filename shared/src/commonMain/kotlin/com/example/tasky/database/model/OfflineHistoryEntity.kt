@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class OfflineHistoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val apiType: ApiType,
+    val params: String,
     val body: String,
     val userId: String,
 )

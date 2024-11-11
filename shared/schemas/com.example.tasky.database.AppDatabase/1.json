@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0e6dde47d4f914806471dd6c79f165e4",
+    "identityHash": "26adbf90a2bfa7af8b7fc26edee80c55",
     "entities": [
       {
         "tableName": "ReminderEntity",
@@ -168,7 +168,7 @@
       },
       {
         "tableName": "OfflineHistoryEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `apiType` TEXT NOT NULL, `body` TEXT NOT NULL, `userId` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `apiType` TEXT NOT NULL, `params` TEXT NOT NULL, `body` TEXT NOT NULL, `userId` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -178,6 +178,12 @@
           {
             "fieldPath": "apiType",
             "columnName": "apiType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "params",
+            "columnName": "params",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -204,7 +210,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e6dde47d4f914806471dd6c79f165e4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26adbf90a2bfa7af8b7fc26edee80c55')"
     ]
   }
 }
