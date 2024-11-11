@@ -8,6 +8,8 @@ import com.example.tasky.database.database
 import com.example.tasky.database.mapper.toEventEntity
 import com.example.tasky.database.mapper.toReminderEntity
 import com.example.tasky.database.mapper.toTaskEntity
+import com.example.tasky.database.model.ApiType
+import com.example.tasky.database.model.OfflineHistoryEntity
 
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
@@ -38,5 +40,36 @@ class AgendaLocalDataSource(
         appDatabase.reminderDao().upsert(
             reminder.toReminderEntity(),
         )
+    }
+
+    fun insertOfflineHistoryDeleteEvent(
+        id: String,
+        isCreator: Boolean,
+        userId: String,
+    ) {
+        val entity =
+            OfflineHistoryEntity(
+                apiType = if (isCreator) ApiType.DELETE_EVENT else ApiType.DELETE_EVENT_ATTENDEE,
+                params = id,
+                body = "",
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryDeleteTask(
+        id: String,
+        userId: String,
+    ) {
+        val entity = OfflineHistoryEntity(apiType = ApiType.DELETE_TASK, params = id, body = "", userId = userId)
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryDeleteReminder(
+        id: String,
+        userId: String,
+    ) {
+        val entity = OfflineHistoryEntity(apiType = ApiType.DELETE_REMINDER, params = id, body = "", userId = userId)
+        appDatabase.offlineHistoryDao().insert(entity)
     }
 }

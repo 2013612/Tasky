@@ -11,6 +11,8 @@ import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
+import com.example.tasky.login.domain.manager.SessionManager
+import dev.tmapps.konnection.Konnection
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -50,32 +52,53 @@ interface IAgendaRepository {
 class AgendaRepository(
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
+    private val konnection: Konnection = Konnection.instance,
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) =
         agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
             response.events.map { Event(it) } + response.tasks.map { Task(it) } + response.reminders.map { Reminder(it) }
         }
 
-    override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> =
-        when (agendaItem) {
+    override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> {
+        val userId = SessionManager.getUserId() ?: ""
+
+        return when (agendaItem) {
             is Event -> {
                 agendaLocalDataSource.deleteEvent(agendaItem.id)
 
-                if (agendaItem.isUserEventCreator) {
-                    agendaDataSource.deleteEvent(agendaItem.id)
+                if (konnection.isConnected()) {
+                    if (agendaItem.isUserEventCreator) {
+                        agendaDataSource.deleteEvent(agendaItem.id)
+                    } else {
+                        agendaDataSource.deleteEventForAttendee(agendaItem.id)
+                    }
                 } else {
-                    agendaDataSource.deleteEventForAttendee(agendaItem.id)
+                    agendaLocalDataSource.insertOfflineHistoryDeleteEvent(agendaItem.id, isCreator = agendaItem.isUserEventCreator, userId)
+                    ResultWrapper.Success(Unit)
                 }
             }
             is Task -> {
                 agendaLocalDataSource.deleteTask(agendaItem.id)
-                agendaDataSource.deleteTask(agendaItem.id)
+
+                if (konnection.isConnected()) {
+                    agendaDataSource.deleteTask(agendaItem.id)
+                } else {
+                    agendaLocalDataSource.insertOfflineHistoryDeleteTask(agendaItem.id, userId)
+                    ResultWrapper.Success(Unit)
+                }
             }
             is Reminder -> {
                 agendaLocalDataSource.deleteReminder(agendaItem.id)
-                agendaDataSource.deleteReminder(agendaItem.id)
+
+                if (konnection.isConnected()) {
+                    agendaDataSource.deleteReminder(agendaItem.id)
+                } else {
+                    agendaLocalDataSource.insertOfflineHistoryDeleteReminder(agendaItem.id, userId)
+                    ResultWrapper.Success(Unit)
+                }
             }
         }
+    }
 
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)

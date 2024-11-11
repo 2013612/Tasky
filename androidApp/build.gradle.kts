@@ -64,4 +64,5 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.konnection)
 }
