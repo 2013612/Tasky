@@ -44,9 +44,16 @@ class AgendaLocalDataSource(
 
     fun insertOfflineHistoryDeleteEvent(
         id: String,
+        isCreator: Boolean,
         userId: String,
     ) {
-        val entity = OfflineHistoryEntity(apiType = ApiType.DELETE_EVENT, params = id, body = "", userId = userId)
+        val entity =
+            OfflineHistoryEntity(
+                apiType = if (isCreator) ApiType.DELETE_EVENT else ApiType.DELETE_EVENT_ATTENDEE,
+                params = id,
+                body = "",
+                userId = userId,
+            )
         appDatabase.offlineHistoryDao().insert(entity)
     }
 

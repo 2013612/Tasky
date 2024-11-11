@@ -14,6 +14,7 @@ data class OfflineHistoryEntity(
 
 enum class ApiType {
     DELETE_EVENT,
+    DELETE_EVENT_ATTENDEE,
     DELETE_TASK,
     DELETE_REMINDER,
 }

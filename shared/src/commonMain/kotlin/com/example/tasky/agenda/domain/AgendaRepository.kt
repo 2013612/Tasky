@@ -73,7 +73,7 @@ class AgendaRepository(
                         agendaDataSource.deleteEventForAttendee(agendaItem.id)
                     }
                 } else {
-                    agendaLocalDataSource.insertOfflineHistoryDeleteEvent(agendaItem.id, userId)
+                    agendaLocalDataSource.insertOfflineHistoryDeleteEvent(agendaItem.id, isCreator = agendaItem.isUserEventCreator, userId)
                     ResultWrapper.Success(Unit)
                 }
             }
