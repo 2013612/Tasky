@@ -171,4 +171,11 @@ class AgendaDataSource(
                 parameter("email", email)
             }
         }
+
+    suspend fun deleteEventForAttendee(eventId: String): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.delete("/attendee") {
+                parameter("eventId", eventId)
+            }
+        }
 }
