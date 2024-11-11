@@ -83,7 +83,7 @@ class AgendaRepository(
         isGoing: Boolean,
         photos: List<ByteArray>,
     ): ResultWrapper<Event, BaseError> {
-        agendaLocalDataSource.upsertEvent(event, isGoing)
+        agendaLocalDataSource.upsertEvent(event)
 
         val result =
             agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
@@ -91,7 +91,7 @@ class AgendaRepository(
             }
 
         result.onSuccess {
-            agendaLocalDataSource.upsertEvent(it, isGoing)
+            agendaLocalDataSource.upsertEvent(it)
         }
 
         return result
@@ -110,7 +110,7 @@ class AgendaRepository(
     }
 
     override suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError> {
-        agendaLocalDataSource.upsertEvent(event = event, isGoing = true)
+        agendaLocalDataSource.upsertEvent(event = event)
 
         return agendaDataSource.createEvent(event = event).map {
             Event(it)
