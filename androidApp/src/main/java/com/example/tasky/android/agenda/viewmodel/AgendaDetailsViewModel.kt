@@ -186,7 +186,16 @@ class AgendaDetailsViewModel(
     }
 
     private fun deleteAttendee(id: String) {
-        // TODO
+        val agendaItem = screenStateFlow.value.agendaItem
+
+        if (agendaItem !is Event) {
+            return
+        }
+
+        val newAttendees = agendaItem.attendees.toMutableList()
+        if (newAttendees.removeIf { it.userId == id }) {
+            _screenStateFlow.update { it.copy(agendaItem = agendaItem.copy(attendees = newAttendees)) }
+        }
     }
 
     private fun toggleIsGoing() {
