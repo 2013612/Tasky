@@ -3,6 +3,7 @@ package com.example.tasky.agenda.domain
 import com.example.tasky.agenda.data.AgendaDataSource
 import com.example.tasky.agenda.data.AgendaLocalDataSource
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
@@ -38,6 +39,12 @@ interface IAgendaRepository {
     suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError>
 
     suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError>
+
+    suspend fun getAttendee(
+        email: String,
+        eventId: String,
+        from: Long,
+    ): ResultWrapper<Attendee?, BaseError>
 }
 
 class AgendaRepository(
@@ -130,5 +137,25 @@ class AgendaRepository(
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
         agendaDataSource.getReminder(reminderId = reminderId).map {
             Reminder(it)
+        }
+
+    override suspend fun getAttendee(
+        email: String,
+        eventId: String,
+        from: Long,
+    ): ResultWrapper<Attendee?, BaseError> =
+        agendaDataSource.getAttendee(email = email).map {
+            if (it.doesUserExist) {
+                Attendee(
+                    email = it.attendee.email,
+                    fullName = it.attendee.fullName,
+                    userId = it.attendee.userId,
+                    eventId = "",
+                    isGoing = true,
+                    remindAt = 0,
+                )
+            } else {
+                null
+            }
         }
 }
