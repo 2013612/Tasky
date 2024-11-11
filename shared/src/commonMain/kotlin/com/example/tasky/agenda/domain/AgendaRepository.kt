@@ -60,7 +60,12 @@ class AgendaRepository(
         when (agendaItem) {
             is Event -> {
                 agendaLocalDataSource.deleteEvent(agendaItem.id)
-                agendaDataSource.deleteEvent(agendaItem.id)
+
+                if (agendaItem.isUserEventCreator) {
+                    agendaDataSource.deleteEvent(agendaItem.id)
+                } else {
+                    agendaDataSource.deleteEventForAttendee(agendaItem.id)
+                }
             }
             is Task -> {
                 agendaLocalDataSource.deleteTask(agendaItem.id)
