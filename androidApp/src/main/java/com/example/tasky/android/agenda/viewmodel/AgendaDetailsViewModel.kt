@@ -206,7 +206,7 @@ class AgendaDetailsViewModel(
         }
 
         viewModelScope.launch {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = SessionManager.getUserId()
             val newAttendees = agendaItem.attendees.toMutableList()
             val attendeeIndex = newAttendees.indexOfFirst { it.userId == userId }
             if (attendeeIndex >= 0) {
