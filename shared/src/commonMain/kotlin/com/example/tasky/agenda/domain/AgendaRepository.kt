@@ -103,13 +103,26 @@ class AgendaRepository(
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)
 
-        return agendaDataSource.updateTask(task)
+        return if (konnection.isConnected()) {
+            agendaDataSource.updateTask(task)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateTask(task, userId)
+
+            return ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertReminder(reminder)
 
-        return agendaDataSource.updateReminder(reminder)
+        return if (konnection.isConnected()) {
+            agendaDataSource.updateReminder(reminder)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateReminder(reminder, userId)
+            ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun updateEvent(
@@ -120,16 +133,23 @@ class AgendaRepository(
     ): ResultWrapper<Event, BaseError> {
         agendaLocalDataSource.upsertEvent(event)
 
-        val result =
-            agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
-                Event(it)
+        if (konnection.isConnected()) {
+            val result =
+                agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
+                    Event(it)
+                }
+
+            result.onSuccess {
+                agendaLocalDataSource.upsertEvent(it)
             }
 
-        result.onSuccess {
-            agendaLocalDataSource.upsertEvent(it)
-        }
+            return result
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateEvent(event, isGoing, userId)
 
-        return result
+            return ResultWrapper.Success(event)
+        }
     }
 
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
