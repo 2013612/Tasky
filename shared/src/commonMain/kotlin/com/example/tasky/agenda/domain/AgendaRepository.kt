@@ -147,8 +147,14 @@ class AgendaRepository(
     override suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError> {
         agendaLocalDataSource.upsertEvent(event = event)
 
-        return agendaDataSource.createEvent(event = event).map {
-            Event(it)
+        return if (konnection.isConnected()) {
+            agendaDataSource.createEvent(event = event).map {
+                Event(it)
+            }
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryCreateEvent(event, userId)
+            return ResultWrapper.Success(event)
         }
     }
 
