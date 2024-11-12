@@ -103,7 +103,14 @@ class AgendaRepository(
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)
 
-        return agendaDataSource.updateTask(task)
+        return if (konnection.isConnected()) {
+            agendaDataSource.updateTask(task)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateTask(task, userId)
+
+            return ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {

@@ -139,4 +139,19 @@ class AgendaLocalDataSource(
             )
         appDatabase.offlineHistoryDao().insert(entity)
     }
+
+    fun insertOfflineHistoryUpdateTask(
+        task: Task,
+        userId: String,
+    ) {
+        val taskJson = Json.encodeToString(task.toRemoteTask())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.UPDATE_TASK,
+                params = "",
+                body = taskJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
 }
