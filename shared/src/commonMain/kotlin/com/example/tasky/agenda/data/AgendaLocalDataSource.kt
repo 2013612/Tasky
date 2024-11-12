@@ -1,5 +1,8 @@
 package com.example.tasky.agenda.data
 
+import com.example.tasky.agenda.data.mapper.toCreateEventBody
+import com.example.tasky.agenda.data.mapper.toRemoteReminder
+import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
@@ -10,6 +13,8 @@ import com.example.tasky.database.mapper.toReminderEntity
 import com.example.tasky.database.mapper.toTaskEntity
 import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.OfflineHistoryEntity
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
@@ -70,6 +75,51 @@ class AgendaLocalDataSource(
         userId: String,
     ) {
         val entity = OfflineHistoryEntity(apiType = ApiType.DELETE_REMINDER, params = id, body = "", userId = userId)
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryCreateEvent(
+        event: Event,
+        userId: String,
+    ) {
+        val createEventJson = Json.encodeToString(event.toCreateEventBody())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.CREATE_EVENT,
+                params = "",
+                body = createEventJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryCreateTask(
+        task: Task,
+        userId: String,
+    ) {
+        val taskJson = Json.encodeToString(task.toRemoteTask())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.CREATE_TASK,
+                params = "",
+                body = taskJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryCreateReminder(
+        reminder: Reminder,
+        userId: String,
+    ) {
+        val reminderJson = Json.encodeToString(reminder.toRemoteReminder())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.CREATE_REMINDER,
+                params = "",
+                body = reminderJson,
+                userId = userId,
+            )
         appDatabase.offlineHistoryDao().insert(entity)
     }
 }

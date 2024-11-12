@@ -135,20 +135,38 @@ class AgendaRepository(
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)
 
-        return agendaDataSource.createTask(task)
+        return if (konnection.isConnected()) {
+            agendaDataSource.createTask(task)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryCreateTask(task, userId)
+            ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertReminder(reminder)
 
-        return agendaDataSource.createReminder(reminder)
+        return if (konnection.isConnected()) {
+            agendaDataSource.createReminder(reminder)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryCreateReminder(reminder, userId)
+            ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError> {
         agendaLocalDataSource.upsertEvent(event = event)
 
-        return agendaDataSource.createEvent(event = event).map {
-            Event(it)
+        return if (konnection.isConnected()) {
+            agendaDataSource.createEvent(event = event).map {
+                Event(it)
+            }
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryCreateEvent(event, userId)
+            return ResultWrapper.Success(event)
         }
     }
 
