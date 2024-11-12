@@ -135,7 +135,13 @@ class AgendaRepository(
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertTask(task)
 
-        return agendaDataSource.createTask(task)
+        return if (konnection.isConnected()) {
+            agendaDataSource.createTask(task)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryCreateTask(task, userId)
+            ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {

@@ -1,10 +1,10 @@
 package com.example.tasky.agenda.data
 
 import com.example.tasky.agenda.data.mapper.toCreateEventBody
+import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.common.data.manager.HttpManager
 import com.example.tasky.database.AppDatabase
 import com.example.tasky.database.database
 import com.example.tasky.database.mapper.toEventEntity
@@ -13,6 +13,7 @@ import com.example.tasky.database.mapper.toTaskEntity
 import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.OfflineHistoryEntity
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
@@ -80,12 +81,27 @@ class AgendaLocalDataSource(
         event: Event,
         userId: String,
     ) {
-        val createEventJson = HttpManager.json.encodeToString(event.toCreateEventBody())
+        val createEventJson = Json.encodeToString(event.toCreateEventBody())
         val entity =
             OfflineHistoryEntity(
                 apiType = ApiType.CREATE_EVENT,
                 params = "",
                 body = createEventJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryCreateTask(
+        task: Task,
+        userId: String,
+    ) {
+        val taskJson = Json.encodeToString(task.toRemoteTask())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.CREATE_TASK,
+                params = "",
+                body = taskJson,
                 userId = userId,
             )
         appDatabase.offlineHistoryDao().insert(entity)

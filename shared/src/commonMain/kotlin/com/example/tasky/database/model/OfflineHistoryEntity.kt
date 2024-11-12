@@ -18,4 +18,5 @@ enum class ApiType {
     DELETE_TASK,
     DELETE_REMINDER,
     CREATE_EVENT,
+    CREATE_TASK,
 }
