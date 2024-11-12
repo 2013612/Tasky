@@ -120,16 +120,23 @@ class AgendaRepository(
     ): ResultWrapper<Event, BaseError> {
         agendaLocalDataSource.upsertEvent(event)
 
-        val result =
-            agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
-                Event(it)
+        if (konnection.isConnected()) {
+            val result =
+                agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
+                    Event(it)
+                }
+
+            result.onSuccess {
+                agendaLocalDataSource.upsertEvent(it)
             }
 
-        result.onSuccess {
-            agendaLocalDataSource.upsertEvent(it)
-        }
+            return result
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateEvent(event, isGoing, userId)
 
-        return result
+            return ResultWrapper.Success(event)
+        }
     }
 
     override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {

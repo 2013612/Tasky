@@ -3,6 +3,7 @@ package com.example.tasky.agenda.data
 import com.example.tasky.agenda.data.mapper.toCreateEventBody
 import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
+import com.example.tasky.agenda.data.mapper.toUpdateEventBody
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
@@ -118,6 +119,22 @@ class AgendaLocalDataSource(
                 apiType = ApiType.CREATE_REMINDER,
                 params = "",
                 body = reminderJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun insertOfflineHistoryUpdateEvent(
+        event: Event,
+        isGoing: Boolean,
+        userId: String,
+    ) {
+        val updateEventJson = Json.encodeToString(event.toUpdateEventBody(emptyList(), isGoing))
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.UPDATE_EVENT,
+                params = "",
+                body = updateEventJson,
                 userId = userId,
             )
         appDatabase.offlineHistoryDao().insert(entity)
