@@ -154,4 +154,19 @@ class AgendaLocalDataSource(
             )
         appDatabase.offlineHistoryDao().insert(entity)
     }
+
+    fun insertOfflineHistoryUpdateReminder(
+        reminder: Reminder,
+        userId: String,
+    ) {
+        val reminderJson = Json.encodeToString(reminder.toRemoteReminder())
+        val entity =
+            OfflineHistoryEntity(
+                apiType = ApiType.UPDATE_REMINDER,
+                params = "",
+                body = reminderJson,
+                userId = userId,
+            )
+        appDatabase.offlineHistoryDao().insert(entity)
+    }
 }

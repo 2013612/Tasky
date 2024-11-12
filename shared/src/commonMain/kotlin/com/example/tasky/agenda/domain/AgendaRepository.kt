@@ -116,7 +116,13 @@ class AgendaRepository(
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
         agendaLocalDataSource.upsertReminder(reminder)
 
-        return agendaDataSource.updateReminder(reminder)
+        return if (konnection.isConnected()) {
+            agendaDataSource.updateReminder(reminder)
+        } else {
+            val userId = SessionManager.getUserId() ?: ""
+            agendaLocalDataSource.insertOfflineHistoryUpdateReminder(reminder, userId)
+            ResultWrapper.Success(Unit)
+        }
     }
 
     override suspend fun updateEvent(

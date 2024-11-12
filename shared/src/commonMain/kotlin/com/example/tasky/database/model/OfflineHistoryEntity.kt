@@ -22,4 +22,5 @@ enum class ApiType {
     CREATE_REMINDER,
     UPDATE_EVENT,
     UPDATE_TASK,
+    UPDATE_REMINDER,
 }
