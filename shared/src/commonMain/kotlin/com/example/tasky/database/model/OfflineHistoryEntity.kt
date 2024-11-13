@@ -24,3 +24,8 @@ enum class ApiType {
     UPDATE_TASK,
     UPDATE_REMINDER,
 }
+
+fun ApiType.isDelete(): Boolean {
+    val validTypes = listOf(ApiType.DELETE_REMINDER, ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE, ApiType.DELETE_TASK)
+    return validTypes.contains(this)
+}

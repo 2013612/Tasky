@@ -18,4 +18,7 @@ interface EventDao {
 
     @Delete
     fun delete(event: EventEntity)
+
+    @Query("DELETE FROM EventEntity")
+    fun deleteAll()
 }

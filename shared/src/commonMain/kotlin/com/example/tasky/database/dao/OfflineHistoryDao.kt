@@ -9,10 +9,10 @@ import com.example.tasky.database.model.OfflineHistoryEntity
 @Dao
 interface OfflineHistoryDao {
     @Query("SELECT * FROM OfflineHistoryEntity")
-    fun getAll(): List<OfflineHistoryEntity>
+    suspend fun getAll(): List<OfflineHistoryEntity>
 
     @Query("DELETE FROM OfflineHistoryEntity")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Insert
     fun insert(entity: OfflineHistoryEntity)

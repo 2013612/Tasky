@@ -5,6 +5,7 @@ import com.example.tasky.android.agenda.di.agendaDetailsModule
 import com.example.tasky.android.agenda.di.agendaModule
 import com.example.tasky.android.common.di.dataStoreModule
 import com.example.tasky.android.common.di.databaseModule
+import com.example.tasky.android.common.di.mainModule
 import com.example.tasky.android.common.di.managerModule
 import com.example.tasky.android.login.di.loginModule
 import com.example.tasky.android.login.di.registerModule
@@ -19,6 +20,7 @@ class MainApplication : Application() {
             androidLogger()
             androidContext(this@MainApplication)
             modules(
+                mainModule,
                 loginModule,
                 registerModule,
                 agendaModule,

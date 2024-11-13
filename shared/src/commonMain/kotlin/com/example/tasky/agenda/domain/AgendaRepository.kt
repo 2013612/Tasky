@@ -11,6 +11,8 @@ import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
+import com.example.tasky.database.model.ApiType
+import com.example.tasky.database.model.isDelete
 import com.example.tasky.login.domain.manager.SessionManager
 import dev.tmapps.konnection.Konnection
 
@@ -47,6 +49,8 @@ interface IAgendaRepository {
         eventId: String,
         from: Long,
     ): ResultWrapper<Attendee?, BaseError>
+
+    suspend fun syncAgenda()
 }
 
 class AgendaRepository(
@@ -224,4 +228,53 @@ class AgendaRepository(
                 null
             }
         }
+
+    override suspend fun syncAgenda() {
+        if (!konnection.isConnected()) {
+            return
+        }
+
+        val histories = agendaLocalDataSource.getAllHistory()
+        val userId = SessionManager.getUserId()
+        val deletedEventIds = mutableListOf<String>()
+        val deletedTaskIds = mutableListOf<String>()
+        val deletedReminderIds = mutableListOf<String>()
+
+        for (history in histories) {
+            if (history.userId != userId) {
+                agendaLocalDataSource.deleteHistory(history)
+                continue
+            }
+
+            when (history.apiType) {
+                ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE -> deletedEventIds.add(history.params)
+                ApiType.DELETE_TASK -> deletedTaskIds.add(history.params)
+                ApiType.DELETE_REMINDER -> deletedReminderIds.add(history.params)
+                ApiType.CREATE_EVENT -> agendaDataSource.createEvent(history.body)
+                ApiType.CREATE_TASK -> agendaDataSource.createTask(history.body)
+                ApiType.CREATE_REMINDER -> agendaDataSource.createReminder(history.body)
+                ApiType.UPDATE_EVENT -> agendaDataSource.updateEvent(history.body)
+                ApiType.UPDATE_TASK -> agendaDataSource.updateTask(history.body)
+                ApiType.UPDATE_REMINDER -> agendaDataSource.updateReminder(history.body)
+            }
+
+            if (!history.apiType.isDelete()) {
+                agendaLocalDataSource.deleteHistory(history)
+            }
+        }
+
+        agendaDataSource.syncDeleteAgenda(deletedEventIds, deletedTaskIds, deletedReminderIds)
+        agendaDataSource.getFullAgenda().onSuccess { response ->
+            agendaLocalDataSource.clearAgendas()
+            agendaLocalDataSource.upsertAgendas(
+                response.events.map {
+                    Event(it)
+                },
+                response.tasks.map { Task(it) },
+                response.reminders.map { Reminder(it) },
+            )
+        }
+
+        agendaLocalDataSource.deleteAllHistory()
+    }
 }
