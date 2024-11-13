@@ -12,6 +12,7 @@ import com.example.tasky.agenda.data.model.ReminderPath
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.agenda.data.model.SyncAgendaBody
 import com.example.tasky.agenda.data.model.TaskPath
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
@@ -176,6 +177,17 @@ class AgendaDataSource(
         safeCall {
             httpClient.delete("/attendee") {
                 parameter("eventId", eventId)
+            }
+        }
+
+    suspend fun syncDeleteAgenda(
+        deletedEventIds: List<String>,
+        deletedTaskIds: List<String>,
+        deletedReminderIds: List<String>,
+    ): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            httpClient.post("/syncAgenda") {
+                setBody(SyncAgendaBody(deletedEventIds, deletedTaskIds, deletedReminderIds))
             }
         }
 }
