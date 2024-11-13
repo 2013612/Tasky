@@ -14,6 +14,7 @@ import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.SyncAgendaBody
 import com.example.tasky.agenda.data.model.TaskPath
+import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
@@ -34,6 +35,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class AgendaDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
@@ -73,21 +75,37 @@ class AgendaDataSource(
             }
         }
 
+    suspend fun updateTask(bodyString: String): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            val body = Json.decodeFromString<RemoteTask>(bodyString)
+            httpClient.put(TaskPath()) {
+                setBody(body)
+            }
+        }
+
     suspend fun updateEvent(
         event: Event,
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
         photos: List<ByteArray>,
+    ): ResultWrapper<RemoteEvent, BaseError> = updateEvent(event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos)
+
+    suspend fun updateEvent(bodyString: String): ResultWrapper<RemoteEvent, BaseError> =
+        updateEvent(Json.decodeFromString(bodyString), emptyList())
+
+    private suspend fun updateEvent(
+        body: UpdateEventBody,
+        photos: List<ByteArray>,
     ): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
-            val updateEventJson = HttpManager.json.encodeToString(event.toUpdateEventBody(deletedPhotoKeys, isGoing))
+            val updateEventJson = HttpManager.json.encodeToString(body)
             httpClient.submitFormWithBinaryData(
                 url = "/event",
                 formData =
                     formData {
                         photos.forEachIndexed { index, photoByteArray ->
                             append("photo$index", photoByteArray)
-                            append(HttpHeaders.ContentDisposition, "filename=${event.id}_picture$index.jpg")
+                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
                         }
                         append(
                             "update_event_request",
@@ -107,6 +125,14 @@ class AgendaDataSource(
         safeCall {
             httpClient.put(ReminderPath()) {
                 setBody(reminder.toRemoteReminder())
+            }
+        }
+
+    suspend fun updateReminder(bodyString: String): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            val body = Json.decodeFromString<RemoteReminder>(bodyString)
+            httpClient.put(ReminderPath()) {
+                setBody(body)
             }
         }
 

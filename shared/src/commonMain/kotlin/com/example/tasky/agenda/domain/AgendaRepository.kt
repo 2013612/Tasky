@@ -247,9 +247,9 @@ class AgendaRepository(
                     ApiType.CREATE_EVENT -> TODO()
                     ApiType.CREATE_TASK -> TODO()
                     ApiType.CREATE_REMINDER -> TODO()
-                    ApiType.UPDATE_EVENT -> TODO()
-                    ApiType.UPDATE_TASK -> TODO()
-                    ApiType.UPDATE_REMINDER -> TODO()
+                    ApiType.UPDATE_EVENT -> agendaDataSource.updateEvent(history.body)
+                    ApiType.UPDATE_TASK -> agendaDataSource.updateTask(history.body)
+                    ApiType.UPDATE_REMINDER -> agendaDataSource.updateReminder(history.body)
                 }
             }
         }
