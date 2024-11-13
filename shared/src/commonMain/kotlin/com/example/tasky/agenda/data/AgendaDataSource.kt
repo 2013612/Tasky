@@ -190,4 +190,9 @@ class AgendaDataSource(
                 setBody(SyncAgendaBody(deletedEventIds, deletedTaskIds, deletedReminderIds))
             }
         }
+
+    suspend fun getFullAgenda(): ResultWrapper<GetAgendaResponse, BaseError> =
+        safeCall {
+            httpClient.get("/fullAgenda")
+        }
 }
