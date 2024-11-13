@@ -20,7 +20,14 @@ import kotlinx.serialization.json.Json
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
 ) {
-    fun getAllHistory(): List<OfflineHistoryEntity> = appDatabase.offlineHistoryDao().getAll()
+    suspend fun getAllHistory(): List<OfflineHistoryEntity> = appDatabase.offlineHistoryDao().getAll()
+
+    suspend fun deleteAllHistory() = appDatabase.offlineHistoryDao().deleteAll()
+
+    fun deleteHistory(historyEntity: OfflineHistoryEntity) =
+        appDatabase.offlineHistoryDao().delete(
+            historyEntity,
+        )
 
     fun deleteEvent(eventId: String) {
         appDatabase.eventDao().delete(Event.EMPTY.copy(id = eventId).toEventEntity())

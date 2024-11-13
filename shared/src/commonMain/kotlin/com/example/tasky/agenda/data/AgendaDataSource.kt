@@ -5,6 +5,7 @@ import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.data.mapper.toUpdateEventBody
 import com.example.tasky.agenda.data.model.Agenda
+import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.EventPath
 import com.example.tasky.agenda.data.model.GetAgendaResponse
 import com.example.tasky.agenda.data.model.GetAttendeeResponse
@@ -143,6 +144,14 @@ class AgendaDataSource(
             }
         }
 
+    suspend fun createTask(bodyString: String): ResultWrapper<Unit, BaseError> =
+        safeCall {
+            val body = Json.decodeFromString<RemoteTask>(bodyString)
+            httpClient.post(TaskPath()) {
+                setBody(body)
+            }
+        }
+
     suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
         safeCall {
             httpClient.post(ReminderPath()) {
@@ -150,9 +159,22 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun createReminder(bodyString: String): ResultWrapper<Unit, BaseError> =
         safeCall {
-            val createEventJson = HttpManager.json.encodeToString(event.toCreateEventBody())
+            val body = Json.decodeFromString<RemoteReminder>(bodyString)
+            httpClient.post(ReminderPath()) {
+                setBody(body)
+            }
+        }
+
+    suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, BaseError> = createEvent(event.toCreateEventBody())
+
+    suspend fun createEvent(bodyString: String): ResultWrapper<RemoteEvent, BaseError> =
+        createEvent(Json.decodeFromString<CreateEventBody>(bodyString))
+
+    private suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
+        safeCall {
+            val createEventJson = HttpManager.json.encodeToString(body)
             httpClient.submitFormWithBinaryData(
                 url = "/event",
                 formData =
