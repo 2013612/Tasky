@@ -11,6 +11,7 @@ import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
+import com.example.tasky.database.model.ApiType
 import com.example.tasky.login.domain.manager.SessionManager
 import dev.tmapps.konnection.Konnection
 
@@ -47,6 +48,8 @@ interface IAgendaRepository {
         eventId: String,
         from: Long,
     ): ResultWrapper<Attendee?, BaseError>
+
+    suspend fun syncAgenda()
 }
 
 class AgendaRepository(
@@ -224,4 +227,43 @@ class AgendaRepository(
                 null
             }
         }
+
+    override suspend fun syncAgenda() {
+        if (!konnection.isConnected()) {
+            return
+        }
+        val histories = agendaLocalDataSource.getAllHistory()
+        val userId = SessionManager.getUserId()
+        val deletedEventIds = mutableListOf<String>()
+        val deletedTaskIds = mutableListOf<String>()
+        val deletedReminderIds = mutableListOf<String>()
+
+        for (history in histories) {
+            if (history.userId == userId) {
+                when (history.apiType) {
+                    ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE -> deletedEventIds.add(history.params)
+                    ApiType.DELETE_TASK -> deletedTaskIds.add(history.params)
+                    ApiType.DELETE_REMINDER -> deletedReminderIds.add(history.params)
+                    ApiType.CREATE_EVENT -> TODO()
+                    ApiType.CREATE_TASK -> TODO()
+                    ApiType.CREATE_REMINDER -> TODO()
+                    ApiType.UPDATE_EVENT -> TODO()
+                    ApiType.UPDATE_TASK -> TODO()
+                    ApiType.UPDATE_REMINDER -> TODO()
+                }
+            }
+        }
+
+        agendaDataSource.syncDeleteAgenda(deletedEventIds, deletedTaskIds, deletedReminderIds)
+        agendaDataSource.getFullAgenda().onSuccess { response ->
+            agendaLocalDataSource.clearAgendas()
+            agendaLocalDataSource.upsertAgendas(
+                response.events.map {
+                    Event(it)
+                },
+                response.tasks.map { Task(it) },
+                response.reminders.map { Reminder(it) },
+            )
+        }
+    }
 }
