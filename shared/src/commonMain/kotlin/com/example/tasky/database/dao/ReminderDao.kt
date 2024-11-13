@@ -16,4 +16,7 @@ interface ReminderDao {
 
     @Delete
     fun delete(reminder: ReminderEntity)
+
+    @Query("DELETE FROM ReminderEntity")
+    fun deleteAll()
 }

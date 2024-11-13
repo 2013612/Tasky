@@ -20,6 +20,8 @@ import kotlinx.serialization.json.Json
 class AgendaLocalDataSource(
     private val appDatabase: AppDatabase = database,
 ) {
+    fun getAllHistory(): List<OfflineHistoryEntity> = appDatabase.offlineHistoryDao().getAll()
+
     fun deleteEvent(eventId: String) {
         appDatabase.eventDao().delete(Event.EMPTY.copy(id = eventId).toEventEntity())
     }
@@ -168,5 +170,27 @@ class AgendaLocalDataSource(
                 userId = userId,
             )
         appDatabase.offlineHistoryDao().insert(entity)
+    }
+
+    fun clearAgendas() {
+        appDatabase.eventDao().deleteAll()
+        appDatabase.taskDao().deleteAll()
+        appDatabase.reminderDao().deleteAll()
+    }
+
+    fun upsertAgendas(
+        events: List<Event>,
+        tasks: List<Task>,
+        reminders: List<Reminder>,
+    ) {
+        for (event in events) {
+            upsertEvent(event)
+        }
+        for (task in tasks) {
+            upsertTask(task)
+        }
+        for (reminder in reminders) {
+            upsertReminder(reminder)
+        }
     }
 }
