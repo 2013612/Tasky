@@ -33,40 +33,40 @@ class AgendaLocalDataSource(
 
     suspend fun deleteAllHistory() = appDatabase.offlineHistoryDao().deleteAll()
 
-    fun deleteHistory(historyEntity: OfflineHistoryEntity) =
+    suspend fun deleteHistory(historyEntity: OfflineHistoryEntity) =
         appDatabase.offlineHistoryDao().delete(
             historyEntity,
         )
 
-    fun deleteEvent(eventId: String) {
+    suspend fun deleteEvent(eventId: String) {
         appDatabase.eventDao().delete(Event.EMPTY.copy(id = eventId).toEventEntity())
     }
 
-    fun deleteTask(taskId: String) {
+    suspend fun deleteTask(taskId: String) {
         appDatabase.taskDao().delete(Task.EMPTY.copy(id = taskId).toTaskEntity())
     }
 
-    fun deleteReminder(reminderId: String) {
+    suspend fun deleteReminder(reminderId: String) {
         appDatabase.reminderDao().delete(Reminder.EMPTY.copy(id = reminderId).toReminderEntity())
     }
 
-    fun upsertEvent(event: Event) {
+    suspend fun upsertEvent(event: Event) {
         appDatabase.eventDao().upsertEvent(
             event.toEventEntity(),
         )
     }
 
-    fun upsertTask(task: Task) {
+    suspend fun upsertTask(task: Task) {
         appDatabase.taskDao().upsert(task.toTaskEntity())
     }
 
-    fun upsertReminder(reminder: Reminder) {
+    suspend fun upsertReminder(reminder: Reminder) {
         appDatabase.reminderDao().upsert(
             reminder.toReminderEntity(),
         )
     }
 
-    fun insertOfflineHistoryDeleteEvent(
+    suspend fun insertOfflineHistoryDeleteEvent(
         id: String,
         isCreator: Boolean,
         userId: String,
@@ -81,7 +81,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryDeleteTask(
+    suspend fun insertOfflineHistoryDeleteTask(
         id: String,
         userId: String,
     ) {
@@ -89,7 +89,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryDeleteReminder(
+    suspend fun insertOfflineHistoryDeleteReminder(
         id: String,
         userId: String,
     ) {
@@ -97,7 +97,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryCreateEvent(
+    suspend fun insertOfflineHistoryCreateEvent(
         event: Event,
         userId: String,
     ) {
@@ -112,7 +112,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryCreateTask(
+    suspend fun insertOfflineHistoryCreateTask(
         task: Task,
         userId: String,
     ) {
@@ -127,7 +127,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryCreateReminder(
+    suspend fun insertOfflineHistoryCreateReminder(
         reminder: Reminder,
         userId: String,
     ) {
@@ -142,7 +142,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryUpdateEvent(
+    suspend fun insertOfflineHistoryUpdateEvent(
         event: Event,
         isGoing: Boolean,
         userId: String,
@@ -158,7 +158,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryUpdateTask(
+    suspend fun insertOfflineHistoryUpdateTask(
         task: Task,
         userId: String,
     ) {
@@ -173,7 +173,7 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun insertOfflineHistoryUpdateReminder(
+    suspend fun insertOfflineHistoryUpdateReminder(
         reminder: Reminder,
         userId: String,
     ) {
@@ -188,13 +188,13 @@ class AgendaLocalDataSource(
         appDatabase.offlineHistoryDao().insert(entity)
     }
 
-    fun clearAgendas() {
+    suspend fun clearAgendas() {
         appDatabase.eventDao().deleteAll()
         appDatabase.taskDao().deleteAll()
         appDatabase.reminderDao().deleteAll()
     }
 
-    fun upsertAgendas(
+    suspend fun upsertAgendas(
         events: List<Event>,
         tasks: List<Task>,
         reminders: List<Reminder>,
@@ -210,13 +210,13 @@ class AgendaLocalDataSource(
         }
     }
 
-    fun getTask(taskId: String): TaskEntity = appDatabase.taskDao().getById(taskId)
+    suspend fun getTask(taskId: String): TaskEntity = appDatabase.taskDao().getById(taskId)
 
-    fun getReminder(reminderId: String): ReminderEntity = appDatabase.reminderDao().getById(reminderId)
+    suspend fun getReminder(reminderId: String): ReminderEntity = appDatabase.reminderDao().getById(reminderId)
 
-    fun getEvent(eventId: String): EventEntity = appDatabase.eventDao().getById(eventId)
+    suspend fun getEvent(eventId: String): EventEntity = appDatabase.eventDao().getById(eventId)
 
-    fun getDayAgenda(time: Long): List<AgendaItem> {
+    suspend fun getDayAgenda(time: Long): List<AgendaItem> {
         val localDate = time.toLocalDateTime().date
         val startTime = localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
         val endTime = localDate.plus(1, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()

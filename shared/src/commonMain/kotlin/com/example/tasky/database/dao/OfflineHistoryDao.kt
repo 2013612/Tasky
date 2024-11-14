@@ -15,8 +15,8 @@ interface OfflineHistoryDao {
     suspend fun deleteAll()
 
     @Insert
-    fun insert(entity: OfflineHistoryEntity)
+    suspend fun insert(entity: OfflineHistoryEntity)
 
     @Delete
-    fun delete(entity: OfflineHistoryEntity)
+    suspend fun delete(entity: OfflineHistoryEntity)
 }
