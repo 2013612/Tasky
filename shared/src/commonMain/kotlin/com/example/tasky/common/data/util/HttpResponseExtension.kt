@@ -2,7 +2,11 @@ package com.example.tasky.common.data.util
 
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import io.ktor.client.statement.HttpResponse
 
 fun HttpResponse.isSuccess(): Boolean = status.value in 200..299
@@ -21,3 +25,15 @@ suspend inline fun <reified T> HttpResponse.toResult(): ResultWrapper<T, DataErr
         in 500..599 -> ResultWrapper.Error(DataError.Remote.SERVER_ERROR)
         else -> ResultWrapper.Error(DataError.Remote.UNKNOWN)
     }
+
+fun HttpClient.invalidateBearerTokens() {
+    try {
+        plugin(Auth)
+            .providers
+            .filterIsInstance<BearerAuthProvider>()
+            .first()
+            .clearToken()
+    } catch (e: IllegalStateException) {
+        // No-op; plugin not installed
+    }
+}

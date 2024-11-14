@@ -10,6 +10,8 @@ import com.example.tasky.login.data.model.RegisterBody
 interface ILoginRepository {
     suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, BaseError>
 
+    suspend fun logout(): ResultWrapper<Unit, BaseError>
+
     suspend fun register(registerBody: RegisterBody): ResultWrapper<Unit, BaseError>
 }
 
@@ -17,6 +19,8 @@ class LoginRepository(
     private val loginDataSource: LoginDataSource = LoginDataSource(),
 ) : ILoginRepository {
     override suspend fun login(loginBody: LoginBody) = loginDataSource.login(loginBody)
+
+    override suspend fun logout() = loginDataSource.logout()
 
     override suspend fun register(registerBody: RegisterBody) = loginDataSource.register(registerBody)
 }
