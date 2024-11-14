@@ -136,6 +136,7 @@ data class AgendaDetailsScreenState(
     val isCreator: Boolean = true,
     val enlargedPhoto: DetailsPhoto? = null,
     val photos: List<DetailsPhoto> = emptyList(),
+    val hasNetwork: Boolean = false,
 )
 
 sealed interface AgendaDetailsScreenEvent {
@@ -294,7 +295,7 @@ private fun AgendaDetailsScreen(
                     Spacer(Modifier.height(16.dp))
                     DetailsPhotoSection(
                         photos = state.photos.toImmutableList(),
-                        showAddButton = state.isEdit && state.isCreator && state.photos.size < 10,
+                        showAddButton = state.isEdit && state.isCreator && state.photos.size < 10 && state.hasNetwork,
                         onAddPhoto = {
                             onEvent(AgendaDetailsScreenEvent.OnAddPhoto(it))
                         },
@@ -369,7 +370,7 @@ private fun AgendaDetailsScreen(
                         DetailsAttendeeSection(
                             attendees = state.agendaItem.attendees.toImmutableList(),
                             curTab = state.curTab,
-                            isEdit = state.isEdit && state.isCreator,
+                            isEdit = state.isEdit && state.isCreator && state.hasNetwork,
                             onTabSelect = {
                                 onEvent(AgendaDetailsScreenEvent.OnAttendeeTabChange(it))
                             },
@@ -435,7 +436,7 @@ private fun AgendaDetailsScreen(
         }
 
         if (state.enlargedPhoto != null) {
-            DetailsLargePhoto(photo = state.enlargedPhoto, isEdit = state.isEdit && state.isCreator, onCloseClick = {
+            DetailsLargePhoto(photo = state.enlargedPhoto, isEdit = state.isEdit && state.isCreator && state.hasNetwork, onCloseClick = {
                 onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
             }, onDeleteClick = {
                 onEvent(

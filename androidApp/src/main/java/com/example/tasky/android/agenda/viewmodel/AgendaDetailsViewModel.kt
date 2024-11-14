@@ -21,9 +21,11 @@ import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
 import com.example.tasky.login.domain.manager.SessionManager
+import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -48,6 +50,7 @@ class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
     private val imageCompressor: IImageCompressor,
+    private val konnection: Konnection,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
 
@@ -71,6 +74,9 @@ class AgendaDetailsViewModel(
     private val deletedPhotoKeys = mutableListOf<String>()
 
     init {
+        konnection.observeHasConnection().onEach { hasConnection ->
+            _screenStateFlow.update { it.copy(hasNetwork = hasConnection) }
+        }
         getAgenda()
     }
 
