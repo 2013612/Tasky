@@ -76,11 +76,10 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateTask(bodyString: String): ResultWrapper<Unit, BaseError> =
+    suspend fun updateTask(remoteTask: RemoteTask): ResultWrapper<Unit, BaseError> =
         safeCall {
-            val body = Json.decodeFromString<RemoteTask>(bodyString)
             httpClient.put(TaskPath()) {
-                setBody(body)
+                setBody(remoteTask)
             }
         }
 
@@ -91,10 +90,7 @@ class AgendaDataSource(
         photos: List<ByteArray>,
     ): ResultWrapper<RemoteEvent, BaseError> = updateEvent(event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos)
 
-    suspend fun updateEvent(bodyString: String): ResultWrapper<RemoteEvent, BaseError> =
-        updateEvent(Json.decodeFromString(bodyString), emptyList())
-
-    private suspend fun updateEvent(
+    suspend fun updateEvent(
         body: UpdateEventBody,
         photos: List<ByteArray>,
     ): ResultWrapper<RemoteEvent, BaseError> =
@@ -129,11 +125,10 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateReminder(bodyString: String): ResultWrapper<Unit, BaseError> =
+    suspend fun updateReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, BaseError> =
         safeCall {
-            val body = Json.decodeFromString<RemoteReminder>(bodyString)
             httpClient.put(ReminderPath()) {
-                setBody(body)
+                setBody(remoteReminder)
             }
         }
 
