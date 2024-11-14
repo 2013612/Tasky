@@ -63,10 +63,7 @@ class AgendaRepository(
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
     private val konnection: Konnection = Konnection.instance,
 ) : IAgendaRepository {
-    override suspend fun getAgenda(timeStamp: Long) =
-        agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
-            response.events.map { Event(it) } + response.tasks.map { Task(it) } + response.reminders.map { Reminder(it) }
-        }
+    override suspend fun getAgenda(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDayAgenda(timeStamp))
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> {
         val userId = SessionManager.getUserId() ?: ""

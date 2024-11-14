@@ -4,9 +4,11 @@ import com.example.tasky.agenda.data.mapper.toCreateEventBody
 import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.data.mapper.toUpdateEventBody
+import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.common.domain.util.toLocalDateTime
 import com.example.tasky.database.AppDatabase
 import com.example.tasky.database.database
 import com.example.tasky.database.mapper.toEventEntity
@@ -17,6 +19,10 @@ import com.example.tasky.database.model.EventEntity
 import com.example.tasky.database.model.OfflineHistoryEntity
 import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -209,4 +215,14 @@ class AgendaLocalDataSource(
     fun getReminder(reminderId: String): ReminderEntity = appDatabase.reminderDao().getById(reminderId)
 
     fun getEvent(eventId: String): EventEntity = appDatabase.eventDao().getById(eventId)
+
+    fun getDayAgenda(time: Long): List<AgendaItem> {
+        val localDate = time.toLocalDateTime().date
+        val startTime = localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+        val endTime = localDate.plus(1, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+
+        return appDatabase.taskDao().getByTime(startTime, endTime).map { Task(it) } +
+            appDatabase.reminderDao().getByTime(startTime, endTime).map { Reminder(it) } +
+            appDatabase.eventDao().getByTime(startTime, endTime).map { Event(it) }
+    }
 }
