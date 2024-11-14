@@ -2,6 +2,10 @@ package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
 import com.example.tasky.agenda.data.AgendaLocalDataSource
+import com.example.tasky.agenda.data.model.CreateEventBody
+import com.example.tasky.agenda.data.model.RemoteReminder
+import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.agenda.data.model.UpdateEventBody
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
@@ -15,6 +19,7 @@ import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.isDelete
 import com.example.tasky.login.domain.manager.SessionManager
 import dev.tmapps.konnection.Konnection
+import kotlinx.serialization.json.Json
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, BaseError>
@@ -246,19 +251,49 @@ class AgendaRepository(
                 continue
             }
 
-            when (history.apiType) {
-                ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE -> deletedEventIds.add(history.params)
-                ApiType.DELETE_TASK -> deletedTaskIds.add(history.params)
-                ApiType.DELETE_REMINDER -> deletedReminderIds.add(history.params)
-                ApiType.CREATE_EVENT -> agendaDataSource.createEvent(history.body)
-                ApiType.CREATE_TASK -> agendaDataSource.createTask(history.body)
-                ApiType.CREATE_REMINDER -> agendaDataSource.createReminder(history.body)
-                ApiType.UPDATE_EVENT -> agendaDataSource.updateEvent(history.body)
-                ApiType.UPDATE_TASK -> agendaDataSource.updateTask(history.body)
-                ApiType.UPDATE_REMINDER -> agendaDataSource.updateReminder(history.body)
-            }
+            val json = Json
 
-            if (!history.apiType.isDelete()) {
+            val result: ResultWrapper<Any, BaseError> =
+                when (history.apiType) {
+                    ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE -> {
+                        deletedEventIds.add(history.params)
+                        ResultWrapper.Success(Unit)
+                    }
+                    ApiType.DELETE_TASK -> {
+                        deletedTaskIds.add(history.params)
+                        ResultWrapper.Success(Unit)
+                    }
+                    ApiType.DELETE_REMINDER -> {
+                        deletedReminderIds.add(history.params)
+                        ResultWrapper.Success(Unit)
+                    }
+                    ApiType.CREATE_EVENT -> {
+                        val body = json.decodeFromString<CreateEventBody>(history.body)
+                        agendaDataSource.createEvent(body)
+                    }
+                    ApiType.CREATE_TASK -> {
+                        val body = json.decodeFromString<RemoteTask>(history.body)
+                        agendaDataSource.createTask(body)
+                    }
+                    ApiType.CREATE_REMINDER -> {
+                        val body = json.decodeFromString<RemoteReminder>(history.body)
+                        agendaDataSource.createReminder(body)
+                    }
+                    ApiType.UPDATE_EVENT -> {
+                        val body = json.decodeFromString<UpdateEventBody>(history.body)
+                        agendaDataSource.updateEvent(body = body, photos = emptyList())
+                    }
+                    ApiType.UPDATE_TASK -> {
+                        val body = json.decodeFromString<RemoteTask>(history.body)
+                        agendaDataSource.updateTask(body)
+                    }
+                    ApiType.UPDATE_REMINDER -> {
+                        val body = json.decodeFromString<RemoteReminder>(history.body)
+                        agendaDataSource.updateReminder(body)
+                    }
+                }
+
+            if (!history.apiType.isDelete() && result is ResultWrapper.Success) {
                 agendaLocalDataSource.deleteHistory(history)
             }
         }
@@ -273,8 +308,8 @@ class AgendaRepository(
                 response.tasks.map { Task(it) },
                 response.reminders.map { Reminder(it) },
             )
-        }
 
-        agendaLocalDataSource.deleteAllHistory()
+            agendaLocalDataSource.deleteAllHistory()
+        }
     }
 }
