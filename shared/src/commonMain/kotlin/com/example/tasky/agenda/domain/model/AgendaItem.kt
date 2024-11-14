@@ -5,6 +5,7 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
 import kotlinx.datetime.Clock
 
@@ -217,6 +218,16 @@ data class Reminder(
         description = reminder.description,
         time = reminder.time,
         remindAt = getRemindAtType(reminder.time, reminder.remindAt),
+    )
+
+    constructor(
+        reminder: ReminderEntity,
+    ) : this(
+        id = reminder.id,
+        title = reminder.title,
+        description = reminder.description,
+        time = reminder.time,
+        remindAt = reminder.remindAt,
     )
 
     companion object {

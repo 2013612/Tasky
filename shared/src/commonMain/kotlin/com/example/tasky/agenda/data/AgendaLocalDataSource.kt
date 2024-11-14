@@ -14,6 +14,7 @@ import com.example.tasky.database.mapper.toReminderEntity
 import com.example.tasky.database.mapper.toTaskEntity
 import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.OfflineHistoryEntity
+import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -203,4 +204,6 @@ class AgendaLocalDataSource(
     }
 
     fun getTask(taskId: String): TaskEntity = appDatabase.taskDao().getById(taskId)
+
+    fun getReminder(reminderId: String): ReminderEntity = appDatabase.reminderDao().getById(reminderId)
 }

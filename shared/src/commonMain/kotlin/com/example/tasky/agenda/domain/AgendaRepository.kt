@@ -208,9 +208,7 @@ class AgendaRepository(
         }
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
-        agendaDataSource.getReminder(reminderId = reminderId).map {
-            Reminder(it)
-        }
+        ResultWrapper.Success(Reminder(agendaLocalDataSource.getReminder(reminderId)))
 
     override suspend fun getAttendee(
         email: String,
