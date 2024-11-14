@@ -9,19 +9,19 @@ import com.example.tasky.database.model.TaskEntity
 @Dao
 interface TaskDao {
     @Query("SELECT * FROM TaskEntity WHERE id = :id")
-    fun getById(id: String): TaskEntity
+    suspend fun getById(id: String): TaskEntity
 
     @Upsert
-    fun upsert(task: TaskEntity)
+    suspend fun upsert(task: TaskEntity)
 
     @Delete
-    fun delete(task: TaskEntity)
+    suspend fun delete(task: TaskEntity)
 
     @Query("DELETE FROM TaskEntity")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM TaskEntity WHERE time >= :startTime AND time < :endTime")
-    fun getByTime(
+    suspend fun getByTime(
         startTime: Long,
         endTime: Long,
     ): List<TaskEntity>

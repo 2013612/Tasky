@@ -9,19 +9,19 @@ import com.example.tasky.database.model.ReminderEntity
 @Dao
 interface ReminderDao {
     @Query("SELECT * FROM ReminderEntity WHERE id = :id")
-    fun getById(id: String): ReminderEntity
+    suspend fun getById(id: String): ReminderEntity
 
     @Upsert
-    fun upsert(reminder: ReminderEntity)
+    suspend fun upsert(reminder: ReminderEntity)
 
     @Delete
-    fun delete(reminder: ReminderEntity)
+    suspend fun delete(reminder: ReminderEntity)
 
     @Query("DELETE FROM ReminderEntity")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM ReminderEntity WHERE time >= :startTime AND time < :endTime")
-    fun getByTime(
+    suspend fun getByTime(
         startTime: Long,
         endTime: Long,
     ): List<ReminderEntity>
