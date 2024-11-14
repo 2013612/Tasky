@@ -13,6 +13,7 @@ import com.example.tasky.database.mapper.toEventEntity
 import com.example.tasky.database.mapper.toReminderEntity
 import com.example.tasky.database.mapper.toTaskEntity
 import com.example.tasky.database.model.ApiType
+import com.example.tasky.database.model.EventEntity
 import com.example.tasky.database.model.OfflineHistoryEntity
 import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
@@ -206,4 +207,6 @@ class AgendaLocalDataSource(
     fun getTask(taskId: String): TaskEntity = appDatabase.taskDao().getById(taskId)
 
     fun getReminder(reminderId: String): ReminderEntity = appDatabase.reminderDao().getById(reminderId)
+
+    fun getEvent(eventId: String): EventEntity = appDatabase.eventDao().getById(eventId)
 }

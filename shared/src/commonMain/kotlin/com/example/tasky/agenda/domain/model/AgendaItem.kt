@@ -5,6 +5,9 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.database.model.AttendeeSerialized
+import com.example.tasky.database.model.EventEntity
+import com.example.tasky.database.model.PhotoSerialized
 import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
 import kotlinx.datetime.Clock
@@ -53,6 +56,19 @@ data class Event(
         isUserEventCreator = remoteEvent.isUserEventCreator,
         attendees = remoteEvent.attendees.map { Attendee(it) },
         photos = remoteEvent.photos.map { Photo(it) },
+    )
+
+    constructor(event: EventEntity) : this(
+        id = event.id,
+        title = event.title,
+        description = event.description,
+        from = event.from,
+        to = event.to,
+        remindAt = event.remindAt,
+        host = event.host,
+        isUserEventCreator = event.isUserEventCreator,
+        attendees = event.attendees.map { Attendee(it) },
+        photos = event.photos.map { Photo(it) },
     )
 
     companion object {
@@ -104,6 +120,15 @@ data class Attendee(
         remindAt = remoteAttendee.remindAt,
     )
 
+    constructor(attendee: AttendeeSerialized) : this(
+        email = attendee.email,
+        fullName = attendee.name,
+        userId = attendee.userId,
+        eventId = attendee.eventId,
+        isGoing = attendee.isGoing,
+        remindAt = attendee.remindAt,
+    )
+
     companion object {
         val DUMMY_LIST =
             listOf(
@@ -134,6 +159,11 @@ data class Photo(
     constructor(remotePhoto: RemotePhoto) : this(
         key = remotePhoto.key,
         url = remotePhoto.url,
+    )
+
+    constructor(photo: PhotoSerialized) : this(
+        key = photo.key,
+        url = photo.url,
     )
 
     companion object {
