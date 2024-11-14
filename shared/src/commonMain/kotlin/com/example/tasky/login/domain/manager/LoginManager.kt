@@ -9,7 +9,6 @@ import com.example.tasky.login.domain.ILoginRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.encodeToString
@@ -37,7 +36,7 @@ class LoginManager(
     }
 
     suspend fun logOut() {
-        delay(1000)
+        loginRepository.logout()
         settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
 }
