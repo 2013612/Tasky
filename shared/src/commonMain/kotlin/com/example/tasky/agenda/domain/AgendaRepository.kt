@@ -63,10 +63,7 @@ class AgendaRepository(
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
     private val konnection: Konnection = Konnection.instance,
 ) : IAgendaRepository {
-    override suspend fun getAgenda(timeStamp: Long) =
-        agendaDataSource.getAgenda(timeStamp = timeStamp).map { response ->
-            response.events.map { Event(it) } + response.tasks.map { Task(it) } + response.reminders.map { Reminder(it) }
-        }
+    override suspend fun getAgenda(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDayAgenda(timeStamp))
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> {
         val userId = SessionManager.getUserId() ?: ""
@@ -200,19 +197,13 @@ class AgendaRepository(
     }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
-        agendaDataSource.getTask(taskId = taskId).map {
-            Task(it)
-        }
+        ResultWrapper.Success(Task(agendaLocalDataSource.getTask(taskId)))
 
     override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
-        agendaDataSource.getEvent(eventId = eventId).map {
-            Event(it)
-        }
+        ResultWrapper.Success(Event(agendaLocalDataSource.getEvent(eventId)))
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
-        agendaDataSource.getReminder(reminderId = reminderId).map {
-            Reminder(it)
-        }
+        ResultWrapper.Success(Reminder(agendaLocalDataSource.getReminder(reminderId)))
 
     override suspend fun getAttendee(
         email: String,

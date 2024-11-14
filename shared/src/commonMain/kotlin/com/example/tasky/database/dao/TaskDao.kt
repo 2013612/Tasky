@@ -19,4 +19,10 @@ interface TaskDao {
 
     @Query("DELETE FROM TaskEntity")
     fun deleteAll()
+
+    @Query("SELECT * FROM TaskEntity WHERE time >= :startTime AND time < :endTime")
+    fun getByTime(
+        startTime: Long,
+        endTime: Long,
+    ): List<TaskEntity>
 }

@@ -21,4 +21,10 @@ interface EventDao {
 
     @Query("DELETE FROM EventEntity")
     fun deleteAll()
+
+    @Query("SELECT * FROM EventEntity WHERE `from` >= :startTime AND `from` < :endTime")
+    fun getByTime(
+        startTime: Long,
+        endTime: Long,
+    ): List<EventEntity>
 }

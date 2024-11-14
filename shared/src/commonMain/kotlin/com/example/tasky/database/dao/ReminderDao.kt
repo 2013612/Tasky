@@ -19,4 +19,10 @@ interface ReminderDao {
 
     @Query("DELETE FROM ReminderEntity")
     fun deleteAll()
+
+    @Query("SELECT * FROM ReminderEntity WHERE time >= :startTime AND time < :endTime")
+    fun getByTime(
+        startTime: Long,
+        endTime: Long,
+    ): List<ReminderEntity>
 }
