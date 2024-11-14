@@ -5,6 +5,7 @@ import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
+import com.example.tasky.database.model.TaskEntity
 import kotlinx.datetime.Clock
 
 sealed class AgendaItem {
@@ -166,6 +167,15 @@ data class Task(
         time = task.time,
         remindAt = getRemindAtType(task.time, task.remindAt),
         isDone = task.isDone,
+    )
+
+    constructor(taskEntity: TaskEntity) : this (
+        id = taskEntity.id,
+        title = taskEntity.title,
+        description = taskEntity.description,
+        time = taskEntity.time,
+        remindAt = taskEntity.remindAt,
+        isDone = taskEntity.isDone,
     )
 
     companion object {

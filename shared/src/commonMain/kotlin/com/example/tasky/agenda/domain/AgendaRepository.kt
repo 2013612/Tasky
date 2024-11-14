@@ -200,9 +200,7 @@ class AgendaRepository(
     }
 
     override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
-        agendaDataSource.getTask(taskId = taskId).map {
-            Task(it)
-        }
+        ResultWrapper.Success(Task(agendaLocalDataSource.getTask(taskId)))
 
     override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
         agendaDataSource.getEvent(eventId = eventId).map {
