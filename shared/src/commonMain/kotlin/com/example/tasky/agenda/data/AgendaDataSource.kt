@@ -36,7 +36,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class AgendaDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
@@ -139,11 +138,10 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createTask(bodyString: String): ResultWrapper<Unit, BaseError> =
+    suspend fun createTask(remoteTask: RemoteTask): ResultWrapper<Unit, BaseError> =
         safeCall {
-            val body = Json.decodeFromString<RemoteTask>(bodyString)
             httpClient.post(TaskPath()) {
-                setBody(body)
+                setBody(remoteTask)
             }
         }
 
@@ -154,20 +152,16 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun createReminder(bodyString: String): ResultWrapper<Unit, BaseError> =
+    suspend fun createReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, BaseError> =
         safeCall {
-            val body = Json.decodeFromString<RemoteReminder>(bodyString)
             httpClient.post(ReminderPath()) {
-                setBody(body)
+                setBody(remoteReminder)
             }
         }
 
     suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, BaseError> = createEvent(event.toCreateEventBody())
 
-    suspend fun createEvent(bodyString: String): ResultWrapper<RemoteEvent, BaseError> =
-        createEvent(Json.decodeFromString<CreateEventBody>(bodyString))
-
-    private suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
         safeCall {
             val createEventJson = HttpManager.json.encodeToString(body)
             httpClient.submitFormWithBinaryData(

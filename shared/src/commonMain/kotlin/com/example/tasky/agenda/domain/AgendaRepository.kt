@@ -2,6 +2,7 @@ package com.example.tasky.agenda.domain
 
 import com.example.tasky.agenda.data.AgendaDataSource
 import com.example.tasky.agenda.data.AgendaLocalDataSource
+import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.agenda.data.model.RemoteTask
 import com.example.tasky.agenda.data.model.UpdateEventBody
@@ -266,9 +267,18 @@ class AgendaRepository(
                         deletedReminderIds.add(history.params)
                         ResultWrapper.Success(Unit)
                     }
-                    ApiType.CREATE_EVENT -> agendaDataSource.createEvent(history.body)
-                    ApiType.CREATE_TASK -> agendaDataSource.createTask(history.body)
-                    ApiType.CREATE_REMINDER -> agendaDataSource.createReminder(history.body)
+                    ApiType.CREATE_EVENT -> {
+                        val body = json.decodeFromString<CreateEventBody>(history.body)
+                        agendaDataSource.createEvent(body)
+                    }
+                    ApiType.CREATE_TASK -> {
+                        val body = json.decodeFromString<RemoteTask>(history.body)
+                        agendaDataSource.createTask(body)
+                    }
+                    ApiType.CREATE_REMINDER -> {
+                        val body = json.decodeFromString<RemoteReminder>(history.body)
+                        agendaDataSource.createReminder(body)
+                    }
                     ApiType.UPDATE_EVENT -> {
                         val body = json.decodeFromString<UpdateEventBody>(history.body)
                         agendaDataSource.updateEvent(body = body, photos = emptyList())
