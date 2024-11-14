@@ -6,8 +6,6 @@ import com.example.tasky.common.data.util.isSuccess
 import com.example.tasky.login.data.model.AccessToken
 import com.example.tasky.login.data.model.AccessTokenResponse
 import com.example.tasky.login.domain.manager.SessionManager
-import com.russhwolf.settings.ExperimentalSettingsApi
-import com.russhwolf.settings.ExperimentalSettingsImplementation
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -19,7 +17,6 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.header
 import io.ktor.client.request.setBody
@@ -37,10 +34,8 @@ internal object HttpManager {
             prettyPrint
         }
 
-    @OptIn(ExperimentalSettingsImplementation::class, ExperimentalSettingsApi::class)
     val httpClient =
         HttpClient {
-            install(Resources)
             install(HttpTimeout) {
                 connectTimeoutMillis = TIMEOUT
                 requestTimeoutMillis = TIMEOUT
