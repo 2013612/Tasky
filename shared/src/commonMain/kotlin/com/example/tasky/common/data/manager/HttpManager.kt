@@ -3,7 +3,6 @@ package com.example.tasky.common.data.manager
 import com.example.tasky.BuildKonfig.API_KEY
 import com.example.tasky.common.data.model.ErrorResponse
 import com.example.tasky.common.data.util.isSuccess
-import com.example.tasky.login.data.model.AccessToken
 import com.example.tasky.login.data.model.AccessTokenResponse
 import com.example.tasky.login.domain.manager.SessionManager
 import io.ktor.client.HttpClient
@@ -19,6 +18,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.header
+import io.ktor.client.request.host
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
@@ -65,7 +65,7 @@ internal object HttpManager {
                         try {
                             val body = SessionManager.loadAccessTokenBody() ?: throw Exception("no login response")
                             val response =
-                                client.post(AccessToken()) {
+                                client.post("/accessToken") {
                                     markAsRefreshTokenRequest()
                                     setBody(body)
                                 }
