@@ -56,7 +56,6 @@ import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.utils.ObserveAsEvents
-import com.example.tasky.android.utils.serializableNavType
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -66,7 +65,6 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
-import kotlin.reflect.typeOf
 
 enum class AgendaDetailsScreenType {
     TASK,
@@ -75,7 +73,7 @@ enum class AgendaDetailsScreenType {
 }
 
 fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
-    composable<AgendaDetails>(typeMap = AgendaDetails.typeMap) {
+    composable<AgendaDetails> {
         val viewModel: AgendaDetailsViewModel = koinViewModel()
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
@@ -120,12 +118,7 @@ data class AgendaDetails(
     val agendaId: String,
     val type: AgendaDetailsScreenType,
     val isEdit: Boolean,
-) {
-    companion object {
-        val typeMap =
-            mapOf(typeOf<AgendaDetailsScreenType>() to serializableNavType<AgendaDetailsScreenType>())
-    }
-}
+)
 
 data class AgendaDetailsScreenState(
     val agendaItem: AgendaItem,
