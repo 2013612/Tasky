@@ -3,11 +3,9 @@ package com.example.tasky.agenda.domain.model
 import com.example.tasky.agenda.data.model.RemoteAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
-import com.example.tasky.agenda.data.model.RemoteReminder
 import com.example.tasky.database.model.AttendeeSerialized
 import com.example.tasky.database.model.EventEntity
 import com.example.tasky.database.model.PhotoSerialized
-import com.example.tasky.database.model.ReminderEntity
 import kotlinx.datetime.Clock
 
 sealed class AgendaItem {
@@ -218,26 +216,6 @@ data class Reminder(
     val time: Long,
     override val remindAt: RemindAtType,
 ) : AgendaItem() {
-    constructor(
-        reminder: RemoteReminder,
-    ) : this(
-        id = reminder.id,
-        title = reminder.title,
-        description = reminder.description,
-        time = reminder.time,
-        remindAt = getRemindAtType(reminder.time, reminder.remindAt),
-    )
-
-    constructor(
-        reminder: ReminderEntity,
-    ) : this(
-        id = reminder.id,
-        title = reminder.title,
-        description = reminder.description,
-        time = reminder.time,
-        remindAt = reminder.remindAt,
-    )
-
     companion object {
         val DUMMY =
             Reminder(

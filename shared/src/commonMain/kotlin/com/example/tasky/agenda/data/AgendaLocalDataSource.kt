@@ -1,6 +1,7 @@
 package com.example.tasky.agenda.data
 
 import com.example.tasky.agenda.data.mapper.toCreateEventBody
+import com.example.tasky.agenda.data.mapper.toReminder
 import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
 import com.example.tasky.agenda.data.mapper.toTask
@@ -223,7 +224,7 @@ class AgendaLocalDataSource(
         val endTime = localDate.plus(1, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 
         return appDatabase.taskDao().getByTime(startTime, endTime).map { it.toTask() } +
-            appDatabase.reminderDao().getByTime(startTime, endTime).map { Reminder(it) } +
+            appDatabase.reminderDao().getByTime(startTime, endTime).map { it.toReminder() } +
             appDatabase.eventDao().getByTime(startTime, endTime).map { Event(it) }
     }
 }

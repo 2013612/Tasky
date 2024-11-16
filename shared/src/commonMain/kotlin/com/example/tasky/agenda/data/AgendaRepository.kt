@@ -1,5 +1,6 @@
 package com.example.tasky.agenda.data
 
+import com.example.tasky.agenda.data.mapper.toReminder
 import com.example.tasky.agenda.data.mapper.toTask
 import com.example.tasky.agenda.data.model.CreateEventBody
 import com.example.tasky.agenda.data.model.RemoteReminder
@@ -166,7 +167,7 @@ class AgendaRepository(
         ResultWrapper.Success(Event(agendaLocalDataSource.getEvent(eventId)))
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
-        ResultWrapper.Success(Reminder(agendaLocalDataSource.getReminder(reminderId)))
+        ResultWrapper.Success(agendaLocalDataSource.getReminder(reminderId).toReminder())
 
     override suspend fun getAttendee(
         email: String,
@@ -260,7 +261,7 @@ class AgendaRepository(
                     Event(it)
                 },
                 response.tasks.map { it.toTask() },
-                response.reminders.map { Reminder(it) },
+                response.reminders.map { it.toReminder() },
             )
 
             agendaLocalDataSource.deleteAllHistory()
