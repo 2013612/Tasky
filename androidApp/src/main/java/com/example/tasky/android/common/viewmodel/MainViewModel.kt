@@ -7,6 +7,9 @@ import com.example.tasky.dataStore.isLoginFlow
 import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -17,18 +20,17 @@ class MainViewModel(
     val isLoginStateFlow = isLoginFlow.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false)
 
     init {
-        viewModelScope.launch {
-            konnection
-                .observeHasConnection()
-                .combine(isLoginFlow) { hasConnection, isLogin ->
-                    isLogin && hasConnection
-                }.collect {
-                    if (it) {
-                        viewModelScope.launch {
-                            agendaRepository.syncAgenda()
-                        }
-                    }
-                }
-        }
+        combine(
+            konnection.observeHasConnection(),
+            isLoginFlow,
+        ) { hasConnection, isLogin ->
+            hasConnection && isLogin
+        }.filter {
+            it
+        }.onEach {
+            viewModelScope.launch {
+                agendaRepository.syncAgenda()
+            }
+        }.launchIn(viewModelScope)
     }
 }
