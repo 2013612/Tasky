@@ -1,6 +1,6 @@
 package com.example.tasky.android.agenda.di
 
-import com.example.tasky.agenda.domain.AgendaRepository
+import com.example.tasky.agenda.data.AgendaRepository
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
 import com.example.tasky.android.utils.IImageCompressor
