@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 KoinAndroidContext {
                     Scaffold { innerPadding ->
                         val navController = rememberNavController()
-                        val isLogin = viewModel.isLoginFlow.collectAsState().value
+                        val isLogin = viewModel.isLoginStateFlow.collectAsState().value
                         MainNavHost(navController, isLogin = isLogin, Modifier.padding(innerPadding))
                     }
                 }
