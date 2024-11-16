@@ -14,7 +14,7 @@ import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
 import com.example.tasky.common.domain.model.onSuccess
-import com.example.tasky.login.domain.manager.LoginManager
+import com.example.tasky.login.domain.ILoginRepository
 import com.example.tasky.login.domain.manager.SessionManager
 import com.example.tasky.login.domain.util.getAvatarDisplayName
 import kotlinx.collections.immutable.toImmutableList
@@ -39,7 +39,7 @@ sealed interface AgendaOneTimeEvent {
 
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
-    private val loginManager: LoginManager,
+    private val loginRepository: ILoginRepository,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6
@@ -100,7 +100,7 @@ class AgendaViewModel(
 
     private fun logout() {
         viewModelScope.launch {
-            loginManager.logOut()
+            loginRepository.logout()
         }
     }
 
