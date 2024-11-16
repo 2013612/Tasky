@@ -14,5 +14,11 @@ class LoginRepository(
 
     override suspend fun logout() = loginDataSource.logout()
 
-    override suspend fun register(registerBody: RegisterBody) = loginDataSource.register(registerBody)
+    override suspend fun register(
+        fullName: String,
+        email: String,
+        password: String,
+    ) = loginDataSource.register(
+        RegisterBody(fullName, email, password),
+    )
 }
