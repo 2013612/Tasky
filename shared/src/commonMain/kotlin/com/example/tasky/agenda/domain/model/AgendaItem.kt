@@ -1,9 +1,8 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.model.RemoteAttendee
+import com.example.tasky.agenda.data.mapper.toAttendee
 import com.example.tasky.agenda.data.model.RemoteEvent
 import com.example.tasky.agenda.data.model.RemotePhoto
-import com.example.tasky.database.model.AttendeeSerialized
 import com.example.tasky.database.model.EventEntity
 import com.example.tasky.database.model.PhotoSerialized
 import kotlinx.datetime.Clock
@@ -50,7 +49,7 @@ data class Event(
         remindAt = getRemindAtType(remoteEvent.from, remoteEvent.remindAt),
         host = remoteEvent.host,
         isUserEventCreator = remoteEvent.isUserEventCreator,
-        attendees = remoteEvent.attendees.map { Attendee(it) },
+        attendees = remoteEvent.attendees.map { it.toAttendee() },
         photos = remoteEvent.photos.map { Photo(it) },
     )
 
@@ -63,7 +62,7 @@ data class Event(
         remindAt = event.remindAt,
         host = event.host,
         isUserEventCreator = event.isUserEventCreator,
-        attendees = event.attendees.map { Attendee(it) },
+        attendees = event.attendees.map { it.toAttendee() },
         photos = event.photos.map { Photo(it) },
     )
 
@@ -107,24 +106,6 @@ data class Attendee(
     val isGoing: Boolean,
     val remindAt: Long,
 ) {
-    constructor(remoteAttendee: RemoteAttendee) : this(
-        email = remoteAttendee.email,
-        fullName = remoteAttendee.fullName,
-        userId = remoteAttendee.userId,
-        eventId = remoteAttendee.eventId,
-        isGoing = remoteAttendee.isGoing,
-        remindAt = remoteAttendee.remindAt,
-    )
-
-    constructor(attendee: AttendeeSerialized) : this(
-        email = attendee.email,
-        fullName = attendee.name,
-        userId = attendee.userId,
-        eventId = attendee.eventId,
-        isGoing = attendee.isGoing,
-        remindAt = attendee.remindAt,
-    )
-
     companion object {
         val DUMMY_LIST =
             listOf(
