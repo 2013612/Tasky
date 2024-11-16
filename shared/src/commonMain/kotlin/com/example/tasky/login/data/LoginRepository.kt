@@ -7,7 +7,10 @@ import com.example.tasky.login.domain.ILoginRepository
 class LoginRepository(
     private val loginDataSource: LoginDataSource = LoginDataSource(),
 ) : ILoginRepository {
-    override suspend fun login(loginBody: LoginBody) = loginDataSource.login(loginBody)
+    override suspend fun login(
+        email: String,
+        password: String,
+    ) = loginDataSource.login(LoginBody(email, password))
 
     override suspend fun logout() = loginDataSource.logout()
 
