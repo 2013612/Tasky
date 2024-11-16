@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
-import com.example.tasky.login.data.model.LoginBody
 import com.example.tasky.login.domain.manager.LoginManager
 import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,8 +52,9 @@ class LoginViewModel(
 
         viewModelScope.launch {
             val isLoginSuccess =
-                loginManager.logIn(
-                    LoginBody(email = _screenStateFlow.value.emailState.text, password = _screenStateFlow.value.passwordState.text),
+                loginManager.login(
+                    email = _screenStateFlow.value.emailState.text,
+                    password = _screenStateFlow.value.passwordState.text,
                 )
 
             if (!isLoginSuccess) {

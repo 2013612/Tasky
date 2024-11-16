@@ -6,7 +6,6 @@ import com.example.tasky.android.login.screen.RegisterScreenEvent
 import com.example.tasky.android.login.screen.RegisterScreenState
 import com.example.tasky.common.domain.model.onError
 import com.example.tasky.common.domain.model.onSuccess
-import com.example.tasky.login.data.model.RegisterBody
 import com.example.tasky.login.domain.ILoginRepository
 import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,15 +60,12 @@ class RegisterViewModel(
         }
 
         viewModelScope.launch {
-            val body =
-                RegisterBody(
+            loginRepository
+                .register(
                     fullName = screenStateFlow.value.nameState.text,
                     email = screenStateFlow.value.emailState.text,
                     password = screenStateFlow.value.passwordState.text,
-                )
-            loginRepository
-                .register(body)
-                .onSuccess {
+                ).onSuccess {
                     _isRegisterSuccessFlow.update { true }
                 }.onError {
                     _screenStateFlow.update {
