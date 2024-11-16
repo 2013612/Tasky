@@ -12,7 +12,7 @@ inline fun <reified T : Any> serializableNavType(
     override fun get(
         bundle: Bundle,
         key: String,
-    ): T? = bundle.getString(key)?.let<String, T>(json::decodeFromString)
+    ) = bundle.getString(key)?.let<String, T>(json::decodeFromString)
 
     override fun parseValue(value: String): T = json.decodeFromString(value)
 
