@@ -1,10 +1,9 @@
 package com.example.tasky.agenda.domain.model
 
 import com.example.tasky.agenda.data.mapper.toAttendee
+import com.example.tasky.agenda.data.mapper.toPhoto
 import com.example.tasky.agenda.data.model.RemoteEvent
-import com.example.tasky.agenda.data.model.RemotePhoto
 import com.example.tasky.database.model.EventEntity
-import com.example.tasky.database.model.PhotoSerialized
 import kotlinx.datetime.Clock
 
 sealed class AgendaItem {
@@ -50,7 +49,7 @@ data class Event(
         host = remoteEvent.host,
         isUserEventCreator = remoteEvent.isUserEventCreator,
         attendees = remoteEvent.attendees.map { it.toAttendee() },
-        photos = remoteEvent.photos.map { Photo(it) },
+        photos = remoteEvent.photos.map { it.toPhoto() },
     )
 
     constructor(event: EventEntity) : this(
@@ -63,7 +62,7 @@ data class Event(
         host = event.host,
         isUserEventCreator = event.isUserEventCreator,
         attendees = event.attendees.map { it.toAttendee() },
-        photos = event.photos.map { Photo(it) },
+        photos = event.photos.map { it.toPhoto() },
     )
 
     companion object {
@@ -133,16 +132,6 @@ data class Photo(
     val key: String,
     val url: String,
 ) {
-    constructor(remotePhoto: RemotePhoto) : this(
-        key = remotePhoto.key,
-        url = remotePhoto.url,
-    )
-
-    constructor(photo: PhotoSerialized) : this(
-        key = photo.key,
-        url = photo.url,
-    )
-
     companion object {
         val DUMMY_LIST =
             listOf(
