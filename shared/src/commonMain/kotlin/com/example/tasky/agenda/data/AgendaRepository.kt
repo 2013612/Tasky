@@ -1,5 +1,6 @@
 package com.example.tasky.agenda.data
 
+import com.example.tasky.agenda.data.mapper.toEvent
 import com.example.tasky.agenda.data.mapper.toReminder
 import com.example.tasky.agenda.data.mapper.toTask
 import com.example.tasky.agenda.data.model.CreateEventBody
@@ -106,7 +107,7 @@ class AgendaRepository(
         if (konnection.isConnected()) {
             val result =
                 agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
-                    Event(it)
+                    it.toEvent()
                 }
 
             result.onSuccess {
@@ -151,7 +152,7 @@ class AgendaRepository(
 
         return if (konnection.isConnected()) {
             agendaDataSource.createEvent(event = event).map {
-                Event(it)
+                it.toEvent()
             }
         } else {
             val userId = SessionManager.getUserId() ?: ""
@@ -164,7 +165,7 @@ class AgendaRepository(
         ResultWrapper.Success(agendaLocalDataSource.getTask(taskId).toTask())
 
     override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
-        ResultWrapper.Success(Event(agendaLocalDataSource.getEvent(eventId)))
+        ResultWrapper.Success(agendaLocalDataSource.getEvent(eventId).toEvent())
 
     override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
         ResultWrapper.Success(agendaLocalDataSource.getReminder(reminderId).toReminder())
@@ -258,7 +259,7 @@ class AgendaRepository(
             agendaLocalDataSource.clearAgendas()
             agendaLocalDataSource.upsertAgendas(
                 response.events.map {
-                    Event(it)
+                    it.toEvent()
                 },
                 response.tasks.map { it.toTask() },
                 response.reminders.map { it.toReminder() },

@@ -1,9 +1,5 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.mapper.toAttendee
-import com.example.tasky.agenda.data.mapper.toPhoto
-import com.example.tasky.agenda.data.model.RemoteEvent
-import com.example.tasky.database.model.EventEntity
 import kotlinx.datetime.Clock
 
 sealed class AgendaItem {
@@ -39,32 +35,6 @@ data class Event(
     val attendees: List<Attendee>,
     val photos: List<Photo>,
 ) : AgendaItem() {
-    constructor(remoteEvent: RemoteEvent) : this(
-        id = remoteEvent.id,
-        title = remoteEvent.title,
-        description = remoteEvent.description,
-        from = remoteEvent.from,
-        to = remoteEvent.to,
-        remindAt = getRemindAtType(remoteEvent.from, remoteEvent.remindAt),
-        host = remoteEvent.host,
-        isUserEventCreator = remoteEvent.isUserEventCreator,
-        attendees = remoteEvent.attendees.map { it.toAttendee() },
-        photos = remoteEvent.photos.map { it.toPhoto() },
-    )
-
-    constructor(event: EventEntity) : this(
-        id = event.id,
-        title = event.title,
-        description = event.description,
-        from = event.from,
-        to = event.to,
-        remindAt = event.remindAt,
-        host = event.host,
-        isUserEventCreator = event.isUserEventCreator,
-        attendees = event.attendees.map { it.toAttendee() },
-        photos = event.photos.map { it.toPhoto() },
-    )
-
     companion object {
         val DUMMY =
             Event(

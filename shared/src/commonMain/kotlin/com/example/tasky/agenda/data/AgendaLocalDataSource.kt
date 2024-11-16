@@ -1,6 +1,7 @@
 package com.example.tasky.agenda.data
 
 import com.example.tasky.agenda.data.mapper.toCreateEventBody
+import com.example.tasky.agenda.data.mapper.toEvent
 import com.example.tasky.agenda.data.mapper.toReminder
 import com.example.tasky.agenda.data.mapper.toRemoteReminder
 import com.example.tasky.agenda.data.mapper.toRemoteTask
@@ -225,6 +226,6 @@ class AgendaLocalDataSource(
 
         return appDatabase.taskDao().getByTime(startTime, endTime).map { it.toTask() } +
             appDatabase.reminderDao().getByTime(startTime, endTime).map { it.toReminder() } +
-            appDatabase.eventDao().getByTime(startTime, endTime).map { Event(it) }
+            appDatabase.eventDao().getByTime(startTime, endTime).map { it.toEvent() }
     }
 }
