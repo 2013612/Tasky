@@ -10,7 +10,7 @@ import org.koin.dsl.module
 
 @OptIn(ExperimentalSettingsImplementation::class, ExperimentalSettingsApi::class)
 val dataStoreModule =
-    module {
+    module(createdAtStart = true) {
         single<FlowSettings> {
             createSettings(getDataStore(androidApplication()))
         }

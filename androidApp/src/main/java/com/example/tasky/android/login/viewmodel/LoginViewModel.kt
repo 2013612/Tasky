@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
-import com.example.tasky.login.domain.manager.LoginManager
+import com.example.tasky.common.domain.model.onError
+import com.example.tasky.login.domain.ILoginRepository
 import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginManager: LoginManager,
+    private val loginRepository: ILoginRepository,
 ) : ViewModel() {
     private val _screenStateFlow = MutableStateFlow(LoginScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()
@@ -51,17 +52,15 @@ class LoginViewModel(
         }
 
         viewModelScope.launch {
-            val isLoginSuccess =
-                loginManager.login(
+            loginRepository
+                .login(
                     email = _screenStateFlow.value.emailState.text,
                     password = _screenStateFlow.value.passwordState.text,
-                )
-
-            if (!isLoginSuccess) {
-                _screenStateFlow.update {
-                    it.copy(emailState = it.emailState.copy(errorText = ""), passwordState = it.passwordState.copy(errorText = ""))
+                ).onError {
+                    _screenStateFlow.update {
+                        it.copy(emailState = it.emailState.copy(errorText = ""), passwordState = it.passwordState.copy(errorText = ""))
+                    }
                 }
-            }
         }
     }
 }
