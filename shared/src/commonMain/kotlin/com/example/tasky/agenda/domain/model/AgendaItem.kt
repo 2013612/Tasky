@@ -1,15 +1,5 @@
 package com.example.tasky.agenda.domain.model
 
-import com.example.tasky.agenda.data.model.RemoteAttendee
-import com.example.tasky.agenda.data.model.RemoteEvent
-import com.example.tasky.agenda.data.model.RemotePhoto
-import com.example.tasky.agenda.data.model.RemoteReminder
-import com.example.tasky.agenda.data.model.RemoteTask
-import com.example.tasky.database.model.AttendeeSerialized
-import com.example.tasky.database.model.EventEntity
-import com.example.tasky.database.model.PhotoSerialized
-import com.example.tasky.database.model.ReminderEntity
-import com.example.tasky.database.model.TaskEntity
 import kotlinx.datetime.Clock
 
 sealed class AgendaItem {
@@ -45,32 +35,6 @@ data class Event(
     val attendees: List<Attendee>,
     val photos: List<Photo>,
 ) : AgendaItem() {
-    constructor(remoteEvent: RemoteEvent) : this(
-        id = remoteEvent.id,
-        title = remoteEvent.title,
-        description = remoteEvent.description,
-        from = remoteEvent.from,
-        to = remoteEvent.to,
-        remindAt = getRemindAtType(remoteEvent.from, remoteEvent.remindAt),
-        host = remoteEvent.host,
-        isUserEventCreator = remoteEvent.isUserEventCreator,
-        attendees = remoteEvent.attendees.map { Attendee(it) },
-        photos = remoteEvent.photos.map { Photo(it) },
-    )
-
-    constructor(event: EventEntity) : this(
-        id = event.id,
-        title = event.title,
-        description = event.description,
-        from = event.from,
-        to = event.to,
-        remindAt = event.remindAt,
-        host = event.host,
-        isUserEventCreator = event.isUserEventCreator,
-        attendees = event.attendees.map { Attendee(it) },
-        photos = event.photos.map { Photo(it) },
-    )
-
     companion object {
         val DUMMY =
             Event(
@@ -111,24 +75,6 @@ data class Attendee(
     val isGoing: Boolean,
     val remindAt: Long,
 ) {
-    constructor(remoteAttendee: RemoteAttendee) : this(
-        email = remoteAttendee.email,
-        fullName = remoteAttendee.fullName,
-        userId = remoteAttendee.userId,
-        eventId = remoteAttendee.eventId,
-        isGoing = remoteAttendee.isGoing,
-        remindAt = remoteAttendee.remindAt,
-    )
-
-    constructor(attendee: AttendeeSerialized) : this(
-        email = attendee.email,
-        fullName = attendee.name,
-        userId = attendee.userId,
-        eventId = attendee.eventId,
-        isGoing = attendee.isGoing,
-        remindAt = attendee.remindAt,
-    )
-
     companion object {
         val DUMMY_LIST =
             listOf(
@@ -156,16 +102,6 @@ data class Photo(
     val key: String,
     val url: String,
 ) {
-    constructor(remotePhoto: RemotePhoto) : this(
-        key = remotePhoto.key,
-        url = remotePhoto.url,
-    )
-
-    constructor(photo: PhotoSerialized) : this(
-        key = photo.key,
-        url = photo.url,
-    )
-
     companion object {
         val DUMMY_LIST =
             listOf(
@@ -189,26 +125,6 @@ data class Task(
     override val remindAt: RemindAtType,
     val isDone: Boolean,
 ) : AgendaItem() {
-    constructor(
-        task: RemoteTask,
-    ) : this(
-        id = task.id,
-        title = task.title,
-        description = task.description,
-        time = task.time,
-        remindAt = getRemindAtType(task.time, task.remindAt),
-        isDone = task.isDone,
-    )
-
-    constructor(taskEntity: TaskEntity) : this (
-        id = taskEntity.id,
-        title = taskEntity.title,
-        description = taskEntity.description,
-        time = taskEntity.time,
-        remindAt = taskEntity.remindAt,
-        isDone = taskEntity.isDone,
-    )
-
     companion object {
         val DUMMY =
             Task(
@@ -240,26 +156,6 @@ data class Reminder(
     val time: Long,
     override val remindAt: RemindAtType,
 ) : AgendaItem() {
-    constructor(
-        reminder: RemoteReminder,
-    ) : this(
-        id = reminder.id,
-        title = reminder.title,
-        description = reminder.description,
-        time = reminder.time,
-        remindAt = getRemindAtType(reminder.time, reminder.remindAt),
-    )
-
-    constructor(
-        reminder: ReminderEntity,
-    ) : this(
-        id = reminder.id,
-        title = reminder.title,
-        description = reminder.description,
-        time = reminder.time,
-        remindAt = reminder.remindAt,
-    )
-
     companion object {
         val DUMMY =
             Reminder(
