@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.RegisterScreenEvent
 import com.example.tasky.android.login.screen.RegisterScreenState
-import com.example.tasky.auth.domain.ILoginRepository
+import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.util.Validator
 import com.example.tasky.common.domain.model.onError
 import com.example.tasky.common.domain.model.onSuccess
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val loginRepository: ILoginRepository,
+    private val loginRepository: IAuthRepository,
 ) : ViewModel() {
     private val _screenStateFlow = MutableStateFlow(RegisterScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()

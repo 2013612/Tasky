@@ -3,7 +3,7 @@ package com.example.tasky.auth.domain
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 
-interface ILoginRepository {
+interface IAuthRepository {
     suspend fun login(
         email: String,
         password: String,

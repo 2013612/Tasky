@@ -13,7 +13,7 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
-import com.example.tasky.auth.domain.ILoginRepository
+import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName
 import com.example.tasky.common.domain.model.onSuccess
@@ -39,7 +39,7 @@ sealed interface AgendaOneTimeEvent {
 
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
-    private val loginRepository: ILoginRepository,
+    private val loginRepository: IAuthRepository,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6

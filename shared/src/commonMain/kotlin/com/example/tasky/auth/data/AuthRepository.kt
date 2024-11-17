@@ -2,7 +2,7 @@ package com.example.tasky.auth.data
 
 import com.example.tasky.auth.data.model.LoginBody
 import com.example.tasky.auth.data.model.RegisterBody
-import com.example.tasky.auth.domain.ILoginRepository
+import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.common.data.manager.HttpManager
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -17,10 +17,10 @@ import com.russhwolf.settings.coroutines.FlowSettings
 import kotlinx.serialization.encodeToString
 
 @OptIn(ExperimentalSettingsApi::class, ExperimentalSettingsImplementation::class)
-class LoginRepository(
+class AuthRepository(
     private val loginDataSource: LoginDataSource = LoginDataSource(),
     private val settings: FlowSettings = createSettings(dataStore),
-) : ILoginRepository {
+) : IAuthRepository {
     override suspend fun login(
         email: String,
         password: String,
