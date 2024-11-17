@@ -18,14 +18,14 @@ import kotlinx.serialization.encodeToString
 
 @OptIn(ExperimentalSettingsApi::class, ExperimentalSettingsImplementation::class)
 class AuthRepository(
-    private val loginDataSource: LoginDataSource = LoginDataSource(),
+    private val authDataSource: AuthDataSource = AuthDataSource(),
     private val settings: FlowSettings = createSettings(dataStore),
 ) : IAuthRepository {
     override suspend fun login(
         email: String,
         password: String,
     ): ResultWrapper<Boolean, BaseError> =
-        loginDataSource
+        authDataSource
             .login(LoginBody(email, password))
             .onSuccess {
                 val jsonString = HttpManager.json.encodeToString(it)
@@ -33,7 +33,7 @@ class AuthRepository(
             }.map { true }
 
     override suspend fun logout(): ResultWrapper<Unit, BaseError> =
-        loginDataSource.logout().onSuccess {
+        authDataSource.logout().onSuccess {
             settings.remove(SettingsKey.LOGIN_RESPONSE.name)
         }
 
@@ -41,7 +41,7 @@ class AuthRepository(
         fullName: String,
         email: String,
         password: String,
-    ) = loginDataSource.register(
+    ) = authDataSource.register(
         RegisterBody(fullName, email, password),
     )
 }

@@ -14,7 +14,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
-class LoginDataSource(
+class AuthDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
     suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, BaseError> =
