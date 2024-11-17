@@ -18,9 +18,9 @@ fun AgendaItem.copy(
     startTime: Long = this.getStartTime(),
 ): AgendaItem =
     when (this) {
-        is Event -> this.copy(title = title, description = description, remindAt = remindAt, from = startTime)
-        is Reminder -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
-        is Task -> this.copy(title = title, description = description, remindAt = remindAt, startTime = startTime)
+        is Event -> copy(title = title, description = description, remindAt = remindAt, from = startTime)
+        is Reminder -> copy(title = title, description = description, remindAt = remindAt, time = startTime)
+        is Task -> copy(title = title, description = description, remindAt = remindAt, time = startTime)
     }
 
 data class Event(
