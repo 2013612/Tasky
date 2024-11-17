@@ -1,13 +1,6 @@
 package com.example.tasky.auth.data.model
 
-import io.ktor.resources.Resource
 import kotlinx.serialization.Serializable
-
-@Resource("/authenticate")
-class Authenticate
-
-@Resource("/accessToken")
-class AccessToken
 
 @Serializable
 data class AccessTokenBody(

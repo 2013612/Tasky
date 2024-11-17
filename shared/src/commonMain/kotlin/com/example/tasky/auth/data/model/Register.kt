@@ -1,10 +1,6 @@
 package com.example.tasky.auth.data.model
 
-import io.ktor.resources.Resource
 import kotlinx.serialization.Serializable
-
-@Resource("/register")
-class Register
 
 @Serializable
 data class RegisterBody(
