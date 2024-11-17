@@ -48,7 +48,6 @@ kotlin {
             implementation(libs.multiplatform.settings.datastore)
             api(libs.androidx.datastore.preferences.core)
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.resources)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.ktor.client.logging)
