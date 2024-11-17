@@ -39,7 +39,7 @@ sealed interface AgendaOneTimeEvent {
 
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
-    private val loginRepository: IAuthRepository,
+    private val authRepository: IAuthRepository,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6
@@ -100,7 +100,7 @@ class AgendaViewModel(
 
     private fun logout() {
         viewModelScope.launch {
-            loginRepository.logout()
+            authRepository.logout()
         }
     }
 
