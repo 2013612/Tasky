@@ -21,12 +21,14 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -60,13 +62,22 @@ class AgendaViewModel(
         when (event) {
             AgendaScreenEvent.OnClickLogout -> logout()
             is AgendaScreenEvent.OnCreateClick -> createAgendaItem(event.type)
-            is AgendaScreenEvent.OnDateSelect ->
+            is AgendaScreenEvent.OnDateSelect -> {
                 _screenStateFlow.update {
                     it.copy(
                         startDate = Instant.fromEpochMilliseconds(event.newDate),
+                        selectedDateOffset = 0,
                     )
                 }
-            is AgendaScreenEvent.OnDayOffsetSelect -> _screenStateFlow.update { it.copy(selectedDateOffset = event.newOffset) }
+                getAgendas(event.newDate)
+            }
+            is AgendaScreenEvent.OnDayOffsetSelect -> {
+                _screenStateFlow.update { it.copy(selectedDateOffset = event.newOffset) }
+                val newDate =
+                    _screenStateFlow.value.startDate.toEpochMilliseconds() +
+                        event.newOffset.toDuration(DurationUnit.DAYS).toLong(DurationUnit.MILLISECONDS)
+                getAgendas(newDate)
+            }
             is AgendaScreenEvent.OnDeleteClick -> deleteAgenda(agendaItem = event.agendaItem)
             is AgendaScreenEvent.OnEditClick -> {}
             is AgendaScreenEvent.OnOpenClick -> {}
