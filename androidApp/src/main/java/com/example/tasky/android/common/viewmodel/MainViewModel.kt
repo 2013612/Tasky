@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class MainViewModel(
     konnection: Konnection,
@@ -28,9 +27,7 @@ class MainViewModel(
         }.filter {
             it
         }.onEach {
-            viewModelScope.launch {
-                agendaRepository.syncAgenda()
-            }
+            agendaRepository.syncAgenda()
         }.launchIn(viewModelScope)
     }
 }
