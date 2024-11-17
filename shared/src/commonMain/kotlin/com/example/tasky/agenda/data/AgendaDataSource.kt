@@ -16,7 +16,7 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.manager.HttpManager
-import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.data.util.safeCall
 import com.example.tasky.common.domain.model.ResultWrapper
 import io.ktor.client.HttpClient
@@ -36,42 +36,42 @@ import kotlinx.serialization.encodeToString
 class AgendaDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
-    suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, BaseError> =
+    suspend fun getAgenda(timeStamp: Long): ResultWrapper<GetAgendaResponse, DataError.Remote> =
         safeCall {
             httpClient.get("/agenda") {
                 parameter("time", timeStamp)
             }
         }
 
-    suspend fun deleteEvent(eventId: String): ResultWrapper<Unit, BaseError> =
+    suspend fun deleteEvent(eventId: String): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.delete("/event") {
                 parameter("eventId", eventId)
             }
         }
 
-    suspend fun deleteTask(taskId: String): ResultWrapper<Unit, BaseError> =
+    suspend fun deleteTask(taskId: String): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.delete("/task") {
                 parameter("taskId", taskId)
             }
         }
 
-    suspend fun deleteReminder(reminderId: String): ResultWrapper<Unit, BaseError> =
+    suspend fun deleteReminder(reminderId: String): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.delete("/reminder") {
                 parameter("reminderId", reminderId)
             }
         }
 
-    suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> =
+    suspend fun updateTask(task: Task): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.put("/task") {
                 setBody(task.toRemoteTask())
             }
         }
 
-    suspend fun updateTask(remoteTask: RemoteTask): ResultWrapper<Unit, BaseError> =
+    suspend fun updateTask(remoteTask: RemoteTask): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.put("/task") {
                 setBody(remoteTask)
@@ -83,12 +83,12 @@ class AgendaDataSource(
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
         photos: List<ByteArray>,
-    ): ResultWrapper<RemoteEvent, BaseError> = updateEvent(event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos)
+    ): ResultWrapper<RemoteEvent, DataError.Remote> = updateEvent(event.toUpdateEventBody(deletedPhotoKeys, isGoing), photos)
 
     suspend fun updateEvent(
         body: UpdateEventBody,
         photos: List<ByteArray>,
-    ): ResultWrapper<RemoteEvent, BaseError> =
+    ): ResultWrapper<RemoteEvent, DataError.Remote> =
         safeCall {
             val updateEventJson = HttpManager.json.encodeToString(body)
             httpClient.submitFormWithBinaryData(
@@ -113,51 +113,51 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
+    suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.put("/reminder") {
                 setBody(reminder.toRemoteReminder())
             }
         }
 
-    suspend fun updateReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, BaseError> =
+    suspend fun updateReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.put("/reminder") {
                 setBody(remoteReminder)
             }
         }
 
-    suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> =
+    suspend fun createTask(task: Task): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/task") {
                 setBody(task.toRemoteTask())
             }
         }
 
-    suspend fun createTask(remoteTask: RemoteTask): ResultWrapper<Unit, BaseError> =
+    suspend fun createTask(remoteTask: RemoteTask): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/task") {
                 setBody(remoteTask)
             }
         }
 
-    suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> =
+    suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/reminder") {
                 setBody(reminder.toRemoteReminder())
             }
         }
 
-    suspend fun createReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, BaseError> =
+    suspend fun createReminder(remoteReminder: RemoteReminder): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/reminder") {
                 setBody(remoteReminder)
             }
         }
 
-    suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, BaseError> = createEvent(event.toCreateEventBody())
+    suspend fun createEvent(event: Event): ResultWrapper<RemoteEvent, DataError.Remote> = createEvent(event.toCreateEventBody())
 
-    suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun createEvent(body: CreateEventBody): ResultWrapper<RemoteEvent, DataError.Remote> =
         safeCall {
             val createEventJson = HttpManager.json.encodeToString(body)
             httpClient.submitFormWithBinaryData(
@@ -178,35 +178,35 @@ class AgendaDataSource(
             }
         }
 
-    suspend fun getEvent(eventId: String): ResultWrapper<RemoteEvent, BaseError> =
+    suspend fun getEvent(eventId: String): ResultWrapper<RemoteEvent, DataError.Remote> =
         safeCall {
             httpClient.get("/event") {
                 parameter("eventId", eventId)
             }
         }
 
-    suspend fun getTask(taskId: String): ResultWrapper<RemoteTask, BaseError> =
+    suspend fun getTask(taskId: String): ResultWrapper<RemoteTask, DataError.Remote> =
         safeCall {
             httpClient.get("/task") {
                 parameter("taskId", taskId)
             }
         }
 
-    suspend fun getReminder(reminderId: String): ResultWrapper<RemoteReminder, BaseError> =
+    suspend fun getReminder(reminderId: String): ResultWrapper<RemoteReminder, DataError.Remote> =
         safeCall {
             httpClient.get("/reminder") {
                 parameter("reminderId", reminderId)
             }
         }
 
-    suspend fun getAttendee(email: String): ResultWrapper<GetAttendeeResponse, BaseError> =
+    suspend fun getAttendee(email: String): ResultWrapper<GetAttendeeResponse, DataError.Remote> =
         safeCall {
             httpClient.get("/attendee") {
                 parameter("email", email)
             }
         }
 
-    suspend fun deleteEventForAttendee(eventId: String): ResultWrapper<Unit, BaseError> =
+    suspend fun deleteEventForAttendee(eventId: String): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.delete("/attendee") {
                 parameter("eventId", eventId)
@@ -217,14 +217,14 @@ class AgendaDataSource(
         deletedEventIds: List<String>,
         deletedTaskIds: List<String>,
         deletedReminderIds: List<String>,
-    ): ResultWrapper<Unit, BaseError> =
+    ): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/syncAgenda") {
                 setBody(SyncAgendaBody(deletedEventIds, deletedTaskIds, deletedReminderIds))
             }
         }
 
-    suspend fun getFullAgenda(): ResultWrapper<GetAgendaResponse, BaseError> =
+    suspend fun getFullAgenda(): ResultWrapper<GetAgendaResponse, DataError.Remote> =
         safeCall {
             httpClient.get("/fullAgenda")
         }

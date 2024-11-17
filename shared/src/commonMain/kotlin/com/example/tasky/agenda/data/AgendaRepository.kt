@@ -14,7 +14,7 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.auth.domain.manager.SessionManager
-import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
@@ -30,7 +30,7 @@ class AgendaRepository(
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDayAgenda(timeStamp))
 
-    override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, BaseError> {
+    override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, DataError.Remote> {
         val userId = SessionManager.getUserId() ?: ""
 
         return when (agendaItem) {
@@ -71,7 +71,7 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun updateTask(task: Task): ResultWrapper<Unit, BaseError> {
+    override suspend fun updateTask(task: Task): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertTask(task)
 
         return if (konnection.isConnected()) {
@@ -84,7 +84,7 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+    override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertReminder(reminder)
 
         return if (konnection.isConnected()) {
@@ -101,7 +101,7 @@ class AgendaRepository(
         deletedPhotoKeys: List<String>,
         isGoing: Boolean,
         photos: List<ByteArray>,
-    ): ResultWrapper<Event, BaseError> {
+    ): ResultWrapper<Event, DataError.Remote> {
         agendaLocalDataSource.upsertEvent(event)
 
         if (konnection.isConnected()) {
@@ -123,7 +123,7 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun createTask(task: Task): ResultWrapper<Unit, BaseError> {
+    override suspend fun createTask(task: Task): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertTask(task)
 
         return if (konnection.isConnected()) {
@@ -135,7 +135,7 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, BaseError> {
+    override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertReminder(reminder)
 
         return if (konnection.isConnected()) {
@@ -147,7 +147,7 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun createEvent(event: Event): ResultWrapper<Event, BaseError> {
+    override suspend fun createEvent(event: Event): ResultWrapper<Event, DataError.Remote> {
         agendaLocalDataSource.upsertEvent(event = event)
 
         return if (konnection.isConnected()) {
@@ -161,20 +161,20 @@ class AgendaRepository(
         }
     }
 
-    override suspend fun getTask(taskId: String): ResultWrapper<Task, BaseError> =
+    override suspend fun getTask(taskId: String): ResultWrapper<Task, DataError.Remote> =
         ResultWrapper.Success(agendaLocalDataSource.getTask(taskId).toTask())
 
-    override suspend fun getEvent(eventId: String): ResultWrapper<Event, BaseError> =
+    override suspend fun getEvent(eventId: String): ResultWrapper<Event, DataError.Remote> =
         ResultWrapper.Success(agendaLocalDataSource.getEvent(eventId).toEvent())
 
-    override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, BaseError> =
+    override suspend fun getReminder(reminderId: String): ResultWrapper<Reminder, DataError.Remote> =
         ResultWrapper.Success(agendaLocalDataSource.getReminder(reminderId).toReminder())
 
     override suspend fun getAttendee(
         email: String,
         eventId: String,
         from: Long,
-    ): ResultWrapper<Attendee?, BaseError> =
+    ): ResultWrapper<Attendee?, DataError.Remote> =
         agendaDataSource.getAttendee(email = email).map {
             if (it.doesUserExist) {
                 Attendee(
@@ -209,7 +209,7 @@ class AgendaRepository(
 
             val json = Json
 
-            val result: ResultWrapper<Any, BaseError> =
+            val result: ResultWrapper<Any, DataError.Remote> =
                 when (history.apiType) {
                     ApiType.DELETE_EVENT, ApiType.DELETE_EVENT_ATTENDEE -> {
                         deletedEventIds.add(history.params)
