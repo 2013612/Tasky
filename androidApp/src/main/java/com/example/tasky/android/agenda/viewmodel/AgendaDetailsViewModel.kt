@@ -18,9 +18,9 @@ import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.utils.IImageCompressor
+import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
-import com.example.tasky.login.domain.manager.SessionManager
 import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

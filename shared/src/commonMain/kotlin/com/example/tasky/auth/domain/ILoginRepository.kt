@@ -1,4 +1,4 @@
-package com.example.tasky.login.domain
+package com.example.tasky.auth.domain
 
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper

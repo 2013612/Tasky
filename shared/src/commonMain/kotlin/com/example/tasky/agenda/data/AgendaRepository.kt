@@ -13,13 +13,13 @@ import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.isDelete
-import com.example.tasky.login.domain.manager.SessionManager
 import dev.tmapps.konnection.Konnection
 import kotlinx.serialization.json.Json
 

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.android.login.screen.LoginScreenEvent
 import com.example.tasky.android.login.screen.LoginScreenState
+import com.example.tasky.auth.domain.ILoginRepository
+import com.example.tasky.auth.domain.util.Validator
 import com.example.tasky.common.domain.model.onError
-import com.example.tasky.login.domain.ILoginRepository
-import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
