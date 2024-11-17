@@ -1,4 +1,4 @@
-package com.example.tasky.login.data.model
+package com.example.tasky.auth.data.model
 
 import io.ktor.resources.Resource
 import kotlinx.serialization.Serializable

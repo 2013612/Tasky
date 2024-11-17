@@ -1,20 +1,20 @@
-package com.example.tasky.login.data
+package com.example.tasky.auth.data
 
+import com.example.tasky.auth.data.model.LoginBody
+import com.example.tasky.auth.data.model.LoginResponse
+import com.example.tasky.auth.data.model.RegisterBody
 import com.example.tasky.common.data.manager.HttpManager
 import com.example.tasky.common.data.model.BaseError
 import com.example.tasky.common.data.util.invalidateBearerTokens
 import com.example.tasky.common.data.util.safeCall
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.onSuccess
-import com.example.tasky.login.data.model.LoginBody
-import com.example.tasky.login.data.model.LoginResponse
-import com.example.tasky.login.data.model.RegisterBody
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
-class LoginDataSource(
+class AuthDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
     suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, BaseError> =

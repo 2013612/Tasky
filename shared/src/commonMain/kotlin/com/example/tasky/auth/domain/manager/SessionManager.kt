@@ -1,11 +1,11 @@
-package com.example.tasky.login.domain.manager
+package com.example.tasky.auth.domain.manager
 
+import com.example.tasky.auth.data.model.AccessTokenBody
+import com.example.tasky.auth.data.model.LoginResponse
 import com.example.tasky.common.data.manager.HttpManager.json
 import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.dataStore.createSettings
 import com.example.tasky.dataStore.dataStore
-import com.example.tasky.login.data.model.AccessTokenBody
-import com.example.tasky.login.data.model.LoginResponse
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import io.ktor.client.plugins.auth.providers.BearerTokens

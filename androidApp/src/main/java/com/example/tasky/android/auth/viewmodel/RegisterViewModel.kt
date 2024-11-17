@@ -1,20 +1,20 @@
-package com.example.tasky.android.login.viewmodel
+package com.example.tasky.android.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.android.login.screen.RegisterScreenEvent
-import com.example.tasky.android.login.screen.RegisterScreenState
+import com.example.tasky.android.auth.screen.RegisterScreenEvent
+import com.example.tasky.android.auth.screen.RegisterScreenState
+import com.example.tasky.auth.domain.IAuthRepository
+import com.example.tasky.auth.domain.util.Validator
 import com.example.tasky.common.domain.model.onError
 import com.example.tasky.common.domain.model.onSuccess
-import com.example.tasky.login.domain.ILoginRepository
-import com.example.tasky.login.domain.util.Validator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val loginRepository: ILoginRepository,
+    private val loginRepository: IAuthRepository,
 ) : ViewModel() {
     private val _screenStateFlow = MutableStateFlow(RegisterScreenState())
     val screenStateFlow = _screenStateFlow.asStateFlow()

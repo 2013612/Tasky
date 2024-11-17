@@ -34,7 +34,7 @@ import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.Light2
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
-import com.example.tasky.login.domain.util.getAvatarDisplayName
+import com.example.tasky.auth.domain.util.getAvatarDisplayName
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

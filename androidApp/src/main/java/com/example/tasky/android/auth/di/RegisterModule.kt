@@ -1,8 +1,8 @@
-package com.example.tasky.android.login.di
+package com.example.tasky.android.auth.di
 
-import com.example.tasky.android.login.viewmodel.RegisterViewModel
-import com.example.tasky.login.data.LoginRepository
-import com.example.tasky.login.domain.ILoginRepository
+import com.example.tasky.android.auth.viewmodel.RegisterViewModel
+import com.example.tasky.auth.data.AuthRepository
+import com.example.tasky.auth.domain.IAuthRepository
 import com.russhwolf.settings.ExperimentalSettingsApi
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -12,6 +12,6 @@ import org.koin.dsl.module
 @OptIn(ExperimentalSettingsApi::class)
 val registerModule =
     module {
-        singleOf<LoginRepository>(::LoginRepository).bind<ILoginRepository>()
+        singleOf<AuthRepository>(::AuthRepository).bind<IAuthRepository>()
         viewModelOf(::RegisterViewModel)
     }
