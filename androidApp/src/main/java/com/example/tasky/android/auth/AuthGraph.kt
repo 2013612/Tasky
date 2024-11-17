@@ -10,10 +10,10 @@ import com.example.tasky.android.auth.screen.registerScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-object LoginGraph
+object AuthGraph
 
-fun NavGraphBuilder.loginGraph(navController: NavController) {
-    navigation<LoginGraph>(startDestination = Login) {
+fun NavGraphBuilder.authGraph(navController: NavController) {
+    navigation<AuthGraph>(startDestination = Login) {
         loginScreen(
             navigateToSignUp = navController::navigateToRegister,
         )
@@ -23,6 +23,6 @@ fun NavGraphBuilder.loginGraph(navController: NavController) {
     }
 }
 
-fun NavController.navigateToLoginGraph() {
-    navigate(LoginGraph)
+fun NavController.navigateToAuthGraph() {
+    navigate(AuthGraph)
 }

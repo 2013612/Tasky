@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.tasky.android.agenda.AgendaGraph
 import com.example.tasky.android.agenda.agendaGraph
-import com.example.tasky.android.auth.LoginGraph
-import com.example.tasky.android.auth.loginGraph
+import com.example.tasky.android.auth.AuthGraph
+import com.example.tasky.android.auth.authGraph
 
 @Composable
 fun MainNavHost(
@@ -21,11 +21,11 @@ fun MainNavHost(
             if (isLogin) {
                 AgendaGraph
             } else {
-                LoginGraph
+                AuthGraph
             },
         modifier = modifier,
     ) {
-        loginGraph(navController = navHostController)
+        authGraph(navController = navHostController)
         agendaGraph(navController = navHostController)
     }
 }
