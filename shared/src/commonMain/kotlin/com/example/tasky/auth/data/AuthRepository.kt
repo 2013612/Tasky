@@ -4,7 +4,7 @@ import com.example.tasky.auth.data.model.LoginBody
 import com.example.tasky.auth.data.model.RegisterBody
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.common.data.manager.HttpManager
-import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
@@ -24,7 +24,7 @@ class AuthRepository(
     override suspend fun login(
         email: String,
         password: String,
-    ): ResultWrapper<Boolean, BaseError> =
+    ): ResultWrapper<Boolean, DataError.Remote> =
         authDataSource
             .login(LoginBody(email, password))
             .onSuccess {
@@ -32,7 +32,7 @@ class AuthRepository(
                 settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
             }.map { true }
 
-    override suspend fun logout(): ResultWrapper<Unit, BaseError> =
+    override suspend fun logout(): ResultWrapper<Unit, DataError.Remote> =
         authDataSource.logout().onSuccess {
             settings.remove(SettingsKey.LOGIN_RESPONSE.name)
         }

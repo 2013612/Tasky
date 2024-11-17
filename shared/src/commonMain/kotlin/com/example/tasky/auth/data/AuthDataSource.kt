@@ -4,7 +4,7 @@ import com.example.tasky.auth.data.model.LoginBody
 import com.example.tasky.auth.data.model.LoginResponse
 import com.example.tasky.auth.data.model.RegisterBody
 import com.example.tasky.common.data.manager.HttpManager
-import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.data.util.invalidateBearerTokens
 import com.example.tasky.common.data.util.safeCall
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -17,7 +17,7 @@ import io.ktor.client.request.setBody
 class AuthDataSource(
     private val httpClient: HttpClient = HttpManager.httpClient,
 ) {
-    suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, BaseError> =
+    suspend fun login(loginBody: LoginBody): ResultWrapper<LoginResponse, DataError.Remote> =
         safeCall<LoginResponse> {
             httpClient.post("/login") {
                 setBody(loginBody)
@@ -26,14 +26,14 @@ class AuthDataSource(
             httpClient.invalidateBearerTokens()
         }
 
-    suspend fun logout(): ResultWrapper<Unit, BaseError> =
+    suspend fun logout(): ResultWrapper<Unit, DataError.Remote> =
         safeCall<Unit> {
             httpClient.get("/logout")
         }.onSuccess {
             httpClient.invalidateBearerTokens()
         }
 
-    suspend fun register(registerBody: RegisterBody): ResultWrapper<Unit, BaseError> =
+    suspend fun register(registerBody: RegisterBody): ResultWrapper<Unit, DataError.Remote> =
         safeCall {
             httpClient.post("/register") {
                 setBody(registerBody)

@@ -1,19 +1,19 @@
 package com.example.tasky.auth.domain
 
-import com.example.tasky.common.data.model.BaseError
+import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
 
 interface IAuthRepository {
     suspend fun login(
         email: String,
         password: String,
-    ): ResultWrapper<Boolean, BaseError>
+    ): ResultWrapper<Boolean, DataError.Remote>
 
-    suspend fun logout(): ResultWrapper<Unit, BaseError>
+    suspend fun logout(): ResultWrapper<Unit, DataError.Remote>
 
     suspend fun register(
         fullName: String,
         email: String,
         password: String,
-    ): ResultWrapper<Unit, BaseError>
+    ): ResultWrapper<Unit, DataError.Remote>
 }
