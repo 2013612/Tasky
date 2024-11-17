@@ -1,12 +1,12 @@
-package com.example.tasky.android.login
+package com.example.tasky.android.auth
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
-import com.example.tasky.android.login.screen.Login
-import com.example.tasky.android.login.screen.loginScreen
-import com.example.tasky.android.login.screen.navigateToRegister
-import com.example.tasky.android.login.screen.registerScreen
+import com.example.tasky.android.auth.screen.Login
+import com.example.tasky.android.auth.screen.loginScreen
+import com.example.tasky.android.auth.screen.navigateToRegister
+import com.example.tasky.android.auth.screen.registerScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

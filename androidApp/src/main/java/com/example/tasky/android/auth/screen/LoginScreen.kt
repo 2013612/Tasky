@@ -1,4 +1,4 @@
-package com.example.tasky.android.login.screen
+package com.example.tasky.android.auth.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,15 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
-import com.example.tasky.android.login.components.CheckTextField
-import com.example.tasky.android.login.components.CheckTextFieldState
-import com.example.tasky.android.login.components.VisibilityTextField
-import com.example.tasky.android.login.components.VisibilityTextFieldState
-import com.example.tasky.android.login.viewmodel.LoginViewModel
+import com.example.tasky.android.auth.components.CheckTextField
+import com.example.tasky.android.auth.components.CheckTextFieldState
+import com.example.tasky.android.auth.components.VisibilityTextField
+import com.example.tasky.android.auth.components.VisibilityTextFieldState
+import com.example.tasky.android.auth.viewmodel.LoginViewModel
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue

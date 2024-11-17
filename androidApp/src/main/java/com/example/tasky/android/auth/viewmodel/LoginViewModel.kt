@@ -1,9 +1,9 @@
-package com.example.tasky.android.login.viewmodel
+package com.example.tasky.android.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.android.login.screen.LoginScreenEvent
-import com.example.tasky.android.login.screen.LoginScreenState
+import com.example.tasky.android.auth.screen.LoginScreenEvent
+import com.example.tasky.android.auth.screen.LoginScreenState
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.util.Validator
 import com.example.tasky.common.domain.model.onError

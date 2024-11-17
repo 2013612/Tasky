@@ -1,6 +1,6 @@
-package com.example.tasky.android.login.di
+package com.example.tasky.android.auth.di
 
-import com.example.tasky.android.login.viewmodel.RegisterViewModel
+import com.example.tasky.android.auth.viewmodel.RegisterViewModel
 import com.example.tasky.auth.data.AuthRepository
 import com.example.tasky.auth.domain.IAuthRepository
 import com.russhwolf.settings.ExperimentalSettingsApi

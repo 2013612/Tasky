@@ -1,6 +1,6 @@
-package com.example.tasky.android.login.di
+package com.example.tasky.android.auth.di
 
-import com.example.tasky.android.login.viewmodel.LoginViewModel
+import com.example.tasky.android.auth.viewmodel.LoginViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
