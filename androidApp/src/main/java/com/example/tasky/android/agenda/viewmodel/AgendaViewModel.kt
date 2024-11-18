@@ -18,9 +18,11 @@ import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName
 import com.example.tasky.common.domain.model.onSuccess
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -52,6 +54,8 @@ class AgendaViewModel(
 
     private val eventsChannel = Channel<AgendaOneTimeEvent>()
     val eventsFlow = eventsChannel.receiveAsFlow()
+
+    private var getAgendasJob: Job? = null
 
     init {
         getAgendas(System.currentTimeMillis())
@@ -97,16 +101,21 @@ class AgendaViewModel(
     }
 
     private fun getAgendas(timeStamp: Long) {
-        viewModelScope.launch {
-            agendaRepository.getAgenda(timeStamp = timeStamp).onSuccess { data ->
-                val itemList = data.sortedBy { it.getStartTime() }
-                val index = getTimeNeedleDisplayIndex(itemList)
-                val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
-                itemUiList.add(index, AgendaItemUi.Needle)
+        getAgendasJob?.cancel()
 
-                _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
+        getAgendasJob =
+            viewModelScope.launch {
+                agendaRepository.getAgendaFlow(timeStamp = timeStamp).onSuccess { flow ->
+                    flow.collectLatest { data ->
+                        val itemList = data.sortedBy { it.getStartTime() }
+                        val index = getTimeNeedleDisplayIndex(itemList)
+                        val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
+                        itemUiList.add(index, AgendaItemUi.Needle)
+
+                        _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
+                    }
+                }
             }
-        }
     }
 
     private fun logout() {
