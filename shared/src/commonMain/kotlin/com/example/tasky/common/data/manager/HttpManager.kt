@@ -30,7 +30,8 @@ internal object HttpManager {
     private const val TIMEOUT = 60_000L
     val json =
         Json {
-            prettyPrint
+            prettyPrint = true
+            ignoreUnknownKeys = true
         }
 
     val httpClient =
