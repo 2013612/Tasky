@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.tasky.database.model.EventEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventDao {
@@ -25,4 +26,10 @@ interface EventDao {
         startTime: Long,
         endTime: Long,
     ): List<EventEntity>
+
+    @Query("SELECT * FROM EventEntity WHERE `from` >= :startTime AND `from` < :endTime")
+    fun getByTimeFlow(
+        startTime: Long,
+        endTime: Long,
+    ): Flow<List<EventEntity>>
 }

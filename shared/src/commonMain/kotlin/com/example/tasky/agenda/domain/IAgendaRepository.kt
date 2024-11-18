@@ -7,9 +7,12 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
+import kotlinx.coroutines.flow.Flow
 
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, DataError.Remote>
+
+    fun getAgendaFlow(timeStamp: Long): ResultWrapper<Flow<List<AgendaItem>>, DataError.Remote>
 
     suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, DataError.Remote>
 
