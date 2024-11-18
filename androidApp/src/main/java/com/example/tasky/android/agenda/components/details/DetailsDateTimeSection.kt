@@ -121,6 +121,7 @@ fun DetailsDateTimeSection(
             confirmButton = {
                 TextButton(onClick = {
                     onTimeSelect(timePickerState.hour, timePickerState.minute)
+                    isTimeDialogOpen = false
                 }) {
                     Text(stringResource(R.string.ok))
                 }
