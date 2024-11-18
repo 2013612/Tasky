@@ -84,7 +84,8 @@ fun AgendaTopBar(
             modifier =
                 Modifier
                     .size(36.dp)
-                    .background(Light, CircleShape).clickable {
+                    .background(Light, CircleShape)
+                    .clickable {
                         isMenuOpen = true
                     },
         ) {
@@ -118,9 +119,8 @@ fun AgendaTopBar(
         val datePickerState =
             rememberDatePickerState(
                 initialSelectedDateMillis =
-                    date.toInstant(
-                        TimeZone.currentSystemDefault(),
-                    ).toEpochMilliseconds(),
+                    date
+                        .toInstant(TimeZone.UTC).toEpochMilliseconds() + java.util.TimeZone.getDefault().rawOffset,
             )
         val confirmEnabled =
             remember {
