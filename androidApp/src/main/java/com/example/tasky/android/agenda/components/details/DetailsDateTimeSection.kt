@@ -36,12 +36,11 @@ import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.common.domain.util.toLocalDateTime
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +54,12 @@ fun DetailsDateTimeSection(
 ) {
     var isDateDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isTimeDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    val time =
+        when (item) {
+            is Event -> if (isEventEndSection) item.to else item.from
+            is Task, is Reminder -> item.getStartTime()
+        }
 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(8.dp))
@@ -72,9 +77,9 @@ fun DetailsDateTimeSection(
         )
         TextButton(onClick = {
             isTimeDialogOpen = true
-        }, modifier = Modifier.weight(3f)) {
+        }, enabled = isEdit, modifier = Modifier.weight(3f)) {
             Text(
-                formatTime(item.getStartTime()),
+                formatTime(time),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -84,7 +89,7 @@ fun DetailsDateTimeSection(
             isDateDialogOpen = true
         }, enabled = isEdit, modifier = Modifier.weight(4f)) {
             Text(
-                formatDate(item.getStartTime()),
+                formatDate(time),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -93,12 +98,14 @@ fun DetailsDateTimeSection(
     }
 
     if (isTimeDialogOpen) {
-        val hour = item.getStartTime() / (60 * 60 * 1000) % 24
-        val minute = item.getStartTime() / (60 * 1000) % 60
+        val localTime = time.toLocalDateTime().time
+
+        val hour = localTime.hour
+        val minute = localTime.minute
         val timePickerState =
             rememberTimePickerState(
-                initialHour = hour.toInt(),
-                initialMinute = minute.toInt(),
+                initialHour = hour,
+                initialMinute = minute,
                 is24Hour = true,
             )
 
@@ -114,6 +121,7 @@ fun DetailsDateTimeSection(
             confirmButton = {
                 TextButton(onClick = {
                     onTimeSelect(timePickerState.hour, timePickerState.minute)
+                    isTimeDialogOpen = false
                 }) {
                     Text(stringResource(R.string.ok))
                 }
@@ -129,7 +137,8 @@ fun DetailsDateTimeSection(
     if (isDateDialogOpen) {
         val datePickerState =
             rememberDatePickerState(
-                initialSelectedDateMillis = item.getStartTime(),
+                // DatePicker show UTC date, so manually add current time zone offset
+                initialSelectedDateMillis = time + TimeZone.getDefault().rawOffset,
             )
         val confirmEnabled =
             remember {
@@ -166,11 +175,10 @@ fun DetailsDateTimeSection(
 }
 
 private fun formatTime(time: Long): String {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("hh:mm")
+    val dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
-    return Instant
-        .fromEpochMilliseconds(time)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+    return time
+        .toLocalDateTime()
         .toJavaLocalDateTime()
         .format(dateTimeFormat)
 }
@@ -178,9 +186,8 @@ private fun formatTime(time: Long): String {
 private fun formatDate(time: Long): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("MMM dd yyyy")
 
-    return Instant
-        .fromEpochMilliseconds(time)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+    return time
+        .toLocalDateTime()
         .toJavaLocalDateTime()
         .format(dateTimeFormat)
 }
