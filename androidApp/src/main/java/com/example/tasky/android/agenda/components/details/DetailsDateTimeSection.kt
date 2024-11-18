@@ -40,6 +40,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +136,8 @@ fun DetailsDateTimeSection(
     if (isDateDialogOpen) {
         val datePickerState =
             rememberDatePickerState(
-                initialSelectedDateMillis = time,
+                // DatePicker show UTC date, so manually add current time zone offset
+                initialSelectedDateMillis = time + TimeZone.getDefault().rawOffset,
             )
         val confirmEnabled =
             remember {
@@ -174,7 +176,8 @@ fun DetailsDateTimeSection(
 private fun formatTime(time: Long): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
-    return time.toLocalDateTime()
+    return time
+        .toLocalDateTime()
         .toJavaLocalDateTime()
         .format(dateTimeFormat)
 }
@@ -182,7 +185,8 @@ private fun formatTime(time: Long): String {
 private fun formatDate(time: Long): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("MMM dd yyyy")
 
-    return time.toLocalDateTime()
+    return time
+        .toLocalDateTime()
         .toJavaLocalDateTime()
         .format(dateTimeFormat)
 }
