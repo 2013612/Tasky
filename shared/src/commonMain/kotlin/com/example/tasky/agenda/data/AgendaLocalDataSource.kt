@@ -22,6 +22,9 @@ import com.example.tasky.database.model.EventEntity
 import com.example.tasky.database.model.OfflineHistoryEntity
 import com.example.tasky.database.model.ReminderEntity
 import com.example.tasky.database.model.TaskEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -227,5 +230,19 @@ class AgendaLocalDataSource(
         return appDatabase.taskDao().getByTime(startTime, endTime).map { it.toTask() } +
             appDatabase.reminderDao().getByTime(startTime, endTime).map { it.toReminder() } +
             appDatabase.eventDao().getByTime(startTime, endTime).map { it.toEvent() }
+    }
+
+    fun getDayAgendaFlow(time: Long): Flow<List<AgendaItem>> {
+        val localDate = time.toLocalDateTime().date
+        val startTime = localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+        val endTime = localDate.plus(1, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+
+        return combine(
+            appDatabase.taskDao().getByTimeFlow(startTime, endTime),
+            appDatabase.reminderDao().getByTimeFlow(startTime, endTime),
+            appDatabase.eventDao().getByTimeFlow(startTime, endTime),
+        ) { taskEntities: List<TaskEntity>, reminderEntities: List<ReminderEntity>, eventEntities: List<EventEntity> ->
+            taskEntities.map { it.toTask() } + reminderEntities.map { it.toReminder() } + eventEntities.map { it.toEvent() }
+        }
     }
 }
