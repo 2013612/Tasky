@@ -25,6 +25,7 @@ import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -74,9 +75,11 @@ class AgendaDetailsViewModel(
     private val deletedPhotoKeys = mutableListOf<String>()
 
     init {
-        konnection.observeHasConnection().onEach { hasConnection ->
-            _screenStateFlow.update { it.copy(hasNetwork = hasConnection) }
-        }
+        konnection
+            .observeHasConnection()
+            .onEach { hasConnection ->
+                _screenStateFlow.update { it.copy(hasNetwork = hasConnection) }
+            }.launchIn(viewModelScope)
         getAgenda()
     }
 
