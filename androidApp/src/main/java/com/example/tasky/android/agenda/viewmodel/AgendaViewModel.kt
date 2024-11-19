@@ -18,12 +18,13 @@ import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName
 import com.example.tasky.common.domain.model.onSuccess
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -55,10 +56,10 @@ class AgendaViewModel(
     private val eventsChannel = Channel<AgendaOneTimeEvent>()
     val eventsFlow = eventsChannel.receiveAsFlow()
 
-    private var getAgendasJob: Job? = null
+    private val selectedTimeFlow = MutableStateFlow(System.currentTimeMillis())
 
     init {
-        getAgendas(System.currentTimeMillis())
+        subscribeSelectedTimeToGetAgenda()
         updateName()
     }
 
@@ -73,14 +74,14 @@ class AgendaViewModel(
                         selectedDateOffset = 0,
                     )
                 }
-                getAgendas(event.newDate)
+                selectedTimeFlow.update { event.newDate }
             }
             is AgendaScreenEvent.OnDayOffsetSelect -> {
                 _screenStateFlow.update { it.copy(selectedDateOffset = event.newOffset) }
                 val newDate =
                     _screenStateFlow.value.startDate.toEpochMilliseconds() +
                         event.newOffset.toDuration(DurationUnit.DAYS).toLong(DurationUnit.MILLISECONDS)
-                getAgendas(newDate)
+                selectedTimeFlow.update { newDate }
             }
             is AgendaScreenEvent.OnDeleteClick -> deleteAgenda(agendaItem = event.agendaItem)
             is AgendaScreenEvent.OnEditClick -> {}
@@ -100,20 +101,18 @@ class AgendaViewModel(
         }
     }
 
-    private fun getAgendas(timeStamp: Long) {
-        getAgendasJob?.cancel()
+    @ExperimentalCoroutinesApi
+    private fun subscribeSelectedTimeToGetAgenda() {
+        selectedTimeFlow
+            .flatMapLatest {
+                agendaRepository.getAgendaFlow(timeStamp = it)
+            }.onEach { data ->
+                val index = getTimeNeedleDisplayIndex(data)
+                val itemUiList: MutableList<AgendaItemUi> = data.map { AgendaItemUi.Item(it) }.toMutableList()
+                itemUiList.add(index, AgendaItemUi.Needle)
 
-        getAgendasJob =
-            viewModelScope.launch {
-                agendaRepository.getAgendaFlow(timeStamp = timeStamp).collectLatest { data ->
-                    val itemList = data.sortedBy { it.getStartTime() }
-                    val index = getTimeNeedleDisplayIndex(itemList)
-                    val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
-                    itemUiList.add(index, AgendaItemUi.Needle)
-
-                    _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
-                }
-            }
+                _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
+            }.launchIn(viewModelScope)
     }
 
     private fun logout() {
