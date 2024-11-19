@@ -106,12 +106,11 @@ fun DetailsPhotoSection(
                         }
                     }) {
                         AsyncImage(
-                            model = {
+                            model =
                                 when (it) {
                                     is DetailsPhoto.RemotePhoto -> it.photo.url
                                     is DetailsPhoto.LocalPhoto -> it.uri
-                                }
-                            },
+                                },
                             contentDescription = null,
                             modifier =
                                 Modifier

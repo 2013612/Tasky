@@ -49,12 +49,15 @@ fun DetailsLargePhoto(
                 Icon(Icons.Outlined.Delete, contentDescription = null, tint = Color.White)
             }
         }
-        AsyncImage(model = {
-            when (photo) {
-                is DetailsPhoto.RemotePhoto -> photo.photo.url
-                is DetailsPhoto.LocalPhoto -> photo.uri
-            }
-        }, contentDescription = null, modifier = Modifier.fillMaxWidth().weight(1f))
+        AsyncImage(
+            model =
+                when (photo) {
+                    is DetailsPhoto.RemotePhoto -> photo.photo.url
+                    is DetailsPhoto.LocalPhoto -> photo.uri
+                },
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth().weight(1f),
+        )
     }
 }
 
