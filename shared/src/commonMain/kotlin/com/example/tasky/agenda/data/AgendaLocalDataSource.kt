@@ -232,7 +232,7 @@ class AgendaLocalDataSource(
             appDatabase.eventDao().getByTime(startTime, endTime).map { it.toEvent() }
     }
 
-    fun getDayAgendaFlow(time: Long): Flow<List<AgendaItem>> {
+    fun getDaySortedAgendaFlow(time: Long): Flow<List<AgendaItem>> {
         val localDate = time.toLocalDateTime().date
         val startTime = localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
         val endTime = localDate.plus(1, DateTimeUnit.DAY).atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
@@ -242,7 +242,11 @@ class AgendaLocalDataSource(
             appDatabase.reminderDao().getByTimeFlow(startTime, endTime),
             appDatabase.eventDao().getByTimeFlow(startTime, endTime),
         ) { taskEntities: List<TaskEntity>, reminderEntities: List<ReminderEntity>, eventEntities: List<EventEntity> ->
-            taskEntities.map { it.toTask() } + reminderEntities.map { it.toReminder() } + eventEntities.map { it.toEvent() }
+            (
+                taskEntities.map {
+                    it.toTask()
+                } + reminderEntities.map { it.toReminder() } + eventEntities.map { it.toEvent() }
+            ).sortedBy { it.getStartTime() }
         }
     }
 }
