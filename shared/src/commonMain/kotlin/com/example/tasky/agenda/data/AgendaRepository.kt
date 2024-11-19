@@ -30,7 +30,7 @@ class AgendaRepository(
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDayAgenda(timeStamp))
 
-    override fun getAgendaFlow(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDaySortedAgendaFlow(timeStamp))
+    override fun getAgendaFlow(timeStamp: Long) = agendaLocalDataSource.getDaySortedAgendaFlow(timeStamp)
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, DataError.Remote> {
         val userId = SessionManager.getUserId() ?: ""

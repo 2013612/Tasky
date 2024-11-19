@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface IAgendaRepository {
     suspend fun getAgenda(timeStamp: Long): ResultWrapper<List<AgendaItem>, DataError.Remote>
 
-    fun getAgendaFlow(timeStamp: Long): ResultWrapper<Flow<List<AgendaItem>>, DataError.Remote>
+    fun getAgendaFlow(timeStamp: Long): Flow<List<AgendaItem>>
 
     suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, DataError.Remote>
 

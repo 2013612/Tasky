@@ -105,15 +105,13 @@ class AgendaViewModel(
 
         getAgendasJob =
             viewModelScope.launch {
-                agendaRepository.getAgendaFlow(timeStamp = timeStamp).onSuccess { flow ->
-                    flow.collectLatest { data ->
-                        val itemList = data.sortedBy { it.getStartTime() }
-                        val index = getTimeNeedleDisplayIndex(itemList)
-                        val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
-                        itemUiList.add(index, AgendaItemUi.Needle)
+                agendaRepository.getAgendaFlow(timeStamp = timeStamp).collectLatest { data ->
+                    val itemList = data.sortedBy { it.getStartTime() }
+                    val index = getTimeNeedleDisplayIndex(itemList)
+                    val itemUiList: MutableList<AgendaItemUi> = itemList.map { AgendaItemUi.Item(it) }.toMutableList()
+                    itemUiList.add(index, AgendaItemUi.Needle)
 
-                        _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
-                    }
+                    _screenStateFlow.update { it.copy(agendas = itemUiList.toImmutableList()) }
                 }
             }
     }
