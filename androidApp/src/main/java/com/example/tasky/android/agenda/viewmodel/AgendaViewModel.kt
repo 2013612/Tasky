@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
@@ -38,7 +38,7 @@ import kotlin.uuid.Uuid
 sealed interface AgendaOneTimeEvent {
     data class OnAgendaCreate(
         val id: String,
-        val type: AgendaDetailsScreenType,
+        val type: AgendaType,
     ) : AgendaOneTimeEvent
 }
 
@@ -151,17 +151,17 @@ class AgendaViewModel(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    private fun createAgendaItem(type: AgendaDetailsScreenType) {
+    private fun createAgendaItem(type: AgendaType) {
         viewModelScope.launch {
             val id = Uuid.random().toString()
             val now = Clock.System.now().toEpochMilliseconds()
 
             when (type) {
-                AgendaDetailsScreenType.TASK ->
+                AgendaType.TASK ->
                     agendaRepository.createTask(
                         Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
                     )
-                AgendaDetailsScreenType.EVENT -> {
+                AgendaType.EVENT -> {
                     val userId = SessionManager.getUserId() ?: ""
                     val attendee =
                         Attendee(
@@ -189,7 +189,7 @@ class AgendaViewModel(
                         ),
                     )
                 }
-                AgendaDetailsScreenType.REMINDER ->
+                AgendaType.REMINDER ->
                     agendaRepository.createReminder(
                         Reminder.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
                     )

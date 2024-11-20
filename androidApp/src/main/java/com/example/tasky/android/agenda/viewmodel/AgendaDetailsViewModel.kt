@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
@@ -16,7 +17,6 @@ import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
-import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
 import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.domain.model.onSuccess
@@ -60,9 +60,9 @@ class AgendaDetailsViewModel(
             AgendaDetailsScreenState(
                 agendaItem =
                     when (routeArguments.type) {
-                        AgendaDetailsScreenType.TASK -> Task.EMPTY
-                        AgendaDetailsScreenType.EVENT -> Event.EMPTY
-                        AgendaDetailsScreenType.REMINDER -> Reminder.EMPTY
+                        AgendaType.TASK -> Task.EMPTY
+                        AgendaType.EVENT -> Event.EMPTY
+                        AgendaType.REMINDER -> Reminder.EMPTY
                     },
                 isEdit = routeArguments.isEdit,
             ),
@@ -86,9 +86,9 @@ class AgendaDetailsViewModel(
     private fun getAgenda() {
         viewModelScope.launch {
             when (routeArguments.type) {
-                AgendaDetailsScreenType.TASK -> agendaRepository.getTask(taskId = routeArguments.agendaId)
-                AgendaDetailsScreenType.EVENT -> agendaRepository.getEvent(eventId = routeArguments.agendaId)
-                AgendaDetailsScreenType.REMINDER -> agendaRepository.getReminder(reminderId = routeArguments.agendaId)
+                AgendaType.TASK -> agendaRepository.getTask(taskId = routeArguments.agendaId)
+                AgendaType.EVENT -> agendaRepository.getEvent(eventId = routeArguments.agendaId)
+                AgendaType.REMINDER -> agendaRepository.getReminder(reminderId = routeArguments.agendaId)
             }.onSuccess { agendaItem ->
                 when (agendaItem) {
                     is Task, is Reminder ->
