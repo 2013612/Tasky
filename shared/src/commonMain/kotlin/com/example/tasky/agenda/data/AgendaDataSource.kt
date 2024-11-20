@@ -96,8 +96,13 @@ class AgendaDataSource(
                 formData =
                     formData {
                         photos.forEachIndexed { index, photoByteArray ->
-                            append("photo$index", photoByteArray)
-                            append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                            append(
+                                "photo$index",
+                                photoByteArray,
+                                Headers.build {
+                                    append(HttpHeaders.ContentDisposition, "filename=${body.id}_picture$index.jpg")
+                                },
+                            )
                         }
                         append(
                             "update_event_request",
