@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.agenda.domain.model.AgendaItem
+import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
@@ -12,7 +13,6 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
-import com.example.tasky.android.agenda.screen.AgendaType
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName

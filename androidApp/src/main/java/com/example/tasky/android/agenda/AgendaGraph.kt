@@ -3,11 +3,11 @@ package com.example.tasky.android.agenda
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
+import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.Agenda
-import com.example.tasky.android.agenda.screen.AgendaType
 import com.example.tasky.android.agenda.screen.agendaDetailsScreen
 import com.example.tasky.android.agenda.screen.agendaScreen
 import com.example.tasky.android.agenda.screen.navigateToAgendaDetails

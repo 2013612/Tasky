@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
@@ -16,7 +17,6 @@ import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
-import com.example.tasky.android.agenda.screen.AgendaType
 import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.domain.model.onSuccess
