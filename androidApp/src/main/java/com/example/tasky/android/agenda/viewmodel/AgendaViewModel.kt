@@ -185,6 +185,7 @@ class AgendaViewModel(
                             remindAt = RemindAtType.TEN_MINUTE,
                             host = userId,
                             attendees = listOf(attendee),
+                            isUserEventCreator = true,
                         ),
                     )
                 }
