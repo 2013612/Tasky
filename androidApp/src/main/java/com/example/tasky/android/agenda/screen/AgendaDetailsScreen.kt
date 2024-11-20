@@ -66,7 +66,7 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
-enum class AgendaDetailsScreenType {
+enum class AgendaType {
     TASK,
     EVENT,
     REMINDER,
@@ -107,7 +107,7 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
 
 fun NavController.navigateToAgendaDetails(
     agendaId: String,
-    type: AgendaDetailsScreenType,
+    type: AgendaType,
     isEdit: Boolean = false,
 ) {
     navigate(AgendaDetails(agendaId = agendaId, type = type, isEdit = isEdit))
@@ -116,7 +116,7 @@ fun NavController.navigateToAgendaDetails(
 @Serializable
 data class AgendaDetails(
     val agendaId: String,
-    val type: AgendaDetailsScreenType,
+    val type: AgendaType,
     val isEdit: Boolean,
 )
 

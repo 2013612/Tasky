@@ -7,7 +7,7 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.agenda.screen.Agenda
-import com.example.tasky.android.agenda.screen.AgendaDetailsScreenType
+import com.example.tasky.android.agenda.screen.AgendaType
 import com.example.tasky.android.agenda.screen.agendaDetailsScreen
 import com.example.tasky.android.agenda.screen.agendaScreen
 import com.example.tasky.android.agenda.screen.navigateToAgendaDetails
@@ -31,9 +31,9 @@ fun NavGraphBuilder.agendaGraph(navController: NavController) {
                     agendaId = item.id,
                     type =
                         when (item) {
-                            is Event -> AgendaDetailsScreenType.EVENT
-                            is Reminder -> AgendaDetailsScreenType.REMINDER
-                            is Task -> AgendaDetailsScreenType.TASK
+                            is Event -> AgendaType.EVENT
+                            is Reminder -> AgendaType.REMINDER
+                            is Task -> AgendaType.TASK
                         },
                 )
             },
@@ -42,9 +42,9 @@ fun NavGraphBuilder.agendaGraph(navController: NavController) {
                     agendaId = item.id,
                     type =
                         when (item) {
-                            is Event -> AgendaDetailsScreenType.EVENT
-                            is Reminder -> AgendaDetailsScreenType.REMINDER
-                            is Task -> AgendaDetailsScreenType.TASK
+                            is Event -> AgendaType.EVENT
+                            is Reminder -> AgendaType.REMINDER
+                            is Task -> AgendaType.TASK
                         },
                     isEdit = true,
                 )

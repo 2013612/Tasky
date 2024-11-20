@@ -55,7 +55,7 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.agendaScreen(
-    navigateToCreateAgenda: (String, AgendaDetailsScreenType) -> Unit,
+    navigateToCreateAgenda: (String, AgendaType) -> Unit,
     navigateToAgendaDetails: (AgendaItem) -> Unit,
     navigateToEditAgenda: (AgendaItem) -> Unit,
 ) {
@@ -101,7 +101,7 @@ sealed interface AgendaScreenEvent {
     data object OnClickLogout : AgendaScreenEvent
 
     data class OnCreateClick(
-        val type: AgendaDetailsScreenType,
+        val type: AgendaType,
     ) : AgendaScreenEvent
 
     data class OnDateSelect(
@@ -225,13 +225,13 @@ private fun AgendaScreen(
 
         AgendaFloatingActionButton(
             onEventClick = {
-                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.EVENT))
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaType.EVENT))
             },
             onTaskClick = {
-                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.TASK))
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaType.TASK))
             },
             onReminderClick = {
-                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaDetailsScreenType.REMINDER))
+                onEvent(AgendaScreenEvent.OnCreateClick(type = AgendaType.REMINDER))
             },
             modifier =
                 Modifier
