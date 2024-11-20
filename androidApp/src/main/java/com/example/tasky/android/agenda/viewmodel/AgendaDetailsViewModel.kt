@@ -340,10 +340,10 @@ class AgendaDetailsViewModel(
                         localPhotos
                             .mapNotNull {
                                 imageCompressor.compressImage(
-                                    it.uri,
-                                    1024L,
+                                    contentUri = it.uri,
+                                    compressionThreshold = 1024L * 1024,
                                 )
-                            }.filter { it.size <= 1024 }
+                            }.filter { it.size <= 1024 * 1024 }
                     skippedImageCount = localPhotos.size - compressedPhotos.size
 
                     agendaRepository.updateEvent(
