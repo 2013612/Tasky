@@ -6,6 +6,7 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="false"
+        android:icon="@drawable/tasky_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting">
         <activity
