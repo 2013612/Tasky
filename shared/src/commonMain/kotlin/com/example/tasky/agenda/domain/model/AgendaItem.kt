@@ -9,6 +9,8 @@ sealed class AgendaItem {
     abstract val remindAt: RemindAtType
 
     abstract fun getStartTime(): Long
+
+    abstract fun getAgendaType(): AgendaType
 }
 
 fun AgendaItem.copy(
@@ -65,6 +67,8 @@ data class Event(
     }
 
     override fun getStartTime(): Long = from
+
+    override fun getAgendaType(): AgendaType = AgendaType.EVENT
 }
 
 data class Attendee(
@@ -147,6 +151,8 @@ data class Task(
     }
 
     override fun getStartTime(): Long = time
+
+    override fun getAgendaType(): AgendaType = AgendaType.TASK
 }
 
 data class Reminder(
@@ -176,4 +182,6 @@ data class Reminder(
     }
 
     override fun getStartTime(): Long = time
+
+    override fun getAgendaType(): AgendaType = AgendaType.REMINDER
 }
