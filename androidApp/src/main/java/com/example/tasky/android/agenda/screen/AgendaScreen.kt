@@ -1,5 +1,6 @@
 package com.example.tasky.android.agenda.screen
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,8 @@ import com.example.tasky.android.agenda.components.agenda.AgendaTimeNeedle
 import com.example.tasky.android.agenda.components.agenda.AgendaTopBar
 import com.example.tasky.android.agenda.viewmodel.AgendaOneTimeEvent
 import com.example.tasky.android.agenda.viewmodel.AgendaViewModel
+import com.example.tasky.android.common.NotificationPermissionDialogProvider
+import com.example.tasky.android.common.PermissionDialog
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import com.example.tasky.android.utils.ObserveAsEvents
@@ -239,6 +242,13 @@ private fun AgendaScreen(
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = 16.dp),
         )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PermissionDialog(
+                permissionDialogProvider = NotificationPermissionDialogProvider(),
+                modifier = Modifier.align(Alignment.Center),
+            )
+        }
     }
 }
 
