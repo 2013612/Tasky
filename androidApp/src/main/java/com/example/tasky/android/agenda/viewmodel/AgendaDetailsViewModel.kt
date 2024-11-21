@@ -12,11 +12,14 @@ import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.agenda.domain.model.copy
+import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaDetailsScreenState
+import com.example.tasky.android.alarm.domain.IAlarmScheduler
+import com.example.tasky.android.alarm.domain.mapper.toNotificationData
 import com.example.tasky.android.utils.IImageCompressor
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.domain.model.onSuccess
@@ -51,7 +54,9 @@ class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
     private val imageCompressor: IImageCompressor,
-    private val konnection: Konnection,
+    konnection: Konnection,
+    private val alarmScheduler: IAlarmScheduler,
+    private val alarmRepository: IAlarmRepository,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
 
@@ -367,6 +372,10 @@ class AgendaDetailsViewModel(
                         state.copy(isEdit = false)
                     }
                 }
+
+                val requestCode = alarmRepository.getAgendaAlarm(agendaItem.id).requestCode
+                val notificationData = agendaItem.toNotificationData().copy(requestCode = requestCode)
+                alarmScheduler.schedule(notificationData)
             }
         }
     }
