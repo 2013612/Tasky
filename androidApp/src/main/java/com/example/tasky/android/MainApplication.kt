@@ -1,8 +1,13 @@
 package com.example.tasky.android
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import androidx.core.content.getSystemService
 import com.example.tasky.android.agenda.di.agendaDetailsModule
 import com.example.tasky.android.agenda.di.agendaModule
+import com.example.tasky.android.alarm.data.AGENDA_ALARM_CHANNEL_ID
 import com.example.tasky.android.auth.di.loginModule
 import com.example.tasky.android.auth.di.registerModule
 import com.example.tasky.android.common.di.dataStoreModule
@@ -27,6 +32,21 @@ class MainApplication : Application() {
                 databaseModule,
                 dataStoreModule,
             )
+        }
+
+        createAgendaAlarmChannel()
+    }
+
+    private fun createAgendaAlarmChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "NotificationChannel"
+            val descriptionText = "NotificationDescription"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel =
+                NotificationChannel(AGENDA_ALARM_CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
+            getSystemService<NotificationManager>()?.createNotificationChannel(channel)
         }
     }
 }

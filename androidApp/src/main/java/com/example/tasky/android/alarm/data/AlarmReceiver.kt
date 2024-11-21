@@ -1,11 +1,9 @@
 package com.example.tasky.android.alarm.data
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
@@ -28,13 +26,11 @@ class AlarmReceiver : BroadcastReceiver() {
         with(notificationManager) {
             val builder =
                 NotificationCompat
-                    .Builder(context, CHANNEL_ID)
+                    .Builder(context, AGENDA_ALARM_CHANNEL_ID)
                     .setSmallIcon(R.drawable.tasky_logo)
                     .setContentTitle(data.title)
                     .setContentText(data.description)
                     .setAutoCancel(true)
-
-            createNotificationChannel()
 
             if (areNotificationsEnabled()) {
                 notify(data.hashCode(), builder.build())
@@ -43,17 +39,4 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 }
 
-private const val CHANNEL_ID = "CHANNEL_ID"
-
-private fun NotificationManager.createNotificationChannel() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "NotificationChannel"
-        val descriptionText = "NotificationDescription"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel =
-            NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-        createNotificationChannel(channel)
-    }
-}
+const val AGENDA_ALARM_CHANNEL_ID = "AGENDA_ALARM_CHANNEL_ID"
