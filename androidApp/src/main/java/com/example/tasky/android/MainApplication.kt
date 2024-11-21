@@ -8,6 +8,7 @@ import androidx.core.content.getSystemService
 import com.example.tasky.android.agenda.di.agendaDetailsModule
 import com.example.tasky.android.agenda.di.agendaModule
 import com.example.tasky.android.alarm.data.AGENDA_ALARM_CHANNEL_ID
+import com.example.tasky.android.alarm.di.alarmModule
 import com.example.tasky.android.auth.di.loginModule
 import com.example.tasky.android.auth.di.registerModule
 import com.example.tasky.android.common.di.dataStoreModule
@@ -31,6 +32,7 @@ class MainApplication : Application() {
                 agendaDetailsModule,
                 databaseModule,
                 dataStoreModule,
+                alarmModule,
             )
         }
 
