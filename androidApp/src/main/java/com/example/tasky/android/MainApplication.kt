@@ -39,8 +39,8 @@ class MainApplication : Application() {
 
     private fun createAgendaAlarmChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "NotificationChannel"
-            val descriptionText = "NotificationDescription"
+            val name = getString(R.string.agenda_alarm_channel)
+            val descriptionText = getString(R.string.agenda_alarm_channel_desc)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel =
                 NotificationChannel(AGENDA_ALARM_CHANNEL_ID, name, importance).apply {

@@ -54,5 +54,7 @@
     <string name="grant_permission">授予權限</string>
     <string name="permission_required">需要權限</string>
     <string name="notification_permission_declined_desc">您似乎永久拒絕了通知權限。您可以轉到應用程式設定以授予它。</string>
-    <string name="notification_permission_desc">此應用程式需要通知權限才能顯示議程提醒。</string>
+    <string name="notification_permission_desc">此應用程式需要通知權限才能顯示日程提醒。</string>
+    <string name="agenda_alarm_channel">日程提醒頻道</string>
+    <string name="agenda_alarm_channel_desc">此頻道用於顯示日程提醒</string>
 </resources>
