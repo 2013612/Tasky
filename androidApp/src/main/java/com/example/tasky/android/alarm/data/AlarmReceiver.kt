@@ -9,25 +9,18 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
-import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.android.R
+import com.example.tasky.android.alarm.domain.model.NotificationDataParcelable
+import com.example.tasky.android.utils.getCompatParcelableExtra
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(
         context: Context?,
         intent: Intent?,
     ) {
-        val id = intent?.getStringExtra(AlarmIntentKey.ID.name) ?: return
-        val title = intent.getStringExtra(AlarmIntentKey.TITLE.name) ?: return
-        val desc = intent.getStringExtra(AlarmIntentKey.DESC.name) ?: return
-        val type =
-            if (Build.VERSION.SDK_INT >= 33) {
-                intent.getSerializableExtra(AlarmIntentKey.TYPE.name, AgendaType::class.java)
-            } else {
-                intent.getSerializableExtra(AlarmIntentKey.TYPE.name) ?: return
-            }
+        val data = intent?.getCompatParcelableExtra<NotificationDataParcelable>("DATA") ?: return
 
-        println("onReceive $id $title $type")
+        println("onReceive $data")
 
         val notificationManager =
             context?.getSystemService<NotificationManager>() ?: return
@@ -37,14 +30,14 @@ class AlarmReceiver : BroadcastReceiver() {
                 NotificationCompat
                     .Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.tasky_logo)
-                    .setContentTitle(title)
-                    .setContentText(desc)
+                    .setContentTitle(data.title)
+                    .setContentText(data.description)
                     .setAutoCancel(true)
 
             createNotificationChannel()
 
             if (areNotificationsEnabled()) {
-                notify(id.hashCode(), builder.build())
+                notify(data.hashCode(), builder.build())
             }
         }
     }
