@@ -65,4 +65,6 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.konnection)
+
+    implementation(libs.accompanist.permissions)
 }
