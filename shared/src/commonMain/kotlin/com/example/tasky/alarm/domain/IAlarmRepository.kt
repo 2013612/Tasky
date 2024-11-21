@@ -11,5 +11,7 @@ interface IAlarmRepository {
 
     suspend fun deleteAgendaAlarm(agendaId: String)
 
+    suspend fun deleteAgendaAlarm(requestCode: Int)
+
     suspend fun deleteAllAgendaAlarm()
 }

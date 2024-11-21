@@ -16,5 +16,7 @@ class AlarmRepository(
 
     override suspend fun deleteAgendaAlarm(agendaId: String) = localDataSource.deleteAgendaAlarm(agendaId)
 
+    override suspend fun deleteAgendaAlarm(requestCode: Int) = localDataSource.deleteAgendaAlarm(requestCode)
+
     override suspend fun deleteAllAgendaAlarm() = localDataSource.deleteAllAgendaAlarm()
 }

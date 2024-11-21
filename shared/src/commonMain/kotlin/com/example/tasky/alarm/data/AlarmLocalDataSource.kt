@@ -18,5 +18,7 @@ class AlarmLocalDataSource(
             AgendaAlarmEntity(agendaId, 0),
         )
 
+    suspend fun deleteAgendaAlarm(requestCode: Int) = appDatabase.agendaAlarmDao().deleteByRequestCode(requestCode)
+
     suspend fun deleteAllAgendaAlarm() = appDatabase.agendaAlarmDao().deleteAll()
 }

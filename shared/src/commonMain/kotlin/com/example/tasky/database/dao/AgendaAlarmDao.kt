@@ -17,6 +17,9 @@ interface AgendaAlarmDao {
     @Query("DELETE FROM AgendaAlarmEntity")
     suspend fun deleteAll()
 
+    @Query("DELETE FROM AgendaAlarmEntity where requestCode = :requestCode")
+    suspend fun deleteByRequestCode(requestCode: Int)
+
     @Insert
     suspend fun insert(entity: AgendaAlarmEntity)
 
