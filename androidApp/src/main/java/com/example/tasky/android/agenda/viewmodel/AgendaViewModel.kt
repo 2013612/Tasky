@@ -10,6 +10,7 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
@@ -48,6 +49,7 @@ class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
     private val authRepository: IAuthRepository,
     private val alarmScheduler: IAlarmScheduler,
+    private val alarmRepository: IAlarmRepository,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6
@@ -130,6 +132,9 @@ class AgendaViewModel(
                 val newList = screenStateFlow.value.agendas.toMutableList()
                 newList.remove(AgendaItemUi.Item(agendaItem))
                 _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
+
+                val requestCode = alarmRepository.getAgendaAlarm(agendaItem.id).requestCode
+                alarmScheduler.cancel(requestCode)
             }
         }
     }
