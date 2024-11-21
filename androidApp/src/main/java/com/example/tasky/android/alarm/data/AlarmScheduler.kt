@@ -22,7 +22,7 @@ class AlarmScheduler(
                 putExtra("DATA", data.toNotificationDataParcelable())
             }
 
-        alarmManager.setExact(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             data.startTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds() -
                 data.remindAtType.duration.toLong(DurationUnit.MILLISECONDS),
