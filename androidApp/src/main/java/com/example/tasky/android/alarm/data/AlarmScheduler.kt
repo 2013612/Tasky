@@ -18,6 +18,7 @@ class AlarmScheduler(
             Intent(context, AlarmReceiver::class.java).apply {
                 putExtra(AlarmIntentKey.ID.name, agendaItem.id)
                 putExtra(AlarmIntentKey.TITLE.name, agendaItem.title)
+                putExtra(AlarmIntentKey.DESC.name, agendaItem.description)
                 putExtra(AlarmIntentKey.TYPE.name, agendaItem.getAgendaType())
             }
 
