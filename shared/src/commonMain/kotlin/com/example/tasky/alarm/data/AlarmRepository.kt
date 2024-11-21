@@ -12,7 +12,7 @@ class AlarmRepository(
 
     override suspend fun getAllAgendaAlarm(): List<AgendaAlarm> = localDataSource.getAllAgendaAlarm().map { it.toAgendaAlarm() }
 
-    override suspend fun createAgendaAlarm(agendaAlarm: AgendaAlarm) = localDataSource.createAgendaAlarm(agendaAlarm.toAgendaAlarmEntity())
+    override suspend fun upsertAgendaAlarm(agendaAlarm: AgendaAlarm) = localDataSource.upsertAgendaAlarm(agendaAlarm.toAgendaAlarmEntity())
 
     override suspend fun deleteAgendaAlarm(agendaId: String) = localDataSource.deleteAgendaAlarm(agendaId)
 

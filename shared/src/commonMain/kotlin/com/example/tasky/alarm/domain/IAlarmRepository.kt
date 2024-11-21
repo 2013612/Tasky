@@ -7,7 +7,7 @@ interface IAlarmRepository {
 
     suspend fun getAllAgendaAlarm(): List<AgendaAlarm>
 
-    suspend fun createAgendaAlarm(agendaAlarm: AgendaAlarm)
+    suspend fun upsertAgendaAlarm(agendaAlarm: AgendaAlarm)
 
     suspend fun deleteAgendaAlarm(agendaId: String)
 

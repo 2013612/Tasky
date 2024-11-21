@@ -11,7 +11,7 @@ class AlarmLocalDataSource(
 
     suspend fun getAllAgendaAlarm() = appDatabase.agendaAlarmDao().getAll()
 
-    suspend fun createAgendaAlarm(entity: AgendaAlarmEntity) = appDatabase.agendaAlarmDao().insert(entity)
+    suspend fun upsertAgendaAlarm(entity: AgendaAlarmEntity) = appDatabase.agendaAlarmDao().upsert(entity)
 
     suspend fun deleteAgendaAlarm(agendaId: String) =
         appDatabase.agendaAlarmDao().delete(

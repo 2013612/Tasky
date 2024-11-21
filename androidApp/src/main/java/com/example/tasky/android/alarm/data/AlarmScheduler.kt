@@ -24,7 +24,7 @@ class AlarmScheduler(
 
     override fun schedule(data: NotificationData) {
         CoroutineScope(Dispatchers.IO).launch {
-            alarmRepository.createAgendaAlarm(AgendaAlarm(data.agendaId, data.requestCode))
+            alarmRepository.upsertAgendaAlarm(AgendaAlarm(data.agendaId, data.requestCode))
         }
 
         val intent =

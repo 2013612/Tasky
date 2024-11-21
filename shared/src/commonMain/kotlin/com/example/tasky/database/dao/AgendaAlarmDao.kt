@@ -2,8 +2,8 @@ package com.example.tasky.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import com.example.tasky.database.model.AgendaAlarmEntity
 
 @Dao
@@ -20,8 +20,8 @@ interface AgendaAlarmDao {
     @Query("DELETE FROM AgendaAlarmEntity where requestCode = :requestCode")
     suspend fun deleteByRequestCode(requestCode: Int)
 
-    @Insert
-    suspend fun insert(entity: AgendaAlarmEntity)
+    @Upsert
+    suspend fun upsert(entity: AgendaAlarmEntity)
 
     @Delete
     suspend fun delete(entity: AgendaAlarmEntity)
