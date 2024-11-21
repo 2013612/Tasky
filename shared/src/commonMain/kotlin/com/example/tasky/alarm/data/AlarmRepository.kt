@@ -8,7 +8,7 @@ import com.example.tasky.database.mapper.toAgendaAlarmEntity
 class AlarmRepository(
     private val localDataSource: AlarmLocalDataSource = AlarmLocalDataSource(),
 ) : IAlarmRepository {
-    override suspend fun getAgendaAlarm(agendaId: String): AgendaAlarm = localDataSource.getAgendaAlarm(agendaId).toAgendaAlarm()
+    override suspend fun getAgendaAlarm(agendaId: String): AgendaAlarm? = localDataSource.getAgendaAlarm(agendaId)?.toAgendaAlarm()
 
     override suspend fun getAllAgendaAlarm(): List<AgendaAlarm> = localDataSource.getAllAgendaAlarm().map { it.toAgendaAlarm() }
 

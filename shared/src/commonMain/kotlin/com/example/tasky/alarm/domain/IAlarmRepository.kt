@@ -3,7 +3,7 @@ package com.example.tasky.alarm.domain
 import com.example.tasky.alarm.domain.model.AgendaAlarm
 
 interface IAlarmRepository {
-    suspend fun getAgendaAlarm(agendaId: String): AgendaAlarm
+    suspend fun getAgendaAlarm(agendaId: String): AgendaAlarm?
 
     suspend fun getAllAgendaAlarm(): List<AgendaAlarm>
 

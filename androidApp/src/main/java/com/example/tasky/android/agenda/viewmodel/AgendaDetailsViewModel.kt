@@ -373,8 +373,10 @@ class AgendaDetailsViewModel(
                     }
                 }
 
-                val requestCode = alarmRepository.getAgendaAlarm(agendaItem.id).requestCode
-                val notificationData = agendaItem.toNotificationData().copy(requestCode = requestCode)
+                val requestCode = alarmRepository.getAgendaAlarm(agendaItem.id)?.requestCode
+
+                val notificationData = agendaItem.toNotificationData(requestCode)
+
                 alarmScheduler.schedule(notificationData)
             }
         }

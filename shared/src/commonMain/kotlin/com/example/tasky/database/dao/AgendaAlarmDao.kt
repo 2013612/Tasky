@@ -9,7 +9,7 @@ import com.example.tasky.database.model.AgendaAlarmEntity
 @Dao
 interface AgendaAlarmDao {
     @Query("SELECT * FROM AgendaAlarmEntity WHERE agendaId = :agendaId")
-    suspend fun get(agendaId: String): AgendaAlarmEntity
+    suspend fun get(agendaId: String): AgendaAlarmEntity?
 
     @Query("SELECT * FROM AgendaAlarmEntity")
     suspend fun getAll(): List<AgendaAlarmEntity>
