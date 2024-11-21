@@ -54,5 +54,9 @@ class AlarmScheduler(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             ),
         )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            alarmRepository.deleteAgendaAlarm(requestCode = requestCode)
+        }
     }
 }
