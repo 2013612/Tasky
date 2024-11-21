@@ -3,6 +3,11 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    id(
+        libs.plugins.kotlin.parcelize
+            .get()
+            .pluginId,
+    )
 }
 
 android {
