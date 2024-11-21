@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "26adbf90a2bfa7af8b7fc26edee80c55",
+    "identityHash": "391008315bf55833ba4f035c585f65c9",
     "entities": [
       {
         "tableName": "ReminderEntity",
@@ -206,11 +206,35 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "AgendaAlarmEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`agendaId` TEXT NOT NULL, `requestCode` INTEGER NOT NULL, PRIMARY KEY(`agendaId`))",
+        "fields": [
+          {
+            "fieldPath": "agendaId",
+            "columnName": "agendaId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requestCode",
+            "columnName": "requestCode",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "agendaId"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26adbf90a2bfa7af8b7fc26edee80c55')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '391008315bf55833ba4f035c585f65c9')"
     ]
   }
 }
