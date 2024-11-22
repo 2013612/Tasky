@@ -12,9 +12,6 @@ import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.agenda.domain.model.copy
-import com.example.tasky.alarm.domain.IAlarmRepository
-import com.example.tasky.alarm.domain.IAlarmScheduler
-import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.android.agenda.components.details.DetailsEditTextType
 import com.example.tasky.android.agenda.components.details.DetailsPhoto
 import com.example.tasky.android.agenda.screen.AgendaDetails
@@ -55,8 +52,6 @@ class AgendaDetailsViewModel(
     private val agendaRepository: IAgendaRepository,
     private val imageCompressor: IImageCompressor,
     konnection: Konnection,
-    private val alarmScheduler: IAlarmScheduler,
-    private val alarmRepository: IAlarmRepository,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
 
@@ -372,12 +367,6 @@ class AgendaDetailsViewModel(
                         state.copy(isEdit = false)
                     }
                 }
-
-                val requestCode = alarmRepository.getAgendaAlarm(agendaItem.id)?.requestCode
-
-                val notificationData = agendaItem.toNotificationData(requestCode)
-
-                alarmScheduler.schedule(notificationData)
             }
         }
     }
