@@ -16,6 +16,7 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.mapper.toNotificationData
+import com.example.tasky.alarm.domain.model.AgendaAlarm
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -295,6 +296,12 @@ class AgendaRepository(
         agendaDataSource.syncDeleteAgenda(deletedEventIds, deletedTaskIds, deletedReminderIds)
         agendaDataSource.getFullAgenda().onSuccess { response ->
             agendaLocalDataSource.clearAgendas()
+
+            for (alarm in alarmRepository.getAllAgendaAlarm()) {
+                alarmScheduler.cancel(alarm.requestCode)
+            }
+            alarmRepository.deleteAllAgendaAlarm()
+
             agendaLocalDataSource.upsertAgendas(
                 response.events.map {
                     it.toEvent()
@@ -302,6 +309,21 @@ class AgendaRepository(
                 response.tasks.map { it.toTask() },
                 response.reminders.map { it.toReminder() },
             )
+
+            for (event in response.events) {
+                alarmScheduler.schedule(event.toEvent().toNotificationData())
+                alarmRepository.upsertAgendaAlarm(AgendaAlarm(event.id, event.hashCode()))
+            }
+
+            for (task in response.tasks) {
+                alarmScheduler.schedule(task.toTask().toNotificationData())
+                alarmRepository.upsertAgendaAlarm(AgendaAlarm(task.id, task.hashCode()))
+            }
+
+            for (reminder in response.reminders) {
+                alarmScheduler.schedule(reminder.toReminder().toNotificationData())
+                alarmRepository.upsertAgendaAlarm(AgendaAlarm(reminder.id, reminder.hashCode()))
+            }
 
             agendaLocalDataSource.deleteAllHistory()
         }
