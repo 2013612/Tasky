@@ -1,6 +1,6 @@
-package com.example.tasky.android.alarm.domain
+package com.example.tasky.alarm.domain
 
-import com.example.tasky.android.alarm.domain.model.NotificationData
+import com.example.tasky.alarm.domain.model.NotificationData
 
 interface IAlarmScheduler {
     suspend fun schedule(data: NotificationData)
