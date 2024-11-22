@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.model.AgendaAlarm
@@ -26,6 +27,7 @@ class AlarmScheduler(
                 data.remindAtType.duration.toLong(DurationUnit.MILLISECONDS)
 
         if (triggerAtMillis <= Clock.System.now().toEpochMilliseconds()) {
+            cancel(data.requestCode)
             return
         }
 
@@ -59,5 +61,19 @@ class AlarmScheduler(
         )
 
         alarmRepository.deleteAgendaAlarm(requestCode = requestCode)
+    }
+
+    override fun schedulePeriodicSyncAgenda() {
+        val alarmIntent =
+            Intent(context, SyncAgendaReceiver::class.java).let { intent ->
+                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            }
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            SystemClock.elapsedRealtime(),
+            AlarmManager.INTERVAL_HALF_HOUR,
+            alarmIntent,
+        )
     }
 }
