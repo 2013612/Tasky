@@ -5,13 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.example.tasky.alarm.domain.IAlarmRepository
+import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.model.AgendaAlarm
-import com.example.tasky.android.alarm.domain.IAlarmScheduler
+import com.example.tasky.alarm.domain.model.NotificationData
 import com.example.tasky.android.alarm.domain.mapper.toNotificationDataParcelable
-import com.example.tasky.android.alarm.domain.model.NotificationData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -23,7 +20,7 @@ class AlarmScheduler(
 ) : IAlarmScheduler {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(data: NotificationData) {
+    override suspend fun schedule(data: NotificationData) {
         val triggerAtMillis =
             data.startTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds() -
                 data.remindAtType.duration.toLong(DurationUnit.MILLISECONDS)
@@ -32,9 +29,7 @@ class AlarmScheduler(
             return
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            alarmRepository.upsertAgendaAlarm(AgendaAlarm(data.agendaId, data.requestCode))
-        }
+        alarmRepository.upsertAgendaAlarm(AgendaAlarm(data.agendaId, data.requestCode))
 
         val intent =
             Intent(context, AlarmReceiver::class.java).apply {
@@ -53,7 +48,7 @@ class AlarmScheduler(
         )
     }
 
-    override fun cancel(requestCode: Int) {
+    override suspend fun cancel(requestCode: Int) {
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
@@ -63,8 +58,6 @@ class AlarmScheduler(
             ),
         )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            alarmRepository.deleteAgendaAlarm(requestCode = requestCode)
-        }
+        alarmRepository.deleteAgendaAlarm(requestCode = requestCode)
     }
 }

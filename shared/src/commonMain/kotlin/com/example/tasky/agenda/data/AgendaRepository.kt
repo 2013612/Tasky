@@ -13,6 +13,9 @@ import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.alarm.domain.IAlarmRepository
+import com.example.tasky.alarm.domain.IAlarmScheduler
+import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -24,6 +27,8 @@ import dev.tmapps.konnection.Konnection
 import kotlinx.serialization.json.Json
 
 class AgendaRepository(
+    private val alarmScheduler: IAlarmScheduler,
+    private val alarmRepository: IAlarmRepository,
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
     private val konnection: Konnection = Konnection.instance,
@@ -70,6 +75,10 @@ class AgendaRepository(
                     ResultWrapper.Success(Unit)
                 }
             }
+        }.onSuccess {
+            alarmRepository.getAgendaAlarm(agendaItem.id)?.let {
+                alarmScheduler.cancel(it.requestCode)
+            }
         }
     }
 
@@ -83,6 +92,12 @@ class AgendaRepository(
             agendaLocalDataSource.insertOfflineHistoryUpdateTask(task, userId)
 
             return ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val requestCode = alarmRepository.getAgendaAlarm(task.id)?.requestCode
+
+            val notificationData = task.toNotificationData(requestCode)
+
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -95,6 +110,12 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryUpdateReminder(reminder, userId)
             ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val requestCode = alarmRepository.getAgendaAlarm(reminder.id)?.requestCode
+
+            val notificationData = reminder.toNotificationData(requestCode)
+
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -106,7 +127,7 @@ class AgendaRepository(
     ): ResultWrapper<Event, DataError.Remote> {
         agendaLocalDataSource.upsertEvent(event)
 
-        if (konnection.isConnected()) {
+        return if (konnection.isConnected()) {
             val result =
                 agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
                     it.toEvent()
@@ -116,12 +137,18 @@ class AgendaRepository(
                 agendaLocalDataSource.upsertEvent(it)
             }
 
-            return result
+            result
         } else {
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryUpdateEvent(event, isGoing, userId)
 
-            return ResultWrapper.Success(event)
+            ResultWrapper.Success(event)
+        }.onSuccess {
+            val requestCode = alarmRepository.getAgendaAlarm(event.id)?.requestCode
+
+            val notificationData = event.toNotificationData(requestCode)
+
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -134,6 +161,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateTask(task, userId)
             ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val notificationData = task.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -146,6 +176,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateReminder(reminder, userId)
             ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val notificationData = reminder.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -160,6 +193,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateEvent(event, userId)
             return ResultWrapper.Success(event)
+        }.onSuccess {
+            val notificationData = event.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 

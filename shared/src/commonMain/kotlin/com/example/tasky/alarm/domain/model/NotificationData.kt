@@ -1,4 +1,4 @@
-package com.example.tasky.android.alarm.domain.model
+package com.example.tasky.alarm.domain.model
 
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.RemindAtType
