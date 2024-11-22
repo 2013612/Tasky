@@ -5,14 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.getSystemService
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.android.R
 import com.example.tasky.android.alarm.domain.model.NotificationDataParcelable
 import com.example.tasky.android.utils.getCompatParcelableExtra
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -21,6 +19,7 @@ class AlarmReceiver :
     BroadcastReceiver(),
     KoinComponent {
     private val alarmRepository: IAlarmRepository by inject()
+    private val applicationScope by inject<CoroutineScope>()
 
     override fun onReceive(
         context: Context?,
@@ -48,7 +47,7 @@ class AlarmReceiver :
         }
 
         val pendingResult = goAsync()
-        CoroutineScope(Dispatchers.IO).launch {
+        applicationScope.launch {
             alarmRepository.deleteAgendaAlarm(agendaId = data.agendaId)
             pendingResult.finish()
         }
