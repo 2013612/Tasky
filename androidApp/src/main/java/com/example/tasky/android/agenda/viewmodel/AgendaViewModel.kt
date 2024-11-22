@@ -10,7 +10,6 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.android.agenda.screen.AgendaItemUi
@@ -49,7 +48,6 @@ class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
     private val authRepository: IAuthRepository,
     private val alarmScheduler: IAlarmScheduler,
-    private val alarmRepository: IAlarmRepository,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6

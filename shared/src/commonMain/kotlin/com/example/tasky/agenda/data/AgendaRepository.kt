@@ -15,6 +15,7 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
+import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -142,6 +143,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateTask(task, userId)
             ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val notificationData = task.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -154,6 +158,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateReminder(reminder, userId)
             ResultWrapper.Success(Unit)
+        }.onSuccess {
+            val notificationData = reminder.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 
@@ -168,6 +175,9 @@ class AgendaRepository(
             val userId = SessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateEvent(event, userId)
             return ResultWrapper.Success(event)
+        }.onSuccess {
+            val notificationData = event.toNotificationData()
+            alarmScheduler.schedule(notificationData)
         }
     }
 
