@@ -12,10 +12,10 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
+import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
-import com.example.tasky.android.alarm.domain.mapper.toNotificationData
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName
