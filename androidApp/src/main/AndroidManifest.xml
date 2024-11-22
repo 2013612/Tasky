@@ -24,5 +24,6 @@
         </activity>
 
         <receiver android:name=".alarm.data.AlarmReceiver" />
+        <receiver android:name=".alarm.data.SyncAgendaReceiver" />
     </application>
 </manifest> 
