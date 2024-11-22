@@ -13,6 +13,8 @@ import com.example.tasky.agenda.domain.model.Attendee
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.alarm.domain.IAlarmRepository
+import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
@@ -24,6 +26,8 @@ import dev.tmapps.konnection.Konnection
 import kotlinx.serialization.json.Json
 
 class AgendaRepository(
+    private val alarmScheduler: IAlarmScheduler,
+    private val alarmRepository: IAlarmRepository,
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
     private val konnection: Konnection = Konnection.instance,
@@ -69,6 +73,10 @@ class AgendaRepository(
                     agendaLocalDataSource.insertOfflineHistoryDeleteReminder(agendaItem.id, userId)
                     ResultWrapper.Success(Unit)
                 }
+            }
+        }.onSuccess {
+            alarmRepository.getAgendaAlarm(agendaItem.id)?.let {
+                alarmScheduler.cancel(it.requestCode)
             }
         }
     }

@@ -132,10 +132,6 @@ class AgendaViewModel(
                 val newList = screenStateFlow.value.agendas.toMutableList()
                 newList.remove(AgendaItemUi.Item(agendaItem))
                 _screenStateFlow.update { it.copy(agendas = newList.toImmutableList()) }
-
-                alarmRepository.getAgendaAlarm(agendaItem.id)?.let {
-                    alarmScheduler.cancel(it.requestCode)
-                }
             }
         }
     }
