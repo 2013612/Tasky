@@ -10,8 +10,6 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.alarm.domain.IAlarmScheduler
-import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.android.agenda.screen.AgendaItemUi
 import com.example.tasky.android.agenda.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.screen.AgendaScreenState
@@ -47,7 +45,6 @@ sealed interface AgendaOneTimeEvent {
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
     private val authRepository: IAuthRepository,
-    private val alarmScheduler: IAlarmScheduler,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6
@@ -197,15 +194,6 @@ class AgendaViewModel(
                         Reminder.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
                     )
             }.onSuccess {
-                when (type) {
-                    AgendaType.TASK -> agendaRepository.getTask(id)
-                    AgendaType.EVENT -> agendaRepository.getEvent(id)
-                    AgendaType.REMINDER -> agendaRepository.getReminder(id)
-                }.onSuccess {
-                    val notificationData = it.toNotificationData()
-                    alarmScheduler.schedule(notificationData)
-                }
-
                 eventsChannel.send(AgendaOneTimeEvent.OnAgendaCreate(id, type))
             }
         }
