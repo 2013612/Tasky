@@ -26,6 +26,7 @@ class AlarmScheduler(
                 data.remindAtType.duration.toLong(DurationUnit.MILLISECONDS)
 
         if (triggerAtMillis <= Clock.System.now().toEpochMilliseconds()) {
+            cancel(data.requestCode)
             return
         }
 
