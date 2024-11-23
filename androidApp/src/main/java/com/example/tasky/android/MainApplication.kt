@@ -14,11 +14,15 @@ import com.example.tasky.android.auth.di.registerModule
 import com.example.tasky.android.common.di.dataStoreModule
 import com.example.tasky.android.common.di.databaseModule
 import com.example.tasky.android.common.di.mainModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
 class MainApplication : Application() {
+    val applicationScope = CoroutineScope(SupervisorJob())
+
     override fun onCreate() {
         super.onCreate()
         startKoin {
