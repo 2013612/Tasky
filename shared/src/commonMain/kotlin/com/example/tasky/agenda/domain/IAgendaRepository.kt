@@ -45,5 +45,5 @@ interface IAgendaRepository {
         from: Long,
     ): ResultWrapper<Attendee?, DataError.Remote>
 
-    suspend fun syncAgenda()
+    suspend fun syncAgenda(): ResultWrapper<Unit, DataError.Remote>
 }

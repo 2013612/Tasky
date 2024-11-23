@@ -25,6 +25,7 @@ koin-bom = "4.0.0"
 roomCommon = "2.7.0-alpha11"
 ksp = "2.0.21-1.0.25"
 sqlite = "2.5.0-alpha11"
+workRuntimeKtx = "2.9.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -35,11 +36,13 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "roomCommon" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCommon" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager" }
 konnection = { module = "dev.tmapps:konnection", version.ref = "konnection" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
