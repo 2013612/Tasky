@@ -62,9 +62,12 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.datetime)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.workmanager)
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
@@ -72,4 +75,6 @@ dependencies {
     implementation(libs.konnection)
 
     implementation(libs.accompanist.permissions)
+
+    implementation(libs.androidx.work.runtime.ktx)
 }
