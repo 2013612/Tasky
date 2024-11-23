@@ -1,5 +1,6 @@
 package com.example.tasky.android.alarm.data
 
+import android.content.Context
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -11,8 +12,10 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 class SyncAgendaManager(
-    private val workManager: WorkManager,
+    context: Context,
 ) : ISyncAgendaManager {
+    private val workManager = WorkManager.getInstance(context)
+
     private val workRequest =
         PeriodicWorkRequestBuilder<SyncAgendaWorker>(30.minutes.toJavaDuration())
             .addTag(SyncAgendaWorker.TAG)
