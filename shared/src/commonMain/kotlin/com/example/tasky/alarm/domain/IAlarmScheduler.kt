@@ -6,6 +6,4 @@ interface IAlarmScheduler {
     suspend fun schedule(data: NotificationData)
 
     suspend fun cancel(requestCode: Int)
-
-    fun schedulePeriodicSyncAgenda()
 }

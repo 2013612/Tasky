@@ -37,7 +37,6 @@
         </provider>
 
         <receiver android:name=".alarm.data.AlarmReceiver" />
-        <receiver android:name=".alarm.data.SyncAgendaReceiver" />
         <receiver android:name=".common.data.BootReceiver" android:enabled="false"
             android:exported="true">
             <intent-filter>
