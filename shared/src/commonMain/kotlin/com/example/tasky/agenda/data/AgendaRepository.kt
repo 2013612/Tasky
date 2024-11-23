@@ -20,6 +20,7 @@ import com.example.tasky.alarm.domain.model.AgendaAlarm
 import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
+import com.example.tasky.common.domain.model.asEmptyDataResult
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.database.model.ApiType
@@ -229,9 +230,9 @@ class AgendaRepository(
             }
         }
 
-    override suspend fun syncAgenda() {
+    override suspend fun syncAgenda(): ResultWrapper<Unit, DataError.Remote> {
         if (!konnection.isConnected()) {
-            return
+            return ResultWrapper.Error(DataError.Remote.NO_INTERNET)
         }
 
         val histories = agendaLocalDataSource.getAllHistory()
@@ -294,38 +295,41 @@ class AgendaRepository(
         }
 
         agendaDataSource.syncDeleteAgenda(deletedEventIds, deletedTaskIds, deletedReminderIds)
-        agendaDataSource.getFullAgenda().onSuccess { response ->
-            agendaLocalDataSource.clearAgendas()
 
-            for (alarm in alarmRepository.getAllAgendaAlarm()) {
-                alarmScheduler.cancel(alarm.requestCode)
-            }
-            alarmRepository.deleteAllAgendaAlarm()
+        return agendaDataSource
+            .getFullAgenda()
+            .onSuccess { response ->
+                agendaLocalDataSource.clearAgendas()
 
-            agendaLocalDataSource.upsertAgendas(
-                response.events.map {
-                    it.toEvent()
-                },
-                response.tasks.map { it.toTask() },
-                response.reminders.map { it.toReminder() },
-            )
+                for (alarm in alarmRepository.getAllAgendaAlarm()) {
+                    alarmScheduler.cancel(alarm.requestCode)
+                }
+                alarmRepository.deleteAllAgendaAlarm()
 
-            for (event in response.events) {
-                alarmScheduler.schedule(event.toEvent().toNotificationData())
-                alarmRepository.upsertAgendaAlarm(AgendaAlarm(event.id, event.hashCode()))
-            }
+                agendaLocalDataSource.upsertAgendas(
+                    response.events.map {
+                        it.toEvent()
+                    },
+                    response.tasks.map { it.toTask() },
+                    response.reminders.map { it.toReminder() },
+                )
 
-            for (task in response.tasks) {
-                alarmScheduler.schedule(task.toTask().toNotificationData())
-                alarmRepository.upsertAgendaAlarm(AgendaAlarm(task.id, task.hashCode()))
-            }
+                for (event in response.events) {
+                    alarmScheduler.schedule(event.toEvent().toNotificationData())
+                    alarmRepository.upsertAgendaAlarm(AgendaAlarm(event.id, event.hashCode()))
+                }
 
-            for (reminder in response.reminders) {
-                alarmScheduler.schedule(reminder.toReminder().toNotificationData())
-                alarmRepository.upsertAgendaAlarm(AgendaAlarm(reminder.id, reminder.hashCode()))
-            }
+                for (task in response.tasks) {
+                    alarmScheduler.schedule(task.toTask().toNotificationData())
+                    alarmRepository.upsertAgendaAlarm(AgendaAlarm(task.id, task.hashCode()))
+                }
 
-            agendaLocalDataSource.deleteAllHistory()
-        }
+                for (reminder in response.reminders) {
+                    alarmScheduler.schedule(reminder.toReminder().toNotificationData())
+                    alarmRepository.upsertAgendaAlarm(AgendaAlarm(reminder.id, reminder.hashCode()))
+                }
+
+                agendaLocalDataSource.deleteAllHistory()
+            }.asEmptyDataResult()
     }
 }
