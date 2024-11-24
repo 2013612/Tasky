@@ -1,8 +1,8 @@
 package com.example.tasky.android.agenda.di
 
-import com.example.tasky.android.agenda.viewmodel.AgendaDetailsViewModel
-import com.example.tasky.android.utils.IImageCompressor
-import com.example.tasky.android.utils.ImageCompressor
+import com.example.tasky.android.agenda.data.ImageCompressor
+import com.example.tasky.android.agenda.domain.IImageCompressor
+import com.example.tasky.android.agenda.presentation.viewmodel.AgendaDetailsViewModel
 import dev.tmapps.konnection.Konnection
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf

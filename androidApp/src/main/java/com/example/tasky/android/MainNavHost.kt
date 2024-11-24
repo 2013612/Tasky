@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.tasky.android.agenda.AgendaGraph
-import com.example.tasky.android.agenda.agendaGraph
+import com.example.tasky.android.agenda.presentation.AgendaGraph
+import com.example.tasky.android.agenda.presentation.agendaGraph
 import com.example.tasky.android.auth.AuthGraph
 import com.example.tasky.android.auth.authGraph
 
