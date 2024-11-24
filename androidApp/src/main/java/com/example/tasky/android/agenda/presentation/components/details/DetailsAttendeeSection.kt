@@ -176,6 +176,7 @@ fun DetailsAttendeeSection(
                         Button(
                             onClick = {
                                 onAddClick(text)
+                                showDialog = false
                             },
                             modifier =
                                 Modifier
