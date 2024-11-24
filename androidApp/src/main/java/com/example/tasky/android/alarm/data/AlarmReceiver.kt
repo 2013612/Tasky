@@ -9,7 +9,7 @@ import androidx.core.content.getSystemService
 import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.android.R
 import com.example.tasky.android.alarm.domain.model.NotificationDataParcelable
-import com.example.tasky.android.utils.getCompatParcelableExtra
+import com.example.tasky.android.common.presentation.utils.getCompatParcelableExtra
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent

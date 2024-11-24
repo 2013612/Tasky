@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.example.tasky.android.common.viewmodel.MainViewModel
+import com.example.tasky.android.common.presentation.viewmodel.MainViewModel
 import com.example.tasky.android.theme.MyApplicationTheme
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.KoinAndroidContext

@@ -2,7 +2,7 @@ package com.example.tasky.android.common.di
 
 import com.example.tasky.android.common.data.BootReceiverManager
 import com.example.tasky.android.common.domain.IBootReceiverManager
-import com.example.tasky.android.common.viewmodel.MainViewModel
+import com.example.tasky.android.common.presentation.viewmodel.MainViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
