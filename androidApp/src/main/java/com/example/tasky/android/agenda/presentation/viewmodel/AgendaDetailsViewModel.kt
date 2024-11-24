@@ -183,6 +183,10 @@ class AgendaDetailsViewModel(
             return
         }
 
+        if (agendaItem.attendees.any { it.email == email }) {
+            return
+        }
+
         viewModelScope.launch {
             agendaRepository.getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from).onSuccess {
                 it?.let { newAttendee ->

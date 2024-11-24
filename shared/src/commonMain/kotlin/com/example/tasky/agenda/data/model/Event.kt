@@ -59,7 +59,7 @@ data class CreateEventBody(
 @Serializable
 data class GetAttendeeResponse(
     val doesUserExist: Boolean,
-    val attendee: GetAttendeeResponseAttendee,
+    val attendee: GetAttendeeResponseAttendee?,
 )
 
 @Serializable
