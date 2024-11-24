@@ -216,7 +216,7 @@ class AgendaRepository(
         from: Long,
     ): ResultWrapper<Attendee?, DataError.Remote> =
         agendaDataSource.getAttendee(email = email).map {
-            if (it.doesUserExist) {
+            if (it.doesUserExist && it.attendee != null) {
                 Attendee(
                     email = it.attendee.email,
                     fullName = it.attendee.fullName,
