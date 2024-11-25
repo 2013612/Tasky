@@ -1,6 +1,7 @@
 [versions]
 accompanistPermissions = "0.36.0"
 agp = "8.3.0"
+assertk = "0.28.1"
 buildkonfigGradlePlugin = "0.15.2"
 coilCompose = "3.0.0-rc02"
 coreSplashscreen = "1.0.1"
@@ -38,6 +39,7 @@ androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", ver
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCommon" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }

@@ -1,6 +1,9 @@
-package com.example.tasky.auth.domain.util
+package com.example.tasky.util
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
+import com.example.tasky.auth.domain.util.Validator
 import kotlin.test.Test
 
 class ValidatorTest {
@@ -16,7 +19,7 @@ class ValidatorTest {
     }
 
     @Test
-    fun `test validateEmail no @`() {
+    fun `test validateEmail no at`() {
         val email = "abcabc.com"
 
         val actual = validator.validateEmail(email)

@@ -63,6 +63,7 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.truth)
+            implementation(libs.assertk)
         }
 
         androidMain.dependencies {
