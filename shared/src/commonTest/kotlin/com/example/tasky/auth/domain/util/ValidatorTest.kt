@@ -1,9 +1,8 @@
-package com.example.tasky.util
+package com.example.tasky.auth.domain.util
 
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.example.tasky.auth.domain.util.Validator
 import kotlin.test.Test
 
 class ValidatorTest {
