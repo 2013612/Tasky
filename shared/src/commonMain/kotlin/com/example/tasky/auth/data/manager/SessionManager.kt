@@ -1,4 +1,4 @@
-package com.example.tasky.auth.domain.manager
+package com.example.tasky.auth.data.manager
 
 import com.example.tasky.auth.data.model.AccessTokenBody
 import com.example.tasky.auth.data.model.LoginResponse

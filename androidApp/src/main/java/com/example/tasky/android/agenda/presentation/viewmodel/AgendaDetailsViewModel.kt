@@ -18,7 +18,7 @@ import com.example.tasky.android.agenda.presentation.components.details.DetailsP
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetails
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenState
-import com.example.tasky.auth.domain.manager.SessionManager
+import com.example.tasky.auth.data.manager.SessionManager
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
 import dev.tmapps.konnection.Konnection

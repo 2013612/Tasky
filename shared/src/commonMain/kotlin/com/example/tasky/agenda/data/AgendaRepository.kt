@@ -17,7 +17,7 @@ import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.alarm.domain.model.AgendaAlarm
-import com.example.tasky.auth.domain.manager.SessionManager
+import com.example.tasky.auth.data.manager.SessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.asEmptyDataResult
