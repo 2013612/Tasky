@@ -1,4 +1,4 @@
-package com.example.tasky.commom.data.manager
+package com.example.tasky.commom.mock
 
 import com.example.tasky.BuildKonfig.API_KEY
 import com.example.tasky.auth.data.model.AccessTokenResponse
