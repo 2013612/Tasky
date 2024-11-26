@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-fun Long.toLocalDateTime(): LocalDateTime =
+fun Long.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime =
     Instant
         .fromEpochMilliseconds(this)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .toLocalDateTime(timeZone)
