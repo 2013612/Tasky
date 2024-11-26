@@ -1,8 +1,8 @@
-package com.example.tasky.commom.data.manager
+package com.example.tasky.commom.mock
 
 import com.example.tasky.BuildKonfig.API_KEY
 import com.example.tasky.auth.data.model.AccessTokenResponse
-import com.example.tasky.auth.domain.manager.SessionManagerMock
+import com.example.tasky.auth.mock.SessionManagerMock
 import com.example.tasky.common.data.model.ErrorResponse
 import com.example.tasky.common.data.util.isSuccess
 import io.ktor.client.HttpClient
