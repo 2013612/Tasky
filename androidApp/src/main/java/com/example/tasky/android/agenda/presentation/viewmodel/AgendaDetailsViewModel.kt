@@ -18,7 +18,7 @@ import com.example.tasky.android.agenda.presentation.components.details.DetailsP
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetails
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenState
-import com.example.tasky.auth.data.manager.SessionManager
+import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
 import dev.tmapps.konnection.Konnection
@@ -52,6 +52,7 @@ class AgendaDetailsViewModel(
     private val agendaRepository: IAgendaRepository,
     private val imageCompressor: IImageCompressor,
     konnection: Konnection,
+    private val sessionManager: ISessionManager,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
 
@@ -97,7 +98,7 @@ class AgendaDetailsViewModel(
                         }
 
                     is Event -> {
-                        val userId = SessionManager.getUserId()
+                        val userId = sessionManager.getUserId()
                         val eventIsGoing = agendaItem.attendees.firstOrNull { it.userId == userId }?.isGoing ?: true
                         _screenStateFlow.update {
                             it.copy(
@@ -219,7 +220,7 @@ class AgendaDetailsViewModel(
         }
 
         viewModelScope.launch {
-            val userId = SessionManager.getUserId()
+            val userId = sessionManager.getUserId()
             val newAttendees = agendaItem.attendees.toMutableList()
             val attendeeIndex = newAttendees.indexOfFirst { it.userId == userId }
             if (attendeeIndex >= 0) {
