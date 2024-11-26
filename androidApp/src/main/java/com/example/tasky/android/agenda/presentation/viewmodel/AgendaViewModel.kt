@@ -14,7 +14,7 @@ import com.example.tasky.android.agenda.presentation.screen.AgendaItemUi
 import com.example.tasky.android.agenda.presentation.screen.AgendaScreenEvent
 import com.example.tasky.android.agenda.presentation.screen.AgendaScreenState
 import com.example.tasky.auth.domain.IAuthRepository
-import com.example.tasky.auth.domain.manager.SessionManager
+import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.auth.domain.util.getAvatarDisplayName
 import com.example.tasky.common.domain.model.onSuccess
 import kotlinx.collections.immutable.toImmutableList
@@ -45,6 +45,7 @@ sealed interface AgendaOneTimeEvent {
 class AgendaViewModel(
     private val agendaRepository: IAgendaRepository,
     private val authRepository: IAuthRepository,
+    private val sessionManager: ISessionManager,
 ) : ViewModel() {
     companion object {
         private const val DEFAULT_DAYS_TO_SHOW = 6
@@ -133,7 +134,7 @@ class AgendaViewModel(
 
     private fun updateName() {
         viewModelScope.launch {
-            val fullName = SessionManager.getFullName() ?: return@launch
+            val fullName = sessionManager.getFullName() ?: return@launch
             _screenStateFlow.update { it.copy(name = fullName.getAvatarDisplayName()) }
         }
     }
@@ -162,12 +163,12 @@ class AgendaViewModel(
                         Task.EMPTY.copy(id = id, time = now, remindAt = RemindAtType.TEN_MINUTE),
                     )
                 AgendaType.EVENT -> {
-                    val userId = SessionManager.getUserId() ?: ""
+                    val userId = sessionManager.getUserId() ?: ""
                     val attendee =
                         Attendee(
                             email = "",
-                            fullName = SessionManager.getFullName() ?: "",
-                            userId = SessionManager.getUserId() ?: "",
+                            fullName = sessionManager.getFullName() ?: "",
+                            userId = sessionManager.getUserId() ?: "",
                             eventId = id,
                             isGoing = true,
                             remindAt =

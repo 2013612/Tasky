@@ -1,7 +1,8 @@
-package com.example.tasky.auth.domain.manager
+package com.example.tasky.auth.data.manager
 
-import com.example.tasky.auth.data.model.AccessTokenBody
 import com.example.tasky.auth.data.model.LoginResponse
+import com.example.tasky.auth.domain.ISessionManager
+import com.example.tasky.auth.domain.model.RefreshToken
 import com.example.tasky.common.data.manager.HttpManager.json
 import com.example.tasky.dataStore.SettingsKey
 import com.example.tasky.dataStore.createSettings
@@ -13,7 +14,7 @@ import kotlinx.serialization.encodeToString
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalSettingsImplementation::class, ExperimentalSettingsApi::class)
-object SessionManager {
+object SessionManager : ISessionManager {
     private val settings = createSettings(dataStore)
 
     private suspend fun loadLoginResponse(): LoginResponse? =
@@ -34,7 +35,7 @@ object SessionManager {
             null
         }
 
-    suspend fun loadTokens(): BearerTokens =
+    override suspend fun loadTokens(): BearerTokens =
         try {
             val loginResponse = loadLoginResponse()
             val accessToken = loginResponse?.accessToken ?: ""
@@ -48,18 +49,18 @@ object SessionManager {
             BearerTokens("", "")
         }
 
-    suspend fun loadAccessTokenBody(): AccessTokenBody? =
+    override suspend fun loadAccessTokenBody(): RefreshToken? =
         try {
             val loginResponse = loadLoginResponse() ?: throw Exception("no login response")
-            AccessTokenBody(refreshToken = loginResponse.refreshToken, loginResponse.userId)
+            RefreshToken(refreshToken = loginResponse.refreshToken, loginResponse.userId)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
 
-            println("refresh token fail: $e")
+            println("load refresh token fail: $e")
             null
         }
 
-    suspend fun updateAccessToken(
+    override suspend fun updateAccessToken(
         newToken: String,
         expirationTimestamp: Long,
     ) {
@@ -81,11 +82,11 @@ object SessionManager {
         }
     }
 
-    suspend fun removeToken() {
+    override suspend fun removeToken() {
         settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
 
-    suspend fun getFullName(): String? =
+    override suspend fun getFullName(): String? =
         try {
             val loginResponse = loadLoginResponse()
 
@@ -97,7 +98,7 @@ object SessionManager {
             null
         }
 
-    suspend fun getUserId(): String? =
+    override suspend fun getUserId(): String? =
         try {
             val loginResponse = loadLoginResponse()
 

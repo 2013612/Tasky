@@ -1,8 +1,9 @@
 package com.example.tasky.common.data.manager
 
 import com.example.tasky.BuildKonfig.API_KEY
+import com.example.tasky.auth.data.manager.SessionManager
+import com.example.tasky.auth.data.mapper.toAccessTokenBody
 import com.example.tasky.auth.data.model.AccessTokenResponse
-import com.example.tasky.auth.domain.manager.SessionManager
 import com.example.tasky.common.data.model.ErrorResponse
 import com.example.tasky.common.data.util.isSuccess
 import io.ktor.client.HttpClient
@@ -63,7 +64,7 @@ internal object HttpManager {
 
                     refreshTokens {
                         try {
-                            val body = SessionManager.loadAccessTokenBody() ?: throw Exception("no login response")
+                            val body = SessionManager.loadAccessTokenBody()?.toAccessTokenBody() ?: throw Exception("no login response")
                             val response =
                                 client.post("/accessToken") {
                                     markAsRefreshTokenRequest()
