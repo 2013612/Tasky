@@ -35,6 +35,8 @@ internal object HttpManager {
             ignoreUnknownKeys = true
         }
 
+    private val sessionManager = SessionManager
+
     val httpClient =
         HttpClient {
             install(HttpTimeout) {
@@ -59,12 +61,12 @@ internal object HttpManager {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        SessionManager.loadTokens()
+                        sessionManager.loadTokens()
                     }
 
                     refreshTokens {
                         try {
-                            val body = SessionManager.loadAccessTokenBody()?.toAccessTokenBody() ?: throw Exception("no login response")
+                            val body = sessionManager.loadAccessTokenBody()?.toAccessTokenBody() ?: throw Exception("no login response")
                             val response =
                                 client.post("/accessToken") {
                                     markAsRefreshTokenRequest()
@@ -78,7 +80,7 @@ internal object HttpManager {
 
                             val responseBody = response.body<AccessTokenResponse>()
 
-                            SessionManager.updateAccessToken(responseBody.accessToken, responseBody.expirationTimestamp)
+                            sessionManager.updateAccessToken(responseBody.accessToken, responseBody.expirationTimestamp)
 
                             BearerTokens(responseBody.accessToken, body.refreshToken)
                         } catch (e: Exception) {
@@ -86,7 +88,7 @@ internal object HttpManager {
 
                             println("refresh token fail: ${e.message}")
 
-                            SessionManager.removeToken()
+                            sessionManager.removeToken()
                             Throwable(e)
                             null
                         }
