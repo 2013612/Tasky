@@ -82,6 +82,11 @@ object SessionManager : ISessionManager {
         }
     }
 
+    suspend fun setLoginResponse(loginResponse: LoginResponse) {
+        val jsonString = json.encodeToString(loginResponse)
+        settings.putString(SettingsKey.LOGIN_RESPONSE.name, jsonString)
+    }
+
     suspend fun removeToken() {
         settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
