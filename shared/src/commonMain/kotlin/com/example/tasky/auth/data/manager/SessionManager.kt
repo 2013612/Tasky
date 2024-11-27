@@ -35,7 +35,7 @@ object SessionManager : ISessionManager {
             null
         }
 
-    override suspend fun loadTokens(): BearerTokens =
+    suspend fun loadTokens(): BearerTokens =
         try {
             val loginResponse = loadLoginResponse()
             val accessToken = loginResponse?.accessToken ?: ""
@@ -49,7 +49,7 @@ object SessionManager : ISessionManager {
             BearerTokens("", "")
         }
 
-    override suspend fun loadAccessTokenBody(): RefreshToken? =
+    suspend fun loadAccessTokenBody(): RefreshToken? =
         try {
             val loginResponse = loadLoginResponse() ?: throw Exception("no login response")
             RefreshToken(refreshToken = loginResponse.refreshToken, loginResponse.userId)
@@ -60,7 +60,7 @@ object SessionManager : ISessionManager {
             null
         }
 
-    override suspend fun updateAccessToken(
+    suspend fun updateAccessToken(
         newToken: String,
         expirationTimestamp: Long,
     ) {
@@ -82,7 +82,7 @@ object SessionManager : ISessionManager {
         }
     }
 
-    override suspend fun removeToken() {
+    suspend fun removeToken() {
         settings.remove(SettingsKey.LOGIN_RESPONSE.name)
     }
 
