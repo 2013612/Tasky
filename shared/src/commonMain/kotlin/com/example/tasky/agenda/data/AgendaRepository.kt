@@ -17,7 +17,7 @@ import com.example.tasky.alarm.domain.IAlarmRepository
 import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.alarm.domain.model.AgendaAlarm
-import com.example.tasky.auth.data.manager.SessionManager
+import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.data.model.DataError
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.asEmptyDataResult
@@ -31,6 +31,7 @@ import kotlinx.serialization.json.Json
 class AgendaRepository(
     private val alarmScheduler: IAlarmScheduler,
     private val alarmRepository: IAlarmRepository,
+    private val sessionManager: ISessionManager,
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
     private val konnection: Konnection = Konnection.instance,
@@ -40,7 +41,7 @@ class AgendaRepository(
     override fun getAgendaFlow(timeStamp: Long) = agendaLocalDataSource.getDaySortedAgendaFlow(timeStamp)
 
     override suspend fun deleteAgenda(agendaItem: AgendaItem): ResultWrapper<Unit, DataError.Remote> {
-        val userId = SessionManager.getUserId() ?: ""
+        val userId = sessionManager.getUserId() ?: ""
 
         return when (agendaItem) {
             is Event -> {
@@ -90,7 +91,7 @@ class AgendaRepository(
         return if (konnection.isConnected()) {
             agendaDataSource.updateTask(task)
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryUpdateTask(task, userId)
 
             return ResultWrapper.Success(Unit)
@@ -109,7 +110,7 @@ class AgendaRepository(
         return if (konnection.isConnected()) {
             agendaDataSource.updateReminder(reminder)
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryUpdateReminder(reminder, userId)
             ResultWrapper.Success(Unit)
         }.onSuccess {
@@ -141,7 +142,7 @@ class AgendaRepository(
 
             result
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryUpdateEvent(event, isGoing, userId)
 
             ResultWrapper.Success(event)
@@ -160,7 +161,7 @@ class AgendaRepository(
         return if (konnection.isConnected()) {
             agendaDataSource.createTask(task)
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateTask(task, userId)
             ResultWrapper.Success(Unit)
         }.onSuccess {
@@ -175,7 +176,7 @@ class AgendaRepository(
         return if (konnection.isConnected()) {
             agendaDataSource.createReminder(reminder)
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateReminder(reminder, userId)
             ResultWrapper.Success(Unit)
         }.onSuccess {
@@ -192,7 +193,7 @@ class AgendaRepository(
                 it.toEvent()
             }
         } else {
-            val userId = SessionManager.getUserId() ?: ""
+            val userId = sessionManager.getUserId() ?: ""
             agendaLocalDataSource.insertOfflineHistoryCreateEvent(event, userId)
             return ResultWrapper.Success(event)
         }.onSuccess {
@@ -236,7 +237,7 @@ class AgendaRepository(
         }
 
         val histories = agendaLocalDataSource.getAllHistory()
-        val userId = SessionManager.getUserId()
+        val userId = sessionManager.getUserId()
         val deletedEventIds = mutableListOf<String>()
         val deletedTaskIds = mutableListOf<String>()
         val deletedReminderIds = mutableListOf<String>()
