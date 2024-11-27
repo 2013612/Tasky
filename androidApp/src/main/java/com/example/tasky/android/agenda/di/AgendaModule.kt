@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val agendaModule =
     module {
         single<AgendaRepository> {
-            AgendaRepository(get(), get())
+            AgendaRepository(get(), get(), get())
         }.bind<IAgendaRepository>()
         single<ISessionManager> {
             SessionManager
