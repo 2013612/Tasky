@@ -19,9 +19,9 @@ import com.example.tasky.android.agenda.presentation.screen.AgendaDetails
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenState
 import com.example.tasky.auth.domain.ISessionManager
+import com.example.tasky.common.domain.INetworkManager
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
-import dev.tmapps.konnection.Konnection
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,7 +51,7 @@ class AgendaDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val agendaRepository: IAgendaRepository,
     private val imageCompressor: IImageCompressor,
-    konnection: Konnection,
+    networkManager: INetworkManager,
     private val sessionManager: ISessionManager,
 ) : ViewModel() {
     private val routeArguments = savedStateHandle.toRoute<AgendaDetails>()
@@ -76,7 +76,7 @@ class AgendaDetailsViewModel(
     private val deletedPhotoKeys = mutableListOf<String>()
 
     init {
-        konnection
+        networkManager
             .observeHasConnection()
             .onEach { hasConnection ->
                 _screenStateFlow.update { it.copy(hasNetwork = hasConnection) }
