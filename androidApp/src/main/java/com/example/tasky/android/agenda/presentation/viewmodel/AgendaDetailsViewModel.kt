@@ -20,6 +20,7 @@ import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenE
 import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenState
 import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.INetworkManager
+import com.example.tasky.common.domain.model.onError
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.common.domain.util.toLocalDateTime
 import kotlinx.coroutines.channels.Channel
@@ -43,6 +44,19 @@ sealed interface AgendaDetailsOneTimeEvent {
 
     data class OnPhotoSkipped(
         val skippedPhotoCount: Int,
+    ) : AgendaDetailsOneTimeEvent
+
+    data class OnAddAttendee(
+        val name: String,
+    ) : AgendaDetailsOneTimeEvent
+
+    data class OnAddDuplicateAttendee(
+        val name: String,
+    ) : AgendaDetailsOneTimeEvent
+
+    data class OnAddAttendeeFail(
+        val email: String,
+        val error: String,
     ) : AgendaDetailsOneTimeEvent
 }
 
@@ -184,17 +198,28 @@ class AgendaDetailsViewModel(
             return
         }
 
-        if (agendaItem.attendees.any { it.email == email }) {
-            return
-        }
-
         viewModelScope.launch {
+            if (agendaItem.attendees.any { it.email == email }) {
+                eventsChannel.send(
+                    AgendaDetailsOneTimeEvent.OnAddDuplicateAttendee(agendaItem.attendees.first { it.email == email }.fullName),
+                )
+                return@launch
+            }
+
             agendaRepository.getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from).onSuccess {
                 it?.let { newAttendee ->
                     _screenStateFlow.update { state ->
                         state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + newAttendee))
                     }
+
+                    eventsChannel.send(
+                        AgendaDetailsOneTimeEvent.OnAddAttendee(it.fullName),
+                    )
                 }
+            }.onError {
+                eventsChannel.send(
+                    AgendaDetailsOneTimeEvent.OnAddAttendeeFail(email, it.name),
+                )
             }
         }
     }
