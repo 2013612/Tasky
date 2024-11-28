@@ -89,6 +89,35 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
                     val toast = Toast.makeText(context, text, duration)
                     toast.show()
                 }
+
+                is AgendaDetailsOneTimeEvent.OnAddAttendee -> {
+                    val text = context.getString(R.string.add_attendee_toast, event.name)
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(context, text, duration)
+                    toast.show()
+                }
+
+                is AgendaDetailsOneTimeEvent.OnAddAttendeeFail -> {
+                    val text =
+                        context.getString(
+                            R.string.add_attendee_fail_toast,
+                            event.email,
+                            event.error,
+                        )
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(context, text, duration)
+                    toast.show()
+                }
+
+                is AgendaDetailsOneTimeEvent.OnAddDuplicateAttendee -> {
+                    val text = context.getString(R.string.add_duplicate_attendee_toast, event.name)
+                    val duration = Toast.LENGTH_SHORT
+
+                    val toast = Toast.makeText(context, text, duration)
+                    toast.show()
+                }
             }
         }
 
@@ -428,18 +457,24 @@ private fun AgendaDetailsScreen(
         }
 
         if (state.enlargedPhoto != null) {
-            DetailsLargePhoto(photo = state.enlargedPhoto, isEdit = state.isEdit && state.isCreator && state.hasNetwork, onCloseClick = {
-                onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
-            }, onDeleteClick = {
-                onEvent(
-                    AgendaDetailsScreenEvent.OnPhotoDelete(
-                        when (state.enlargedPhoto) {
-                            is DetailsPhoto.RemotePhoto -> state.enlargedPhoto.photo.key
-                            is DetailsPhoto.LocalPhoto -> state.enlargedPhoto.key
-                        },
-                    ),
-                )
-            }, modifier = Modifier.fillMaxSize())
+            DetailsLargePhoto(
+                photo = state.enlargedPhoto,
+                isEdit = state.isEdit && state.isCreator && state.hasNetwork,
+                onCloseClick = {
+                    onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
+                },
+                onDeleteClick = {
+                    onEvent(
+                        AgendaDetailsScreenEvent.OnPhotoDelete(
+                            when (state.enlargedPhoto) {
+                                is DetailsPhoto.RemotePhoto -> state.enlargedPhoto.photo.key
+                                is DetailsPhoto.LocalPhoto -> state.enlargedPhoto.key
+                            },
+                        ),
+                    )
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }
