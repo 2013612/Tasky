@@ -2,12 +2,13 @@ package com.example.tasky.auth.mock
 
 import com.example.tasky.auth.data.model.AccessTokenBody
 import com.example.tasky.auth.data.model.LoginResponse
+import com.example.tasky.auth.domain.ISessionManager
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 
-object SessionManagerMock {
+object SessionManagerMock : ISessionManager {
     private var loginResponseJson: String? = null
     private var json = Json
 
@@ -79,7 +80,7 @@ object SessionManagerMock {
         loginResponseJson = null
     }
 
-    suspend fun getFullName(): String? =
+    override suspend fun getFullName(): String? =
         try {
             val loginResponse = loadLoginResponse()
 
@@ -91,7 +92,7 @@ object SessionManagerMock {
             null
         }
 
-    suspend fun getUserId(): String? =
+    override suspend fun getUserId(): String? =
         try {
             val loginResponse = loadLoginResponse()
 

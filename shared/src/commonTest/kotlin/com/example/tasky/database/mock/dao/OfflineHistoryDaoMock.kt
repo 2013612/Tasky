@@ -6,7 +6,11 @@ import com.example.tasky.database.model.OfflineHistoryEntity
 class OfflineHistoryDaoMock(
     val entities: MutableList<OfflineHistoryEntity>,
 ) : OfflineHistoryDao {
-    override suspend fun getAll(): List<OfflineHistoryEntity> = entities
+    override suspend fun getAll(): List<OfflineHistoryEntity> {
+        val newList = mutableListOf<OfflineHistoryEntity>()
+        newList.addAll(entities)
+        return newList
+    }
 
     override suspend fun deleteAll() {
         entities.clear()

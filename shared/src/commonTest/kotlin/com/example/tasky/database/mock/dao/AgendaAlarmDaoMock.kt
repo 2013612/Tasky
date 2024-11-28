@@ -6,9 +6,13 @@ import com.example.tasky.database.model.AgendaAlarmEntity
 class AgendaAlarmDaoMock(
     val entities: MutableList<AgendaAlarmEntity>,
 ) : AgendaAlarmDao {
-    override suspend fun get(agendaId: String): AgendaAlarmEntity? = entities.first { it.agendaId == agendaId }
+    override suspend fun get(agendaId: String): AgendaAlarmEntity? = entities.firstOrNull { it.agendaId == agendaId }
 
-    override suspend fun getAll(): List<AgendaAlarmEntity> = entities
+    override suspend fun getAll(): List<AgendaAlarmEntity> {
+        val newList = mutableListOf<AgendaAlarmEntity>()
+        newList.addAll(entities)
+        return newList
+    }
 
     override suspend fun deleteAll() {
         entities.clear()
