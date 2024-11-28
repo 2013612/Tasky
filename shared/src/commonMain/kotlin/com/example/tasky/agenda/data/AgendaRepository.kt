@@ -18,14 +18,15 @@ import com.example.tasky.alarm.domain.IAlarmScheduler
 import com.example.tasky.alarm.domain.mapper.toNotificationData
 import com.example.tasky.alarm.domain.model.AgendaAlarm
 import com.example.tasky.auth.domain.ISessionManager
+import com.example.tasky.common.data.manager.NetworkManager
 import com.example.tasky.common.data.model.DataError
+import com.example.tasky.common.domain.INetworkManager
 import com.example.tasky.common.domain.model.ResultWrapper
 import com.example.tasky.common.domain.model.asEmptyDataResult
 import com.example.tasky.common.domain.model.map
 import com.example.tasky.common.domain.model.onSuccess
 import com.example.tasky.database.model.ApiType
 import com.example.tasky.database.model.isDelete
-import dev.tmapps.konnection.Konnection
 import kotlinx.serialization.json.Json
 
 class AgendaRepository(
@@ -34,7 +35,7 @@ class AgendaRepository(
     private val sessionManager: ISessionManager,
     private val agendaDataSource: AgendaDataSource = AgendaDataSource(),
     private val agendaLocalDataSource: AgendaLocalDataSource = AgendaLocalDataSource(),
-    private val konnection: Konnection = Konnection.instance,
+    private val networkManager: INetworkManager = NetworkManager(),
 ) : IAgendaRepository {
     override suspend fun getAgenda(timeStamp: Long) = ResultWrapper.Success(agendaLocalDataSource.getDayAgenda(timeStamp))
 
@@ -47,7 +48,7 @@ class AgendaRepository(
             is Event -> {
                 agendaLocalDataSource.deleteEvent(agendaItem.id)
 
-                if (konnection.isConnected()) {
+                if (networkManager.isConnected()) {
                     if (agendaItem.isUserEventCreator) {
                         agendaDataSource.deleteEvent(agendaItem.id)
                     } else {
@@ -61,7 +62,7 @@ class AgendaRepository(
             is Task -> {
                 agendaLocalDataSource.deleteTask(agendaItem.id)
 
-                if (konnection.isConnected()) {
+                if (networkManager.isConnected()) {
                     agendaDataSource.deleteTask(agendaItem.id)
                 } else {
                     agendaLocalDataSource.insertOfflineHistoryDeleteTask(agendaItem.id, userId)
@@ -71,7 +72,7 @@ class AgendaRepository(
             is Reminder -> {
                 agendaLocalDataSource.deleteReminder(agendaItem.id)
 
-                if (konnection.isConnected()) {
+                if (networkManager.isConnected()) {
                     agendaDataSource.deleteReminder(agendaItem.id)
                 } else {
                     agendaLocalDataSource.insertOfflineHistoryDeleteReminder(agendaItem.id, userId)
@@ -88,7 +89,7 @@ class AgendaRepository(
     override suspend fun updateTask(task: Task): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertTask(task)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             agendaDataSource.updateTask(task)
         } else {
             val userId = sessionManager.getUserId() ?: ""
@@ -107,7 +108,7 @@ class AgendaRepository(
     override suspend fun updateReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertReminder(reminder)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             agendaDataSource.updateReminder(reminder)
         } else {
             val userId = sessionManager.getUserId() ?: ""
@@ -130,7 +131,7 @@ class AgendaRepository(
     ): ResultWrapper<Event, DataError.Remote> {
         agendaLocalDataSource.upsertEvent(event)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             val result =
                 agendaDataSource.updateEvent(event, deletedPhotoKeys, isGoing, photos = photos).map {
                     it.toEvent()
@@ -158,7 +159,7 @@ class AgendaRepository(
     override suspend fun createTask(task: Task): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertTask(task)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             agendaDataSource.createTask(task)
         } else {
             val userId = sessionManager.getUserId() ?: ""
@@ -173,7 +174,7 @@ class AgendaRepository(
     override suspend fun createReminder(reminder: Reminder): ResultWrapper<Unit, DataError.Remote> {
         agendaLocalDataSource.upsertReminder(reminder)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             agendaDataSource.createReminder(reminder)
         } else {
             val userId = sessionManager.getUserId() ?: ""
@@ -188,7 +189,7 @@ class AgendaRepository(
     override suspend fun createEvent(event: Event): ResultWrapper<Event, DataError.Remote> {
         agendaLocalDataSource.upsertEvent(event = event)
 
-        return if (konnection.isConnected()) {
+        return if (networkManager.isConnected()) {
             agendaDataSource.createEvent(event = event).map {
                 it.toEvent()
             }
@@ -232,7 +233,7 @@ class AgendaRepository(
         }
 
     override suspend fun syncAgenda(): ResultWrapper<Unit, DataError.Remote> {
-        if (!konnection.isConnected()) {
+        if (!networkManager.isConnected()) {
             return ResultWrapper.Error(DataError.Remote.NO_INTERNET)
         }
 
