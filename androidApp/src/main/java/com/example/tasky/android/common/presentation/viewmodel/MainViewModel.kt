@@ -30,7 +30,7 @@ class MainViewModel(
                     bootReceiverManager.stop()
                     syncAgendaManager.stopPeriodicSyncAgenda()
                 }
-            }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = false)
+            }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = true)
 
     init {
         combine(

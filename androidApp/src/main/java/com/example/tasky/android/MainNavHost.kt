@@ -29,3 +29,5 @@ fun MainNavHost(
         agendaGraph(navController = navHostController)
     }
 }
+
+const val DEEPLINK_DOMAIN = "www.tasky.com"
