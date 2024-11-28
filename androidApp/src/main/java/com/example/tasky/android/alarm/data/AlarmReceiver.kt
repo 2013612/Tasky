@@ -1,12 +1,17 @@
 package com.example.tasky.android.alarm.data
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import com.example.tasky.alarm.domain.IAlarmRepository
+import com.example.tasky.android.DEEPLINK_DOMAIN
+import com.example.tasky.android.MainActivity
 import com.example.tasky.android.R
 import com.example.tasky.android.alarm.domain.model.NotificationDataParcelable
 import com.example.tasky.android.common.presentation.utils.getCompatParcelableExtra
@@ -33,6 +38,16 @@ class AlarmReceiver :
             context?.getSystemService<NotificationManager>() ?: return
 
         with(notificationManager) {
+            val activityIntent =
+                Intent(context, MainActivity::class.java).apply {
+                    this.data = "https://$DEEPLINK_DOMAIN/${data.agendaId}/${data.type}/${false}".toUri()
+                }
+            val pendingIntent =
+                TaskStackBuilder.create(context).run {
+                    addNextIntentWithParentStack(activityIntent)
+                    getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+                }
+
             val builder =
                 NotificationCompat
                     .Builder(context, AGENDA_ALARM_CHANNEL_ID)
@@ -40,6 +55,7 @@ class AlarmReceiver :
                     .setContentTitle(data.title)
                     .setContentText(data.description)
                     .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
 
             if (areNotificationsEnabled()) {
                 notify(data.hashCode(), builder.build())

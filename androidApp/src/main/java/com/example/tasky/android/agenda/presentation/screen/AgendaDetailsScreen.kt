@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
@@ -36,6 +37,7 @@ import com.example.tasky.agenda.domain.model.Photo
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
+import com.example.tasky.android.DEEPLINK_DOMAIN
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.presentation.components.details.DetailsAttendeeSection
 import com.example.tasky.android.agenda.presentation.components.details.DetailsAttendeeSectionTabOption
@@ -68,7 +70,9 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
 fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
-    composable<AgendaDetails> {
+    composable<AgendaDetails>(
+        deepLinks = listOf(navDeepLink<AgendaDetails>(basePath = "https://$DEEPLINK_DOMAIN")),
+    ) {
         val viewModel: AgendaDetailsViewModel = koinViewModel()
 
         val screenState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
