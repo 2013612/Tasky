@@ -1,4 +1,4 @@
-package com.example.tasky.android.auth.screen
+package com.example.tasky.android.auth.presentation.login.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -29,11 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
-import com.example.tasky.android.auth.components.CheckTextField
-import com.example.tasky.android.auth.components.CheckTextFieldState
-import com.example.tasky.android.auth.components.VisibilityTextField
-import com.example.tasky.android.auth.components.VisibilityTextFieldState
-import com.example.tasky.android.auth.viewmodel.LoginViewModel
+import com.example.tasky.android.auth.presentation.common.component.CheckTextField
+import com.example.tasky.android.auth.presentation.common.component.VisibilityTextField
+import com.example.tasky.android.auth.presentation.login.model.LoginScreenEvent
+import com.example.tasky.android.auth.presentation.login.model.LoginScreenState
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
 import com.example.tasky.android.theme.LightBlue
@@ -61,23 +60,6 @@ fun NavGraphBuilder.loginScreen(navigateToSignUp: () -> Unit) {
 
 @Serializable
 object Login
-
-data class LoginScreenState(
-    val emailState: CheckTextFieldState = CheckTextFieldState(),
-    val passwordState: VisibilityTextFieldState = VisibilityTextFieldState(),
-)
-
-sealed interface LoginScreenEvent {
-    data object OnClickToSignUp : LoginScreenEvent
-
-    data object OnClickLogin : LoginScreenEvent
-
-    data class OnEmailChange(val email: String) : LoginScreenEvent
-
-    data class OnPasswordChange(val password: String) : LoginScreenEvent
-
-    data class OnPasswordVisibilityChange(val isVisible: Boolean) : LoginScreenEvent
-}
 
 @Composable
 private fun LoginScreen(
