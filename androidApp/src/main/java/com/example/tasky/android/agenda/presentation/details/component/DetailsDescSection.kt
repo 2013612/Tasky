@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.presentation.components.details
+package com.example.tasky.android.agenda.presentation.details.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons

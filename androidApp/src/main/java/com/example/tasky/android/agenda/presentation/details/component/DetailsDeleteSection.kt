@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.presentation.components.details
+package com.example.tasky.android.agenda.presentation.details.component
 
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text

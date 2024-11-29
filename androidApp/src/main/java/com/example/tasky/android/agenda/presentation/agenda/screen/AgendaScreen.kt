@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.presentation.screen
+package com.example.tasky.android.agenda.presentation.agenda.screen
 
 import android.os.Build
 import androidx.compose.foundation.background
@@ -34,13 +34,11 @@ import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
-import com.example.tasky.android.agenda.presentation.components.agenda.AgendaCard
-import com.example.tasky.android.agenda.presentation.components.agenda.AgendaDayBar
-import com.example.tasky.android.agenda.presentation.components.agenda.AgendaFloatingActionButton
-import com.example.tasky.android.agenda.presentation.components.agenda.AgendaTimeNeedle
-import com.example.tasky.android.agenda.presentation.components.agenda.AgendaTopBar
-import com.example.tasky.android.agenda.presentation.viewmodel.AgendaOneTimeEvent
-import com.example.tasky.android.agenda.presentation.viewmodel.AgendaViewModel
+import com.example.tasky.android.agenda.presentation.agenda.component.AgendaCard
+import com.example.tasky.android.agenda.presentation.agenda.component.AgendaDayBar
+import com.example.tasky.android.agenda.presentation.agenda.component.AgendaFloatingActionButton
+import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTimeNeedle
+import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTopBar
 import com.example.tasky.android.common.presentation.components.NotificationPermissionDialogProvider
 import com.example.tasky.android.common.presentation.components.PermissionDialog
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents

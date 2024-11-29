@@ -1,4 +1,4 @@
-package com.example.tasky.android.agenda.presentation.viewmodel
+package com.example.tasky.android.agenda.presentation.details.screen
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
@@ -13,11 +13,8 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.agenda.domain.model.copy
 import com.example.tasky.android.agenda.domain.IImageCompressor
-import com.example.tasky.android.agenda.presentation.components.details.DetailsEditTextType
-import com.example.tasky.android.agenda.presentation.components.details.DetailsPhoto
-import com.example.tasky.android.agenda.presentation.screen.AgendaDetails
-import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenEvent
-import com.example.tasky.android.agenda.presentation.screen.AgendaDetailsScreenState
+import com.example.tasky.android.agenda.presentation.details.component.DetailsEditTextType
+import com.example.tasky.android.agenda.presentation.details.component.DetailsPhoto
 import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.INetworkManager
 import com.example.tasky.common.domain.model.onError
