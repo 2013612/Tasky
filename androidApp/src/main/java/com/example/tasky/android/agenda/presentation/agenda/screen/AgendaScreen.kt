@@ -39,6 +39,7 @@ import com.example.tasky.android.agenda.presentation.agenda.component.AgendaDayB
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTimeNeedle
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTopBar
+import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenEvent
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenState
 import com.example.tasky.android.common.presentation.components.NotificationPermissionDialogProvider
 import com.example.tasky.android.common.presentation.components.PermissionDialog
@@ -88,38 +89,6 @@ fun NavController.navigateToAgenda() {
 
 @Serializable
 object Agenda
-
-sealed interface AgendaScreenEvent {
-    data object OnClickLogout : AgendaScreenEvent
-
-    data class OnCreateClick(
-        val type: AgendaType,
-    ) : AgendaScreenEvent
-
-    data class OnDateSelect(
-        val newDate: Long,
-    ) : AgendaScreenEvent
-
-    data class OnDayOffsetSelect(
-        val newOffset: Int,
-    ) : AgendaScreenEvent
-
-    data class OnOpenClick(
-        val agendaItem: AgendaItem,
-    ) : AgendaScreenEvent
-
-    data class OnEditClick(
-        val agendaItem: AgendaItem,
-    ) : AgendaScreenEvent
-
-    data class OnDeleteClick(
-        val agendaItem: AgendaItem,
-    ) : AgendaScreenEvent
-
-    data class OnAgendaCircleClick(
-        val task: Task,
-    ) : AgendaScreenEvent
-}
 
 @Composable
 private fun AgendaScreen(
