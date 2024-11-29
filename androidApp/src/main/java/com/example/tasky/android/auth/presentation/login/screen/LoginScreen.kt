@@ -1,4 +1,4 @@
-package com.example.tasky.android.auth.screen
+package com.example.tasky.android.auth.presentation.login.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,90 +12,96 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
-import com.example.tasky.android.auth.components.CheckTextField
-import com.example.tasky.android.auth.components.CheckTextFieldState
-import com.example.tasky.android.auth.components.VisibilityTextField
-import com.example.tasky.android.auth.components.VisibilityTextFieldState
-import com.example.tasky.android.auth.viewmodel.RegisterViewModel
+import com.example.tasky.android.auth.presentation.common.component.CheckTextField
+import com.example.tasky.android.auth.presentation.common.component.CheckTextFieldState
+import com.example.tasky.android.auth.presentation.common.component.VisibilityTextField
+import com.example.tasky.android.auth.presentation.common.component.VisibilityTextFieldState
 import com.example.tasky.android.theme.Black
+import com.example.tasky.android.theme.Gray
+import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.registerScreen(navigateUp: () -> Unit) {
-    composable<Register> {
-        val viewModel: RegisterViewModel = koinViewModel()
+fun NavGraphBuilder.loginScreen(navigateToSignUp: () -> Unit) {
+    composable<Login> {
+        val viewModel: LoginViewModel = koinViewModel()
 
-        val registerState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
+        val loginState by viewModel.screenStateFlow.collectAsStateWithLifecycle()
 
-        val isRegisterSuccess by viewModel.isRegisterSuccessFlow.collectAsStateWithLifecycle()
-
-        LaunchedEffect(isRegisterSuccess) {
-            if (isRegisterSuccess) {
-                navigateUp()
-            }
-        }
-
-        RegisterScreen(
-            state = registerState,
-            onEvent = viewModel::onEvent,
+        LoginScreen(
+            state = loginState,
+            onEvent = { event ->
+                when (event) {
+                    is LoginScreenEvent.OnClickToSignUp -> navigateToSignUp()
+                    else -> viewModel.onEvent(event)
+                }
+            },
         )
     }
 }
 
-fun NavController.navigateToRegister() {
-    navigate(Register)
-}
-
 @Serializable
-private object Register
+object Login
 
-data class RegisterScreenState(
-    val nameState: CheckTextFieldState = CheckTextFieldState(),
+data class LoginScreenState(
     val emailState: CheckTextFieldState = CheckTextFieldState(),
     val passwordState: VisibilityTextFieldState = VisibilityTextFieldState(),
 )
 
-sealed interface RegisterScreenEvent {
-    data object OnClickRegister : RegisterScreenEvent
+sealed interface LoginScreenEvent {
+    data object OnClickToSignUp : LoginScreenEvent
 
-    data class OnNameChange(
-        val name: String,
-    ) : RegisterScreenEvent
+    data object OnClickLogin : LoginScreenEvent
 
-    data class OnEmailChange(
-        val email: String,
-    ) : RegisterScreenEvent
+    data class OnEmailChange(val email: String) : LoginScreenEvent
 
-    data class OnPasswordChange(
-        val password: String,
-    ) : RegisterScreenEvent
+    data class OnPasswordChange(val password: String) : LoginScreenEvent
 
-    data class OnPasswordVisibilityChange(
-        val isVisible: Boolean,
-    ) : RegisterScreenEvent
+    data class OnPasswordVisibilityChange(val isVisible: Boolean) : LoginScreenEvent
 }
 
 @Composable
-private fun RegisterScreen(
-    state: RegisterScreenState,
-    onEvent: (RegisterScreenEvent) -> Unit,
+private fun LoginScreen(
+    state: LoginScreenState,
+    onEvent: (LoginScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val annotatedString =
+        buildAnnotatedString {
+            append(stringResource(R.string.don_t_have_an_account))
+            withLink(
+                LinkAnnotation.Clickable(
+                    tag = "tag",
+                    styles =
+                        TextLinkStyles(
+                            style = SpanStyle(color = LightBlue),
+                        ),
+                    linkInteractionListener = {
+                        onEvent(LoginScreenEvent.OnClickToSignUp)
+                    },
+                ),
+            ) {
+                append(stringResource(R.string.sign_up))
+            }
+        }
     Column(
         modifier
             .fillMaxSize()
@@ -104,7 +110,7 @@ private fun RegisterScreen(
     ) {
         Spacer(Modifier.height(47.dp))
         Text(
-            stringResource(R.string.create_your_account),
+            stringResource(R.string.welcome_back),
             style = typography.displayMedium,
             lineHeight = 30.sp,
             color = Color.White,
@@ -116,25 +122,16 @@ private fun RegisterScreen(
                 .background(
                     Color.White,
                     RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                ).padding(horizontal = 16.dp),
+                )
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(50.dp))
             CheckTextField(
-                state = state.nameState,
-                onTextChange = {
-                    onEvent(
-                        RegisterScreenEvent.OnNameChange(it),
-                    )
-                },
-                placeHolder = stringResource(R.string.name),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            CheckTextField(
                 state = state.emailState,
                 onTextChange = {
                     onEvent(
-                        RegisterScreenEvent.OnEmailChange(it),
+                        LoginScreenEvent.OnEmailChange(it),
                     )
                 },
                 placeHolder = stringResource(R.string.email_address),
@@ -144,13 +141,13 @@ private fun RegisterScreen(
                 state = state.passwordState,
                 onTextChange = {
                     onEvent(
-                        RegisterScreenEvent.OnPasswordChange(it),
+                        LoginScreenEvent.OnPasswordChange(it),
                     )
                 },
                 placeHolder = stringResource(R.string.password),
                 onVisibilityChange = {
                     onEvent(
-                        RegisterScreenEvent.OnPasswordVisibilityChange(it),
+                        LoginScreenEvent.OnPasswordVisibilityChange(it),
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -158,26 +155,28 @@ private fun RegisterScreen(
             Spacer(Modifier.height(25.dp))
             Button(
                 onClick = {
-                    onEvent(RegisterScreenEvent.OnClickRegister)
+                    onEvent(LoginScreenEvent.OnClickLogin)
                 },
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .height(55.dp),
             ) {
-                Text(stringResource(R.string.get_started))
+                Text(stringResource(R.string.log_in))
             }
             Spacer(Modifier.weight(1f))
+            Text(annotatedString, style = typography.labelLarge, lineHeight = 30.sp, color = Gray)
+            Spacer(Modifier.height(20.dp))
         }
     }
 }
 
 @Preview
 @Composable
-private fun RegisterScreenPreview() {
+private fun LoginScreenPreview() {
     MyApplicationTheme {
-        RegisterScreen(
-            state = RegisterScreenState(),
+        LoginScreen(
+            state = LoginScreenState(),
             onEvent = {},
         )
     }

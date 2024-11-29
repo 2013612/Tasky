@@ -1,4 +1,4 @@
-package com.example.tasky.android.auth.components
+package com.example.tasky.android.auth.presentation.common.component
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
