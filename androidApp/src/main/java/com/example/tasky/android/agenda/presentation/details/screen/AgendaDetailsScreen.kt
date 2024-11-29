@@ -50,19 +50,15 @@ import com.example.tasky.android.agenda.presentation.details.component.DetailsTi
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTopBar
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
+import com.example.tasky.android.agenda.presentation.details.utils.getTitleTimeDisplay
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
 import com.example.tasky.android.common.presentation.utils.showToast
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-import java.time.format.DateTimeFormatter
 
 fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
     composable<AgendaDetails>(
@@ -156,7 +152,7 @@ private fun AgendaDetailsScreen(
                             },
                         )
                     } else {
-                        getTitleTimeDisplay(state.agendaItem.getStartTime())
+                        state.agendaItem.getStartTime().getTitleTimeDisplay()
                     },
                 isEdit = state.isEdit,
                 onCloseClick = {
@@ -376,16 +372,6 @@ private fun AgendaDetailsScreen(
             )
         }
     }
-}
-
-private fun getTitleTimeDisplay(time: Long): String {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("dd MMM yyyy")
-
-    return Instant
-        .fromEpochMilliseconds(time)
-        .toLocalDateTime(TimeZone.currentSystemDefault())
-        .toJavaLocalDateTime()
-        .format(dateTimeFormat)
 }
 
 @Preview
