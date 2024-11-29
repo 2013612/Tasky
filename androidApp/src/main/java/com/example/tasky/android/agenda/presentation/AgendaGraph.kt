@@ -7,10 +7,10 @@ import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.android.agenda.presentation.screen.Agenda
-import com.example.tasky.android.agenda.presentation.screen.agendaDetailsScreen
-import com.example.tasky.android.agenda.presentation.screen.agendaScreen
-import com.example.tasky.android.agenda.presentation.screen.navigateToAgendaDetails
+import com.example.tasky.android.agenda.presentation.agenda.screen.Agenda
+import com.example.tasky.android.agenda.presentation.agenda.screen.agendaScreen
+import com.example.tasky.android.agenda.presentation.details.screen.agendaDetailsScreen
+import com.example.tasky.android.agenda.presentation.details.screen.navigateToAgendaDetails
 import kotlinx.serialization.Serializable
 
 @Serializable
