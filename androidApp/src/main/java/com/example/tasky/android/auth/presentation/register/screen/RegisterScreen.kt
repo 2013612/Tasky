@@ -27,9 +27,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.tasky.android.R
 import com.example.tasky.android.auth.presentation.common.component.CheckTextField
-import com.example.tasky.android.auth.presentation.common.component.CheckTextFieldState
 import com.example.tasky.android.auth.presentation.common.component.VisibilityTextField
-import com.example.tasky.android.auth.presentation.common.component.VisibilityTextFieldState
+import com.example.tasky.android.auth.presentation.register.model.RegisterScreenState
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.serialization.Serializable
@@ -62,12 +61,6 @@ fun NavController.navigateToRegister() {
 
 @Serializable
 private object Register
-
-data class RegisterScreenState(
-    val nameState: CheckTextFieldState = CheckTextFieldState(),
-    val emailState: CheckTextFieldState = CheckTextFieldState(),
-    val passwordState: VisibilityTextFieldState = VisibilityTextFieldState(),
-)
 
 sealed interface RegisterScreenEvent {
     data object OnClickRegister : RegisterScreenEvent
