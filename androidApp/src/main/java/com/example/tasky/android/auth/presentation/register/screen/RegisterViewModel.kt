@@ -2,6 +2,7 @@ package com.example.tasky.android.auth.presentation.register.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.android.auth.presentation.register.model.RegisterScreenEvent
 import com.example.tasky.android.auth.presentation.register.model.RegisterScreenState
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.util.Validator

@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import com.example.tasky.android.R
 import com.example.tasky.android.auth.presentation.common.component.CheckTextField
 import com.example.tasky.android.auth.presentation.common.component.VisibilityTextField
+import com.example.tasky.android.auth.presentation.register.model.RegisterScreenEvent
 import com.example.tasky.android.auth.presentation.register.model.RegisterScreenState
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
@@ -61,26 +62,6 @@ fun NavController.navigateToRegister() {
 
 @Serializable
 private object Register
-
-sealed interface RegisterScreenEvent {
-    data object OnClickRegister : RegisterScreenEvent
-
-    data class OnNameChange(
-        val name: String,
-    ) : RegisterScreenEvent
-
-    data class OnEmailChange(
-        val email: String,
-    ) : RegisterScreenEvent
-
-    data class OnPasswordChange(
-        val password: String,
-    ) : RegisterScreenEvent
-
-    data class OnPasswordVisibilityChange(
-        val isVisible: Boolean,
-    ) : RegisterScreenEvent
-}
 
 @Composable
 private fun RegisterScreen(
