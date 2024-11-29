@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import com.example.tasky.android.R
 import com.example.tasky.android.auth.presentation.common.component.CheckTextField
 import com.example.tasky.android.auth.presentation.common.component.VisibilityTextField
+import com.example.tasky.android.auth.presentation.login.model.LoginScreenEvent
 import com.example.tasky.android.auth.presentation.login.model.LoginScreenState
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Gray
@@ -59,18 +60,6 @@ fun NavGraphBuilder.loginScreen(navigateToSignUp: () -> Unit) {
 
 @Serializable
 object Login
-
-sealed interface LoginScreenEvent {
-    data object OnClickToSignUp : LoginScreenEvent
-
-    data object OnClickLogin : LoginScreenEvent
-
-    data class OnEmailChange(val email: String) : LoginScreenEvent
-
-    data class OnPasswordChange(val password: String) : LoginScreenEvent
-
-    data class OnPasswordVisibilityChange(val isVisible: Boolean) : LoginScreenEvent
-}
 
 @Composable
 private fun LoginScreen(
