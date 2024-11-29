@@ -2,6 +2,7 @@ package com.example.tasky.android.auth.presentation.login.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.android.auth.presentation.login.model.LoginScreenState
 import com.example.tasky.auth.domain.IAuthRepository
 import com.example.tasky.auth.domain.util.Validator
 import com.example.tasky.common.domain.model.onError
