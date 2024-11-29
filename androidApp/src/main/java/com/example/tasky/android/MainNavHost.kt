@@ -30,4 +30,4 @@ fun MainNavHost(
     }
 }
 
-const val DEEPLINK_DOMAIN = "www.tasky.com"
+const val AGENDA_DETAILS_DEEPLINK = "tasky://agenda_details"
