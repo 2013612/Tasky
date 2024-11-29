@@ -48,6 +48,7 @@ import com.example.tasky.android.agenda.presentation.details.component.DetailsPh
 import com.example.tasky.android.agenda.presentation.details.component.DetailsRemindAtSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTitleSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTopBar
+import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsOneTimeEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
 import com.example.tasky.android.agenda.presentation.details.utils.getTitleTimeDisplay

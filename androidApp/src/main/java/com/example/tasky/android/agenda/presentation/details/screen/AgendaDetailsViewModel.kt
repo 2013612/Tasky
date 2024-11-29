@@ -15,6 +15,7 @@ import com.example.tasky.agenda.domain.model.copy
 import com.example.tasky.android.agenda.domain.IImageCompressor
 import com.example.tasky.android.agenda.presentation.details.component.DetailsEditTextType
 import com.example.tasky.android.agenda.presentation.details.component.DetailsPhoto
+import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsOneTimeEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
 import com.example.tasky.auth.domain.ISessionManager
@@ -37,27 +38,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-
-sealed interface AgendaDetailsOneTimeEvent {
-    data object OnDeleteSuccess : AgendaDetailsOneTimeEvent
-
-    data class OnPhotoSkipped(
-        val skippedPhotoCount: Int,
-    ) : AgendaDetailsOneTimeEvent
-
-    data class OnAddAttendee(
-        val name: String,
-    ) : AgendaDetailsOneTimeEvent
-
-    data class OnAddDuplicateAttendee(
-        val name: String,
-    ) : AgendaDetailsOneTimeEvent
-
-    data class OnAddAttendeeFail(
-        val email: String,
-        val error: String,
-    ) : AgendaDetailsOneTimeEvent
-}
 
 @OptIn(ExperimentalUuidApi::class)
 class AgendaDetailsViewModel(
@@ -205,21 +185,23 @@ class AgendaDetailsViewModel(
                 return@launch
             }
 
-            agendaRepository.getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from).onSuccess {
-                it?.let { newAttendee ->
-                    _screenStateFlow.update { state ->
-                        state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + newAttendee))
-                    }
+            agendaRepository
+                .getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from)
+                .onSuccess {
+                    it?.let { newAttendee ->
+                        _screenStateFlow.update { state ->
+                            state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + newAttendee))
+                        }
 
+                        eventsChannel.send(
+                            AgendaDetailsOneTimeEvent.OnAddAttendee(it.fullName),
+                        )
+                    }
+                }.onError {
                     eventsChannel.send(
-                        AgendaDetailsOneTimeEvent.OnAddAttendee(it.fullName),
+                        AgendaDetailsOneTimeEvent.OnAddAttendeeFail(email, it.name),
                     )
                 }
-            }.onError {
-                eventsChannel.send(
-                    AgendaDetailsOneTimeEvent.OnAddAttendeeFail(email, it.name),
-                )
-            }
         }
     }
 
