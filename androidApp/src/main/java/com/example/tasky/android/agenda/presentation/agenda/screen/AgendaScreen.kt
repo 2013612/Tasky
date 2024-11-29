@@ -39,17 +39,15 @@ import com.example.tasky.android.agenda.presentation.agenda.component.AgendaDayB
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTimeNeedle
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTopBar
+import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenState
 import com.example.tasky.android.common.presentation.components.NotificationPermissionDialogProvider
 import com.example.tasky.android.common.presentation.components.PermissionDialog
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -90,14 +88,6 @@ fun NavController.navigateToAgenda() {
 
 @Serializable
 object Agenda
-
-data class AgendaScreenState(
-    val agendas: ImmutableList<AgendaItemUi> = persistentListOf(),
-    val name: String = "",
-    val startDate: Instant = Clock.System.now(),
-    val numberOfDateShown: Int = 6,
-    val selectedDateOffset: Int = 0,
-)
 
 sealed interface AgendaScreenEvent {
     data object OnClickLogout : AgendaScreenEvent
