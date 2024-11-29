@@ -1,7 +1,6 @@
 package com.example.tasky.android.agenda.presentation.screen
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -56,6 +55,7 @@ import com.example.tasky.android.agenda.presentation.components.details.DetailsT
 import com.example.tasky.android.agenda.presentation.viewmodel.AgendaDetailsOneTimeEvent
 import com.example.tasky.android.agenda.presentation.viewmodel.AgendaDetailsViewModel
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
+import com.example.tasky.android.common.presentation.utils.showToast
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
@@ -84,18 +84,12 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
                 AgendaDetailsOneTimeEvent.OnDeleteSuccess -> navigateUp()
                 is AgendaDetailsOneTimeEvent.OnPhotoSkipped -> {
                     val text = context.getString(R.string.skip_photo_toast, event.skippedPhotoCount)
-                    val duration = Toast.LENGTH_SHORT
-
-                    val toast = Toast.makeText(context, text, duration)
-                    toast.show()
+                    context.showToast(text)
                 }
 
                 is AgendaDetailsOneTimeEvent.OnAddAttendee -> {
                     val text = context.getString(R.string.add_attendee_toast, event.name)
-                    val duration = Toast.LENGTH_SHORT
-
-                    val toast = Toast.makeText(context, text, duration)
-                    toast.show()
+                    context.showToast(text)
                 }
 
                 is AgendaDetailsOneTimeEvent.OnAddAttendeeFail -> {
@@ -105,18 +99,12 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
                             event.email,
                             event.error,
                         )
-                    val duration = Toast.LENGTH_SHORT
-
-                    val toast = Toast.makeText(context, text, duration)
-                    toast.show()
+                    context.showToast(text)
                 }
 
                 is AgendaDetailsOneTimeEvent.OnAddDuplicateAttendee -> {
                     val text = context.getString(R.string.add_duplicate_attendee_toast, event.name)
-                    val duration = Toast.LENGTH_SHORT
-
-                    val toast = Toast.makeText(context, text, duration)
-                    toast.show()
+                    context.showToast(text)
                 }
             }
         }
