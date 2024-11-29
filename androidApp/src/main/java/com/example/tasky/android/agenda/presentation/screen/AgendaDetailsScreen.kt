@@ -37,7 +37,7 @@ import com.example.tasky.agenda.domain.model.Photo
 import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
-import com.example.tasky.android.DEEPLINK_DOMAIN
+import com.example.tasky.android.AGENDA_DETAILS_DEEPLINK
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.presentation.components.details.DetailsAttendeeSection
 import com.example.tasky.android.agenda.presentation.components.details.DetailsAttendeeSectionTabOption
@@ -71,7 +71,7 @@ import java.time.format.DateTimeFormatter
 
 fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
     composable<AgendaDetails>(
-        deepLinks = listOf(navDeepLink<AgendaDetails>(basePath = "https://$DEEPLINK_DOMAIN")),
+        deepLinks = listOf(navDeepLink<AgendaDetails>(basePath = AGENDA_DETAILS_DEEPLINK)),
     ) {
         val viewModel: AgendaDetailsViewModel = koinViewModel()
 

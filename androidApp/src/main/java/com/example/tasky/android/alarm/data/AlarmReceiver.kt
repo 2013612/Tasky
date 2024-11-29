@@ -10,7 +10,7 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
 import com.example.tasky.alarm.domain.IAlarmRepository
-import com.example.tasky.android.DEEPLINK_DOMAIN
+import com.example.tasky.android.AGENDA_DETAILS_DEEPLINK
 import com.example.tasky.android.MainActivity
 import com.example.tasky.android.R
 import com.example.tasky.android.alarm.domain.model.NotificationDataParcelable
@@ -40,7 +40,7 @@ class AlarmReceiver :
         with(notificationManager) {
             val activityIntent =
                 Intent(context, MainActivity::class.java).apply {
-                    this.data = "https://$DEEPLINK_DOMAIN/${data.agendaId}/${data.type}/${false}".toUri()
+                    this.data = "$AGENDA_DETAILS_DEEPLINK/${data.agendaId}/${data.type}/${false}".toUri()
                 }
             val pendingIntent =
                 TaskStackBuilder.create(context).run {
