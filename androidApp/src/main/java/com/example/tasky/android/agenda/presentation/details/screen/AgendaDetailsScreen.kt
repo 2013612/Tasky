@@ -1,6 +1,5 @@
 package com.example.tasky.android.agenda.presentation.details.screen
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,13 +31,11 @@ import androidx.navigation.navDeepLink
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Photo
-import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.AGENDA_DETAILS_DEEPLINK
 import com.example.tasky.android.R
 import com.example.tasky.android.agenda.presentation.details.component.DetailsAttendeeSection
-import com.example.tasky.android.agenda.presentation.details.component.DetailsAttendeeSectionTabOption
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDateTimeSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDeleteSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDescSection
@@ -51,6 +48,7 @@ import com.example.tasky.android.agenda.presentation.details.component.DetailsPh
 import com.example.tasky.android.agenda.presentation.details.component.DetailsRemindAtSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTitleSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTopBar
+import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
 import com.example.tasky.android.common.presentation.utils.showToast
@@ -59,7 +57,6 @@ import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -133,78 +130,6 @@ data class AgendaDetails(
     val type: AgendaType,
     val isEdit: Boolean,
 )
-
-sealed interface AgendaDetailsScreenEvent {
-    data object OnCloseClick : AgendaDetailsScreenEvent
-
-    data object OnSaveClick : AgendaDetailsScreenEvent
-
-    data object OnEditClick : AgendaDetailsScreenEvent
-
-    data object OnTitleClick : AgendaDetailsScreenEvent
-
-    data object OnDescClick : AgendaDetailsScreenEvent
-
-    data object OnBottomTextClick : AgendaDetailsScreenEvent
-
-    data object CloseEditText : AgendaDetailsScreenEvent
-
-    data class OnTitleChange(
-        val newTitle: String,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnDescChange(
-        val newDesc: String,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnStartTimeChange(
-        val newHour: Int,
-        val newMinute: Int,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnStartDateChange(
-        val newDate: LocalDate,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnEndTimeChange(
-        val newHour: Int,
-        val newMinute: Int,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnEndDateChange(
-        val newDate: LocalDate,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnRemindAtChange(
-        val newType: RemindAtType,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnAttendeeTabChange(
-        val newTab: DetailsAttendeeSectionTabOption,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnAttendeeAdd(
-        val email: String,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnAttendeeDelete(
-        val id: String,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnAddPhoto(
-        val uri: Uri,
-    ) : AgendaDetailsScreenEvent
-
-    data class OnPhotoClick(
-        val photo: DetailsPhoto,
-    ) : AgendaDetailsScreenEvent
-
-    data object CloseLargePhoto : AgendaDetailsScreenEvent
-
-    data class OnPhotoDelete(
-        val key: String,
-    ) : AgendaDetailsScreenEvent
-}
 
 @Composable
 private fun AgendaDetailsScreen(

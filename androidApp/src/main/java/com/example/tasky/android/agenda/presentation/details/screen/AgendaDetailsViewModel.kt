@@ -15,6 +15,7 @@ import com.example.tasky.agenda.domain.model.copy
 import com.example.tasky.android.agenda.domain.IImageCompressor
 import com.example.tasky.android.agenda.presentation.details.component.DetailsEditTextType
 import com.example.tasky.android.agenda.presentation.details.component.DetailsPhoto
+import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
 import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.INetworkManager
