@@ -29,7 +29,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.Photo
@@ -52,6 +51,7 @@ import com.example.tasky.android.agenda.presentation.details.component.DetailsPh
 import com.example.tasky.android.agenda.presentation.details.component.DetailsRemindAtSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTitleSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsTopBar
+import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
 import com.example.tasky.android.common.presentation.utils.showToast
 import com.example.tasky.android.theme.Black
@@ -132,18 +132,6 @@ data class AgendaDetails(
     val agendaId: String,
     val type: AgendaType,
     val isEdit: Boolean,
-)
-
-data class AgendaDetailsScreenState(
-    val agendaItem: AgendaItem,
-    val isEdit: Boolean = false,
-    val detailsEditTextType: DetailsEditTextType? = null,
-    val eventIsGoing: Boolean = true,
-    val curTab: DetailsAttendeeSectionTabOption = DetailsAttendeeSectionTabOption.ALL,
-    val isCreator: Boolean = true,
-    val enlargedPhoto: DetailsPhoto? = null,
-    val photos: List<DetailsPhoto> = emptyList(),
-    val hasNetwork: Boolean = false,
 )
 
 sealed interface AgendaDetailsScreenEvent {
