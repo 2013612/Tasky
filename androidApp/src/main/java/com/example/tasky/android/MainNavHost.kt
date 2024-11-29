@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.tasky.android.agenda.presentation.AgendaGraph
 import com.example.tasky.android.agenda.presentation.agendaGraph
-import com.example.tasky.android.auth.AuthGraph
-import com.example.tasky.android.auth.authGraph
+import com.example.tasky.android.auth.presentation.AuthGraph
+import com.example.tasky.android.auth.presentation.authGraph
 
 @Composable
 fun MainNavHost(
