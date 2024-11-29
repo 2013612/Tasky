@@ -1,6 +1,5 @@
 package com.example.tasky.android.agenda.presentation.agenda.model
 
-import com.example.tasky.android.agenda.presentation.agenda.screen.AgendaItemUi
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.Clock

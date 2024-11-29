@@ -39,6 +39,7 @@ import com.example.tasky.android.agenda.presentation.agenda.component.AgendaDayB
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaFloatingActionButton
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTimeNeedle
 import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTopBar
+import com.example.tasky.android.agenda.presentation.agenda.model.AgendaItemUi
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenEvent
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenState
 import com.example.tasky.android.common.presentation.components.NotificationPermissionDialogProvider
@@ -207,14 +208,6 @@ private fun AgendaScreen(
             )
         }
     }
-}
-
-sealed interface AgendaItemUi {
-    data class Item(
-        val item: AgendaItem,
-    ) : AgendaItemUi
-
-    data object Needle : AgendaItemUi
 }
 
 @Preview
