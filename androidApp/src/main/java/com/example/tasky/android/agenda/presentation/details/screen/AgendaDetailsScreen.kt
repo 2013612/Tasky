@@ -98,6 +98,11 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
                     val text = context.getString(R.string.add_duplicate_attendee_toast, event.name)
                     context.showToast(text)
                 }
+
+                is AgendaDetailsOneTimeEvent.OnRemoveAttendee -> {
+                    val text = context.getString(R.string.remove_attendee_toast, event.name)
+                    context.showToast(text)
+                }
             }
         }
 
@@ -178,7 +183,8 @@ private fun AgendaDetailsScreen(
                         .background(
                             Color.White,
                             RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                        ).padding(top = 30.dp)
+                        )
+                        .padding(top = 30.dp)
                         .verticalScroll(rememberScrollState()),
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -219,7 +225,10 @@ private fun AgendaDetailsScreen(
                         onPhotoClick = {
                             onEvent(AgendaDetailsScreenEvent.OnPhotoClick(it))
                         },
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 110.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 110.dp),
                     )
                 }
 

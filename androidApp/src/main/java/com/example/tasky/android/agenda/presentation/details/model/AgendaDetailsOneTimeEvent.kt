@@ -19,4 +19,8 @@ sealed interface AgendaDetailsOneTimeEvent {
         val email: String,
         val error: String,
     ) : AgendaDetailsOneTimeEvent
+
+    data class OnRemoveAttendee(
+        val name: String,
+    ) : AgendaDetailsOneTimeEvent
 }

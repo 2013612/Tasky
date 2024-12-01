@@ -213,8 +213,14 @@ class AgendaDetailsViewModel(
         }
 
         val newAttendees = agendaItem.attendees.toMutableList()
-        if (newAttendees.removeIf { it.userId == id }) {
+        val deletedAttendee = agendaItem.attendees.firstOrNull { it.userId == id }
+        if (deletedAttendee != null) {
+            newAttendees.remove(deletedAttendee)
             _screenStateFlow.update { it.copy(agendaItem = agendaItem.copy(attendees = newAttendees)) }
+
+            viewModelScope.launch {
+                eventsChannel.send(AgendaDetailsOneTimeEvent.OnRemoveAttendee(deletedAttendee.fullName))
+            }
         }
     }
 
