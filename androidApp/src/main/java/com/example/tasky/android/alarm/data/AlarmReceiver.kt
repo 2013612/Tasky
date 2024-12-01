@@ -51,7 +51,8 @@ class AlarmReceiver :
             val builder =
                 NotificationCompat
                     .Builder(context, AGENDA_ALARM_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.tasky_logo)
+                    .setSmallIcon(R.drawable.notification)
+                    .setColor(context.getColor(R.color.app_logo_green))
                     .setContentTitle(data.title)
                     .setContentText(data.description)
                     .setAutoCancel(true)

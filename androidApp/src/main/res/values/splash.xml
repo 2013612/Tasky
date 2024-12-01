@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#279F70</item>
+        <item name="windowSplashScreenBackground">@color/app_logo_green</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/tasky_logo</item>
         <item name="postSplashScreenTheme">@android:style/Theme.Material.NoActionBar</item>
     </style>
