@@ -89,7 +89,7 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
                         context.getString(
                             R.string.add_attendee_fail_toast,
                             event.email,
-                            event.error,
+                            event.error.asString(context),
                         )
                     context.showToast(text)
                 }

@@ -61,4 +61,5 @@
     <string name="add_duplicate_attendee_toast">%1$s is already an attendee</string>
     <string name="add_attendee_fail_toast">Fail to add %1$s. Error: %2$s</string>
     <string name="remove_attendee_toast">%1$s is removed</string>
+    <string name="user_does_not_exist">User does not exist</string>
 </resources>
