@@ -1,5 +1,7 @@
 package com.example.tasky.android.agenda.presentation.details.model
 
+import com.example.tasky.android.common.presentation.utils.UiText
+
 sealed interface AgendaDetailsOneTimeEvent {
     data object OnDeleteSuccess : AgendaDetailsOneTimeEvent
 
@@ -17,6 +19,10 @@ sealed interface AgendaDetailsOneTimeEvent {
 
     data class OnAddAttendeeFail(
         val email: String,
-        val error: String,
+        val error: UiText,
+    ) : AgendaDetailsOneTimeEvent
+
+    data class OnRemoveAttendee(
+        val name: String,
     ) : AgendaDetailsOneTimeEvent
 }

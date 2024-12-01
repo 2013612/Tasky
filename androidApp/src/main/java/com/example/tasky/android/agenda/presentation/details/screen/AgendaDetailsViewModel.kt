@@ -12,12 +12,14 @@ import com.example.tasky.agenda.domain.model.RemindAtType
 import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.agenda.domain.model.copy
+import com.example.tasky.android.R
 import com.example.tasky.android.agenda.domain.IImageCompressor
 import com.example.tasky.android.agenda.presentation.details.component.DetailsEditTextType
 import com.example.tasky.android.agenda.presentation.details.component.DetailsPhoto
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsOneTimeEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenEvent
 import com.example.tasky.android.agenda.presentation.details.model.AgendaDetailsScreenState
+import com.example.tasky.android.common.presentation.utils.UiText
 import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.INetworkManager
 import com.example.tasky.common.domain.model.onError
@@ -188,18 +190,25 @@ class AgendaDetailsViewModel(
             agendaRepository
                 .getAttendee(email = email, eventId = agendaItem.id, from = agendaItem.from)
                 .onSuccess {
-                    it?.let { newAttendee ->
+                    if (it != null) {
                         _screenStateFlow.update { state ->
-                            state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + newAttendee))
+                            state.copy(agendaItem = agendaItem.copy(attendees = agendaItem.attendees + it))
                         }
 
                         eventsChannel.send(
                             AgendaDetailsOneTimeEvent.OnAddAttendee(it.fullName),
                         )
+                    } else {
+                        eventsChannel.send(
+                            AgendaDetailsOneTimeEvent.OnAddAttendeeFail(
+                                email,
+                                UiText.StringResource(R.string.user_does_not_exist),
+                            ),
+                        )
                     }
                 }.onError {
                     eventsChannel.send(
-                        AgendaDetailsOneTimeEvent.OnAddAttendeeFail(email, it.name),
+                        AgendaDetailsOneTimeEvent.OnAddAttendeeFail(email, UiText.DynamicString(it.name)),
                     )
                 }
         }
@@ -213,8 +222,14 @@ class AgendaDetailsViewModel(
         }
 
         val newAttendees = agendaItem.attendees.toMutableList()
-        if (newAttendees.removeIf { it.userId == id }) {
+        val deletedAttendee = agendaItem.attendees.firstOrNull { it.userId == id }
+        if (deletedAttendee != null) {
+            newAttendees.remove(deletedAttendee)
             _screenStateFlow.update { it.copy(agendaItem = agendaItem.copy(attendees = newAttendees)) }
+
+            viewModelScope.launch {
+                eventsChannel.send(AgendaDetailsOneTimeEvent.OnRemoveAttendee(deletedAttendee.fullName))
+            }
         }
     }
 
