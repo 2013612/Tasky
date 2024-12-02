@@ -34,7 +34,7 @@ class SyncAgendaManager(
             ).build()
 
     override fun startPeriodicSyncAgenda() {
-        workManager.cancelAllWorkByTag(SyncAgendaWorker.TAG)
+        stopPeriodicSyncAgenda()
         workManager.enqueue(workRequest)
     }
 
