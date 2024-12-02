@@ -110,7 +110,11 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
             state = screenState,
             onEvent = { event ->
                 when (event) {
-                    AgendaDetailsScreenEvent.OnCloseClick -> navigateUp()
+                    AgendaDetailsScreenEvent.OnCloseClick -> {
+                        if (!screenState.isEdit) {
+                            navigateUp()
+                        }
+                    }
                     else -> viewModel.onEvent(event)
                 }
             },

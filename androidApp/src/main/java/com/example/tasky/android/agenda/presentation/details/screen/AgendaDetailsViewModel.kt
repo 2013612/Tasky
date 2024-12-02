@@ -120,7 +120,7 @@ class AgendaDetailsViewModel(
         val item = screenStateFlow.value.agendaItem
         when (event) {
             AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(detailsEditTextType = null) }
-            AgendaDetailsScreenEvent.OnCloseClick -> {}
+            AgendaDetailsScreenEvent.OnCloseClick -> onCloseClick()
             AgendaDetailsScreenEvent.OnBottomTextClick ->
                 if (item is Event && !item.isUserEventCreator) {
                     toggleIsGoing()
@@ -154,6 +154,14 @@ class AgendaDetailsViewModel(
             AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
             is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
         }
+    }
+
+    private fun onCloseClick() {
+        if (!screenStateFlow.value.isEdit) {
+            return
+        }
+
+        _screenStateFlow.update { it.copy(agendaItem = originalAgendaItem, isEdit = false) }
     }
 
     @OptIn(ExperimentalUuidApi::class)
