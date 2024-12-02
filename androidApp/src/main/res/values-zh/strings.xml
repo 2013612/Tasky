@@ -62,4 +62,7 @@
     <string name="add_attendee_fail_toast">新增 %1$s 失敗。錯誤：%2$s</string>
     <string name="remove_attendee_toast">移除了 %1$s</string>
     <string name="user_does_not_exist">用戶不存在</string>
+    <string name="discard">捨棄</string>
+    <string name="unsaved_dialog_title">有未儲存的變更</string>
+    <string name="unsaved_dialog_desc">您確定要捨棄變更嗎？</string>
 </resources>
