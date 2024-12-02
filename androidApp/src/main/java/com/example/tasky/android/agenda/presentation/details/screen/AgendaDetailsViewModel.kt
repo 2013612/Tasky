@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
@@ -70,6 +71,8 @@ class AgendaDetailsViewModel(
 
     private val deletedPhotoKeys = mutableListOf<String>()
 
+    private lateinit var originalAgendaItem: AgendaItem
+
     init {
         networkManager
             .observeHasConnection()
@@ -86,6 +89,7 @@ class AgendaDetailsViewModel(
                 AgendaType.EVENT -> agendaRepository.getEvent(eventId = routeArguments.agendaId)
                 AgendaType.REMINDER -> agendaRepository.getReminder(reminderId = routeArguments.agendaId)
             }.onSuccess { agendaItem ->
+                originalAgendaItem = agendaItem
                 when (agendaItem) {
                     is Task, is Reminder ->
                         _screenStateFlow.update {
@@ -130,7 +134,10 @@ class AgendaDetailsViewModel(
                         detailsEditTextType = DetailsEditTextType.DESCRIPTION,
                     )
                 }
-            AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
+            AgendaDetailsScreenEvent.OnEditClick -> {
+                originalAgendaItem = screenStateFlow.value.agendaItem
+                _screenStateFlow.update { it.copy(isEdit = true) }
+            }
             is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newType)
             AgendaDetailsScreenEvent.OnSaveClick -> saveAgenda()
             is AgendaDetailsScreenEvent.OnStartDateChange -> updateStartDate(event.newDate)
