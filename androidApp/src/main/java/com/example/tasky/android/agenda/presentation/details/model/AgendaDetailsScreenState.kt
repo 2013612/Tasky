@@ -15,4 +15,5 @@ data class AgendaDetailsScreenState(
     val enlargedPhoto: DetailsPhoto? = null,
     val photos: List<DetailsPhoto> = emptyList(),
     val hasNetwork: Boolean = false,
+    val showUnsavedDialog: Boolean = false,
 )

@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -110,7 +113,11 @@ fun NavGraphBuilder.agendaDetailsScreen(navigateUp: () -> Unit) {
             state = screenState,
             onEvent = { event ->
                 when (event) {
-                    AgendaDetailsScreenEvent.OnCloseClick -> navigateUp()
+                    AgendaDetailsScreenEvent.OnCloseClick -> {
+                        if (!screenState.isEdit) {
+                            navigateUp()
+                        }
+                    }
                     else -> viewModel.onEvent(event)
                 }
             },
@@ -379,6 +386,40 @@ private fun AgendaDetailsScreen(
                     )
                 },
                 modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        if (state.showUnsavedDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = true))
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = true))
+                    }) {
+                        Text(
+                            stringResource(R.string.cancel),
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = false))
+                    }) {
+                        Text(
+                            stringResource(R.string.discard),
+                        )
+                    }
+                },
+                title = {
+                    Text(text = stringResource(R.string.unsaved_dialog_title))
+                },
+                text = {
+                    Text(
+                        stringResource(R.string.unsaved_dialog_desc),
+                    )
+                },
             )
         }
     }

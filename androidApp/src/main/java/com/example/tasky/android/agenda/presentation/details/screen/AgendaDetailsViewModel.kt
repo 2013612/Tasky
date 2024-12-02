@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.tasky.agenda.domain.IAgendaRepository
+import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Event
 import com.example.tasky.agenda.domain.model.RemindAtType
@@ -70,6 +71,10 @@ class AgendaDetailsViewModel(
 
     private val deletedPhotoKeys = mutableListOf<String>()
 
+    private lateinit var originalAgendaItem: AgendaItem
+    private var originalPhotos = emptyList<DetailsPhoto>()
+    private var originalEventIsGoing = false
+
     init {
         networkManager
             .observeHasConnection()
@@ -86,6 +91,7 @@ class AgendaDetailsViewModel(
                 AgendaType.EVENT -> agendaRepository.getEvent(eventId = routeArguments.agendaId)
                 AgendaType.REMINDER -> agendaRepository.getReminder(reminderId = routeArguments.agendaId)
             }.onSuccess { agendaItem ->
+                originalAgendaItem = agendaItem
                 when (agendaItem) {
                     is Task, is Reminder ->
                         _screenStateFlow.update {
@@ -95,13 +101,18 @@ class AgendaDetailsViewModel(
                     is Event -> {
                         val userId = sessionManager.getUserId()
                         val eventIsGoing = agendaItem.attendees.firstOrNull { it.userId == userId }?.isGoing ?: true
+                        val photos =
+                            agendaItem.photos.map { photo ->
+                                DetailsPhoto.RemotePhoto(photo)
+                            }
+
+                        originalPhotos = photos
+                        originalEventIsGoing = eventIsGoing
+
                         _screenStateFlow.update {
                             it.copy(
                                 agendaItem = agendaItem,
-                                photos =
-                                    agendaItem.photos.map { photo ->
-                                        DetailsPhoto.RemotePhoto(photo)
-                                    },
+                                photos = photos,
                                 isCreator = agendaItem.isUserEventCreator,
                                 eventIsGoing = eventIsGoing,
                             )
@@ -116,7 +127,7 @@ class AgendaDetailsViewModel(
         val item = screenStateFlow.value.agendaItem
         when (event) {
             AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(detailsEditTextType = null) }
-            AgendaDetailsScreenEvent.OnCloseClick -> {}
+            AgendaDetailsScreenEvent.OnCloseClick -> onCloseClick()
             AgendaDetailsScreenEvent.OnBottomTextClick ->
                 if (item is Event && !item.isUserEventCreator) {
                     toggleIsGoing()
@@ -130,7 +141,12 @@ class AgendaDetailsViewModel(
                         detailsEditTextType = DetailsEditTextType.DESCRIPTION,
                     )
                 }
-            AgendaDetailsScreenEvent.OnEditClick -> _screenStateFlow.update { it.copy(isEdit = true) }
+            AgendaDetailsScreenEvent.OnEditClick -> {
+                originalAgendaItem = screenStateFlow.value.agendaItem
+                originalPhotos = screenStateFlow.value.photos
+                originalEventIsGoing = screenStateFlow.value.eventIsGoing
+                _screenStateFlow.update { it.copy(isEdit = true) }
+            }
             is AgendaDetailsScreenEvent.OnRemindAtChange -> updateRemindAt(event.newType)
             AgendaDetailsScreenEvent.OnSaveClick -> saveAgenda()
             is AgendaDetailsScreenEvent.OnStartDateChange -> updateStartDate(event.newDate)
@@ -146,6 +162,38 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnPhotoClick -> _screenStateFlow.update { it.copy(enlargedPhoto = event.photo) }
             AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
             is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
+            is AgendaDetailsScreenEvent.CloseUnsavedDialog -> closeUnsavedDialog(event.isCancel)
+        }
+    }
+
+    private fun onCloseClick() {
+        if (!screenStateFlow.value.isEdit) {
+            return
+        }
+
+        if (originalAgendaItem == screenStateFlow.value.agendaItem &&
+            originalPhotos == screenStateFlow.value.photos &&
+            originalEventIsGoing == screenStateFlow.value.eventIsGoing
+        ) {
+            _screenStateFlow.update { it.copy(isEdit = false) }
+        } else {
+            _screenStateFlow.update { it.copy(showUnsavedDialog = true) }
+        }
+    }
+
+    private fun closeUnsavedDialog(isCancel: Boolean) {
+        if (isCancel) {
+            _screenStateFlow.update { it.copy(showUnsavedDialog = false) }
+        } else {
+            _screenStateFlow.update {
+                it.copy(
+                    agendaItem = originalAgendaItem,
+                    photos = originalPhotos,
+                    eventIsGoing = originalEventIsGoing,
+                    isEdit = false,
+                    showUnsavedDialog = false,
+                )
+            }
         }
     }
 

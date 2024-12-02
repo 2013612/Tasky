@@ -21,6 +21,8 @@ sealed interface AgendaDetailsScreenEvent {
 
     data object CloseEditText : AgendaDetailsScreenEvent
 
+    data class CloseUnsavedDialog(val isCancel: Boolean) : AgendaDetailsScreenEvent
+
     data class OnTitleChange(
         val newTitle: String,
     ) : AgendaDetailsScreenEvent
