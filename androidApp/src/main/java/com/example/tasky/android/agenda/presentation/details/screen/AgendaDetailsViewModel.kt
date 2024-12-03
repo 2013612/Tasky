@@ -126,7 +126,7 @@ class AgendaDetailsViewModel(
     fun onEvent(event: AgendaDetailsScreenEvent) {
         val item = screenStateFlow.value.agendaItem
         when (event) {
-            AgendaDetailsScreenEvent.CloseEditText -> _screenStateFlow.update { it.copy(detailsEditTextType = null) }
+            AgendaDetailsScreenEvent.OnEditTextClose -> _screenStateFlow.update { it.copy(detailsEditTextType = null) }
             AgendaDetailsScreenEvent.OnCloseClick -> onCloseClick()
             AgendaDetailsScreenEvent.OnBottomTextClick ->
                 if (item is Event && !item.isUserEventCreator) {
@@ -160,10 +160,10 @@ class AgendaDetailsViewModel(
             is AgendaDetailsScreenEvent.OnEndTimeChange -> updateEndTime(event.newHour, event.newMinute)
             is AgendaDetailsScreenEvent.OnAddPhoto -> addPhoto(event.uri)
             is AgendaDetailsScreenEvent.OnPhotoClick -> _screenStateFlow.update { it.copy(enlargedPhoto = event.photo) }
-            AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
+            AgendaDetailsScreenEvent.OnLargePhotoClose -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
             is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
-            is AgendaDetailsScreenEvent.CloseUnsavedDialog -> closeUnsavedDialog(event.isCancel)
-            is AgendaDetailsScreenEvent.CloseDeleteDialog -> closeDeleteDialog(event.isCancel)
+            is AgendaDetailsScreenEvent.OnUnsavedDialogClose -> closeUnsavedDialog(event.isCancel)
+            is AgendaDetailsScreenEvent.OnDeleteDialogClose -> closeDeleteDialog(event.isCancel)
         }
     }
 
