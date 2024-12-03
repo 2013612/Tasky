@@ -12,27 +12,26 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun AgendaDayBar(
-    days: ImmutableList<Instant>,
+    days: ImmutableList<LocalDate>,
     selectedDayOffset: Int,
     onDaySelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyRow(modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {
         itemsIndexed(days) { index, day ->
-            val localDate = day.toLocalDateTime(TimeZone.currentSystemDefault())
             AgendaDayItem(
                 upperString =
-                    localDate.dayOfWeek.name
+                    day.dayOfWeek.name
                         .first()
                         .toString(),
-                lowerString = localDate.dayOfMonth.toString(),
+                lowerString = day.dayOfMonth.toString(),
                 index == selectedDayOffset,
                 onClick = { onDaySelect(index) },
             )
@@ -47,8 +46,8 @@ private fun AgendaDayBarPreview() {
         AgendaDayBar(
             (0..5)
                 .map {
-                    val now = Clock.System.now()
-                    now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+                    now.plus(it, DateTimeUnit.DAY)
                 }.toImmutableList(),
             0,
             {},

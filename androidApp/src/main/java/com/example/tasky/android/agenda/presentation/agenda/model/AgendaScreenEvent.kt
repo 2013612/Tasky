@@ -3,6 +3,7 @@ package com.example.tasky.android.agenda.presentation.agenda.model
 import com.example.tasky.agenda.domain.model.AgendaItem
 import com.example.tasky.agenda.domain.model.AgendaType
 import com.example.tasky.agenda.domain.model.Task
+import kotlinx.datetime.LocalDate
 
 sealed interface AgendaScreenEvent {
     data object OnClickLogout : AgendaScreenEvent
@@ -12,7 +13,7 @@ sealed interface AgendaScreenEvent {
     ) : AgendaScreenEvent
 
     data class OnDateSelect(
-        val newDate: Long,
+        val newDate: LocalDate,
     ) : AgendaScreenEvent
 
     data class OnDayOffsetSelect(

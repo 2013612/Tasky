@@ -51,9 +51,7 @@ import com.example.tasky.android.theme.MyApplicationTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -107,7 +105,7 @@ private fun AgendaScreen(
         Column {
             Spacer(modifier = Modifier.height(8.dp))
             AgendaTopBar(
-                date = state.startDate.toLocalDateTime(TimeZone.currentSystemDefault()),
+                date = state.startDate,
                 name = state.name,
                 onLogoutClick = {
                     onEvent(AgendaScreenEvent.OnClickLogout)
@@ -135,7 +133,7 @@ private fun AgendaScreen(
                         (0..state.numberOfDateShown)
                             .map {
                                 val now = state.startDate
-                                now.plus(it, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+                                now.plus(it, DateTimeUnit.DAY)
                             }.toImmutableList(),
                     selectedDayOffset = state.selectedDateOffset,
                     onDaySelect = {
