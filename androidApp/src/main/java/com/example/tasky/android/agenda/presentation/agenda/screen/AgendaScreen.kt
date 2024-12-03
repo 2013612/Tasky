@@ -42,6 +42,7 @@ import com.example.tasky.android.agenda.presentation.agenda.component.AgendaTopB
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaItemUi
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenEvent
 import com.example.tasky.android.agenda.presentation.agenda.model.AgendaScreenState
+import com.example.tasky.android.agenda.presentation.common.component.DeleteAgendaDialog
 import com.example.tasky.android.common.presentation.components.NotificationPermissionDialogProvider
 import com.example.tasky.android.common.presentation.components.PermissionDialog
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
@@ -206,6 +207,14 @@ private fun AgendaScreen(
                 permissionDialogProvider = NotificationPermissionDialogProvider(),
                 modifier = Modifier.align(Alignment.Center),
             )
+        }
+
+        if (state.showDeleteDialog) {
+            DeleteAgendaDialog(agendaTitle = state.selectedAgendaItem?.title ?: "", onDismiss = {
+                onEvent(AgendaScreenEvent.OnDeleteDialogClose(isCancel = true))
+            }, onConfirm = {
+                onEvent(AgendaScreenEvent.OnDeleteDialogClose(isCancel = false))
+            })
         }
     }
 }
