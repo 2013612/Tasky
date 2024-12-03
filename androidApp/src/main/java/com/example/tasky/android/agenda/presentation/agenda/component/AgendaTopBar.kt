@@ -40,19 +40,20 @@ import com.example.tasky.android.R
 import com.example.tasky.android.theme.Light
 import com.example.tasky.android.theme.LightBlue
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.common.domain.util.toLocalDateTime
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgendaTopBar(
-    date: LocalDateTime,
+    date: LocalDate,
     name: String,
     onLogoutClick: () -> Unit,
-    onDateSelect: (Long) -> Unit,
+    onDateSelect: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isDateDialogOpen by remember { mutableStateOf(false) }
@@ -120,7 +121,7 @@ fun AgendaTopBar(
             rememberDatePickerState(
                 initialSelectedDateMillis =
                     date
-                        .toInstant(TimeZone.UTC)
+                        .atStartOfDayIn(TimeZone.UTC)
                         .toEpochMilliseconds() +
                         java.util.TimeZone
                             .getDefault()
@@ -138,7 +139,7 @@ fun AgendaTopBar(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        datePickerState.selectedDateMillis?.let { onDateSelect(it) }
+                        datePickerState.selectedDateMillis?.let { onDateSelect(it.toLocalDateTime().date) }
                         isDateDialogOpen = false
                     },
                     enabled = confirmEnabled.value,
@@ -163,7 +164,7 @@ fun AgendaTopBar(
 private fun AgendaTopBarPreview() {
     MyApplicationTheme {
         AgendaTopBar(
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
             "PL",
             {},
             {},

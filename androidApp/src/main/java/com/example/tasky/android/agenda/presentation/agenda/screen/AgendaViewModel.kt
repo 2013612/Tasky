@@ -29,9 +29,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
 import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -71,17 +73,25 @@ class AgendaViewModel(
             is AgendaScreenEvent.OnDateSelect -> {
                 _screenStateFlow.update {
                     it.copy(
-                        startDate = Instant.fromEpochMilliseconds(event.newDate),
+                        startDate = event.newDate,
                         selectedDateOffset = 0,
                     )
                 }
-                selectedTimeFlow.update { event.newDate }
+                selectedTimeFlow.update {
+                    event.newDate
+                        .atStartOfDayIn(
+                            TimeZone.currentSystemDefault(),
+                        ).toEpochMilliseconds()
+                }
             }
             is AgendaScreenEvent.OnDayOffsetSelect -> {
                 _screenStateFlow.update { it.copy(selectedDateOffset = event.newOffset) }
                 val newDate =
-                    _screenStateFlow.value.startDate.toEpochMilliseconds() +
-                        event.newOffset.toDuration(DurationUnit.DAYS).toLong(DurationUnit.MILLISECONDS)
+                    _screenStateFlow.value.startDate
+                        .plus(event.newOffset, DateTimeUnit.DAY)
+                        .atStartOfDayIn(
+                            TimeZone.currentSystemDefault(),
+                        ).toEpochMilliseconds()
                 selectedTimeFlow.update { newDate }
             }
             is AgendaScreenEvent.OnDeleteClick ->

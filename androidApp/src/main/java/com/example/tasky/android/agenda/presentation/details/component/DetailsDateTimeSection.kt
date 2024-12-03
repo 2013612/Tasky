@@ -35,10 +35,9 @@ import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.R
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.common.domain.util.format
 import com.example.tasky.common.domain.util.toLocalDateTime
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toJavaLocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +77,7 @@ fun DetailsDateTimeSection(
             isTimeDialogOpen = true
         }, enabled = isEdit, modifier = Modifier.weight(3f)) {
             Text(
-                formatTime(time),
+                time.toLocalDateTime().format("HH:mm"),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -88,7 +87,7 @@ fun DetailsDateTimeSection(
             isDateDialogOpen = true
         }, enabled = isEdit, modifier = Modifier.weight(4f)) {
             Text(
-                formatDate(time),
+                time.toLocalDateTime().format("MMM dd yyyy"),
                 style = typography.bodySmall,
                 lineHeight = 15.sp,
                 color = Black,
@@ -171,24 +170,6 @@ fun DetailsDateTimeSection(
             )
         }
     }
-}
-
-private fun formatTime(time: Long): String {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm")
-
-    return time
-        .toLocalDateTime()
-        .toJavaLocalDateTime()
-        .format(dateTimeFormat)
-}
-
-private fun formatDate(time: Long): String {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("MMM dd yyyy")
-
-    return time
-        .toLocalDateTime()
-        .toJavaLocalDateTime()
-        .format(dateTimeFormat)
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
