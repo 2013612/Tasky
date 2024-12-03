@@ -48,10 +48,14 @@ import com.example.tasky.android.common.presentation.components.PermissionDialog
 import com.example.tasky.android.common.presentation.utils.ObserveAsEvents
 import com.example.tasky.android.theme.Black
 import com.example.tasky.android.theme.MyApplicationTheme
+import com.example.tasky.common.domain.util.format
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -143,7 +147,19 @@ private fun AgendaScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    stringResource(R.string.today),
+                    if (state.startDate
+                            .plus(state.selectedDateOffset, DateTimeUnit.DAY) ==
+                        Clock.System
+                            .now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .date
+                    ) {
+                        stringResource(R.string.today)
+                    } else {
+                        state.startDate
+                            .plus(state.selectedDateOffset, DateTimeUnit.DAY)
+                            .format(isoFormat = "dd MMM yyyy")
+                    },
                     style = typography.headlineMedium,
                     color = Black,
                     lineHeight = 16.sp,
