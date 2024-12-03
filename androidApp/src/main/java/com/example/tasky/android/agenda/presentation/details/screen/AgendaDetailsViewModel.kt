@@ -132,7 +132,7 @@ class AgendaDetailsViewModel(
                 if (item is Event && !item.isUserEventCreator) {
                     toggleIsGoing()
                 } else {
-                    deleteAgendaItem()
+                    _screenStateFlow.update { it.copy(showDeleteDialog = true) }
                 }
             is AgendaDetailsScreenEvent.OnDescChange -> updateDesc(event.newDesc)
             AgendaDetailsScreenEvent.OnDescClick ->
@@ -163,6 +163,7 @@ class AgendaDetailsViewModel(
             AgendaDetailsScreenEvent.CloseLargePhoto -> _screenStateFlow.update { it.copy(enlargedPhoto = null) }
             is AgendaDetailsScreenEvent.OnPhotoDelete -> deletePhoto(key = event.key)
             is AgendaDetailsScreenEvent.CloseUnsavedDialog -> closeUnsavedDialog(event.isCancel)
+            is AgendaDetailsScreenEvent.CloseDeleteDialog -> closeDeleteDialog(event.isCancel)
         }
     }
 
@@ -194,6 +195,14 @@ class AgendaDetailsViewModel(
                     showUnsavedDialog = false,
                 )
             }
+        }
+    }
+
+    private fun closeDeleteDialog(isCancel: Boolean) {
+        if (isCancel) {
+            _screenStateFlow.update { it.copy(showDeleteDialog = false) }
+        } else {
+            deleteAgendaItem()
         }
     }
 
