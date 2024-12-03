@@ -38,6 +38,7 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.AGENDA_DETAILS_DEEPLINK
 import com.example.tasky.android.R
+import com.example.tasky.android.agenda.presentation.common.component.DeleteAgendaDialog
 import com.example.tasky.android.agenda.presentation.details.component.DetailsAttendeeSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDateTimeSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDeleteSection
@@ -421,6 +422,14 @@ private fun AgendaDetailsScreen(
                     )
                 },
             )
+        }
+
+        if (state.showDeleteDialog) {
+            DeleteAgendaDialog(agendaTitle = state.agendaItem.title, onDismiss = {
+                onEvent(AgendaDetailsScreenEvent.CloseDeleteDialog(isCancel = true))
+            }, onConfirm = {
+                onEvent(AgendaDetailsScreenEvent.CloseDeleteDialog(isCancel = false))
+            })
         }
     }
 }
