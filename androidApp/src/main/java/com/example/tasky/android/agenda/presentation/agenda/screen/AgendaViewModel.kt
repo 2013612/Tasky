@@ -84,11 +84,27 @@ class AgendaViewModel(
                         event.newOffset.toDuration(DurationUnit.DAYS).toLong(DurationUnit.MILLISECONDS)
                 selectedTimeFlow.update { newDate }
             }
-            is AgendaScreenEvent.OnDeleteClick -> deleteAgenda(agendaItem = event.agendaItem)
+            is AgendaScreenEvent.OnDeleteClick ->
+                _screenStateFlow.update {
+                    it.copy(
+                        showDeleteDialog = true,
+                        selectedAgendaItem = event.agendaItem,
+                    )
+                }
             is AgendaScreenEvent.OnEditClick -> {}
             is AgendaScreenEvent.OnOpenClick -> {}
             is AgendaScreenEvent.OnAgendaCircleClick -> toggleTaskIsDone(event.task)
+            is AgendaScreenEvent.OnDeleteDialogClose -> closeDeleteAgenda(event.isCancel)
         }
+    }
+
+    private fun closeDeleteAgenda(isCancel: Boolean) {
+        if (!isCancel) {
+            val agendaItem = screenStateFlow.value.selectedAgendaItem ?: return
+            deleteAgenda(agendaItem)
+        }
+
+        _screenStateFlow.update { it.copy(showDeleteDialog = false) }
     }
 
     private fun getTimeNeedleDisplayIndex(agendaItemsSortedByStartTime: List<AgendaItem>): Int {

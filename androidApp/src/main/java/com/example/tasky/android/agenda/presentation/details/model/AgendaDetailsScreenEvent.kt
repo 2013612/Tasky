@@ -19,9 +19,15 @@ sealed interface AgendaDetailsScreenEvent {
 
     data object OnBottomTextClick : AgendaDetailsScreenEvent
 
-    data object CloseEditText : AgendaDetailsScreenEvent
+    data object OnEditTextClose : AgendaDetailsScreenEvent
 
-    data class CloseUnsavedDialog(val isCancel: Boolean) : AgendaDetailsScreenEvent
+    data class OnUnsavedDialogClose(
+        val isCancel: Boolean,
+    ) : AgendaDetailsScreenEvent
+
+    data class OnDeleteDialogClose(
+        val isCancel: Boolean,
+    ) : AgendaDetailsScreenEvent
 
     data class OnTitleChange(
         val newTitle: String,
@@ -73,7 +79,7 @@ sealed interface AgendaDetailsScreenEvent {
         val photo: DetailsPhoto,
     ) : AgendaDetailsScreenEvent
 
-    data object CloseLargePhoto : AgendaDetailsScreenEvent
+    data object OnLargePhotoClose : AgendaDetailsScreenEvent
 
     data class OnPhotoDelete(
         val key: String,

@@ -65,4 +65,6 @@
     <string name="discard">Discard</string>
     <string name="unsaved_dialog_title">Have Unsaved Changes</string>
     <string name="unsaved_dialog_desc">Are you sure you want to discard changes?</string>
+    <string name="delete_dialog_title">Warning</string>
+    <string name="delete_dialog_desc">Are you sure you want to delete %1$s?</string>
 </resources>

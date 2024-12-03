@@ -38,6 +38,7 @@ import com.example.tasky.agenda.domain.model.Reminder
 import com.example.tasky.agenda.domain.model.Task
 import com.example.tasky.android.AGENDA_DETAILS_DEEPLINK
 import com.example.tasky.android.R
+import com.example.tasky.android.agenda.presentation.common.component.DeleteAgendaDialog
 import com.example.tasky.android.agenda.presentation.details.component.DetailsAttendeeSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDateTimeSection
 import com.example.tasky.android.agenda.presentation.details.component.DetailsDeleteSection
@@ -190,8 +191,7 @@ private fun AgendaDetailsScreen(
                         .background(
                             Color.White,
                             RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-                        )
-                        .padding(top = 30.dp)
+                        ).padding(top = 30.dp)
                         .verticalScroll(rememberScrollState()),
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -344,7 +344,7 @@ private fun AgendaDetailsScreen(
                     },
                 type = state.detailsEditTextType,
                 onBackClick = {
-                    onEvent(AgendaDetailsScreenEvent.CloseEditText)
+                    onEvent(AgendaDetailsScreenEvent.OnEditTextClose)
                 },
                 onSaveClick = {
                     when (state.detailsEditTextType) {
@@ -362,7 +362,7 @@ private fun AgendaDetailsScreen(
                                 ),
                             )
                     }
-                    onEvent(AgendaDetailsScreenEvent.CloseEditText)
+                    onEvent(AgendaDetailsScreenEvent.OnEditTextClose)
                 },
                 modifier = Modifier.fillMaxSize(),
             )
@@ -373,7 +373,7 @@ private fun AgendaDetailsScreen(
                 photo = state.enlargedPhoto,
                 isEdit = state.isEdit && state.isCreator && state.hasNetwork,
                 onCloseClick = {
-                    onEvent(AgendaDetailsScreenEvent.CloseLargePhoto)
+                    onEvent(AgendaDetailsScreenEvent.OnLargePhotoClose)
                 },
                 onDeleteClick = {
                     onEvent(
@@ -392,11 +392,11 @@ private fun AgendaDetailsScreen(
         if (state.showUnsavedDialog) {
             AlertDialog(
                 onDismissRequest = {
-                    onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = true))
+                    onEvent(AgendaDetailsScreenEvent.OnUnsavedDialogClose(isCancel = true))
                 },
                 dismissButton = {
                     TextButton(onClick = {
-                        onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = true))
+                        onEvent(AgendaDetailsScreenEvent.OnUnsavedDialogClose(isCancel = true))
                     }) {
                         Text(
                             stringResource(R.string.cancel),
@@ -405,7 +405,7 @@ private fun AgendaDetailsScreen(
                 },
                 confirmButton = {
                     TextButton(onClick = {
-                        onEvent(AgendaDetailsScreenEvent.CloseUnsavedDialog(isCancel = false))
+                        onEvent(AgendaDetailsScreenEvent.OnUnsavedDialogClose(isCancel = false))
                     }) {
                         Text(
                             stringResource(R.string.discard),
@@ -421,6 +421,14 @@ private fun AgendaDetailsScreen(
                     )
                 },
             )
+        }
+
+        if (state.showDeleteDialog) {
+            DeleteAgendaDialog(agendaTitle = state.agendaItem.title, onDismiss = {
+                onEvent(AgendaDetailsScreenEvent.OnDeleteDialogClose(isCancel = true))
+            }, onConfirm = {
+                onEvent(AgendaDetailsScreenEvent.OnDeleteDialogClose(isCancel = false))
+            })
         }
     }
 }
