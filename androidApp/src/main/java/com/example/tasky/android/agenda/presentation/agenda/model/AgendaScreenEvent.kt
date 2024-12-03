@@ -34,4 +34,8 @@ sealed interface AgendaScreenEvent {
     data class OnAgendaCircleClick(
         val task: Task,
     ) : AgendaScreenEvent
+
+    data class OnDeleteDialogClose(
+        val isCancel: Boolean,
+    ) : AgendaScreenEvent
 }
