@@ -25,6 +25,7 @@
 		7E901FE92D68815D00417A15 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FE82D68815D00417A15 /* LoginScreen.swift */; };
 		7E901FF02D6C580600417A15 /* CheckTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FEF2D6C580200417A15 /* CheckTextField.swift */; };
 		7E901FF22D6C7C3900417A15 /* VisibilityTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF12D6C7C3700417A15 /* VisibilityTextField.swift */; };
+		7E901FF62D6D760200417A15 /* PrimaryButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -61,6 +62,7 @@
 		7E901FE82D68815D00417A15 /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
 		7E901FEF2D6C580200417A15 /* CheckTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckTextField.swift; sourceTree = "<group>"; };
 		7E901FF12D6C7C3700417A15 /* VisibilityTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisibilityTextField.swift; sourceTree = "<group>"; };
+		7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButtonModifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				7E901FF32D6D75DA00417A15 /* common */,
 				7E901FE62D68806100417A15 /* auth */,
 				7E81FAA92D48C2EC00E45D63 /* theme */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
@@ -178,6 +181,22 @@
 				7E901FF12D6C7C3700417A15 /* VisibilityTextField.swift */,
 			);
 			path = component;
+			sourceTree = "<group>";
+		};
+		7E901FF32D6D75DA00417A15 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				7E901FF42D6D75E300417A15 /* modifier */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		7E901FF42D6D75E300417A15 /* modifier */ = {
+			isa = PBXGroup;
+			children = (
+				7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */,
+			);
+			path = modifier;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,6 +302,7 @@
 			files = (
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				7E901FF62D6D760200417A15 /* PrimaryButtonModifier.swift in Sources */,
 				7E901FF02D6C580600417A15 /* CheckTextField.swift in Sources */,
 				7E332A752D6499AB003A5281 /* FontStyle.swift in Sources */,
 				7E81FAAB2D48C30500E45D63 /* Color.swift in Sources */,
