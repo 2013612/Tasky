@@ -26,6 +26,7 @@
 		7E901FF02D6C580600417A15 /* CheckTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FEF2D6C580200417A15 /* CheckTextField.swift */; };
 		7E901FF22D6C7C3900417A15 /* VisibilityTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF12D6C7C3700417A15 /* VisibilityTextField.swift */; };
 		7E901FF62D6D760200417A15 /* PrimaryButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */; };
+		7E901FF82D6DA19500417A15 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7E901FF72D6DA19500417A15 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +64,7 @@
 		7E901FEF2D6C580200417A15 /* CheckTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckTextField.swift; sourceTree = "<group>"; };
 		7E901FF12D6C7C3700417A15 /* VisibilityTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisibilityTextField.swift; sourceTree = "<group>"; };
 		7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButtonModifier.swift; sourceTree = "<group>"; };
+		7E901FF72D6DA19500417A15 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				7E901FF72D6DA19500417A15 /* Localizable.xcstrings */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hant",
 			);
 			mainGroup = 7555FF72242A565900829871;
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
@@ -261,6 +265,7 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				7E901FDD2D6831AB00417A15 /* inter_extrabold.ttf in Resources */,
+				7E901FF82D6DA19500417A15 /* Localizable.xcstrings in Resources */,
 				7E901FDE2D6831AB00417A15 /* inter_light.ttf in Resources */,
 				7E901FDF2D6831AB00417A15 /* inter_medium.ttf in Resources */,
 				7E901FE02D6831AB00417A15 /* inter_semibold.ttf in Resources */,
@@ -371,6 +376,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -425,6 +431,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
