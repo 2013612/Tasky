@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
     "don_t_have_an_account" : {
       "extractionState" : "manual",
       "localizations" : {
