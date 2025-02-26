@@ -59,6 +59,9 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             implementation(libs.konnection)
+
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
