@@ -10,8 +10,8 @@ import SwiftUI
 
 struct VisibilityTextField: View {
     @Binding var text: String
-    let errorText: String?
-    let placeholder: String
+    let errorText: LocalizedStringKey?
+    let placeholder: LocalizedStringKey
 
     @State private var isVisible: Bool = false
     @FocusState private var isFocused: Bool

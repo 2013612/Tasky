@@ -11,8 +11,8 @@ import SwiftUI
 struct CheckTextField: View {
     @Binding var text: String
     let isCheckVisible: Bool
-    let errorText: String?
-    let placeholder: String
+    let errorText: LocalizedStringKey?
+    let placeholder: LocalizedStringKey
 
     @FocusState private var isFocused: Bool
 
