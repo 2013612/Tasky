@@ -7,7 +7,7 @@
 //
 
 import Observation
-import shared
+import shared_
 import SwiftUICore
 
 @Observable
