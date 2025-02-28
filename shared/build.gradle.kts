@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.kspCompose)
     alias(libs.plugins.room)
+    alias(libs.plugins.skie)
 }
 
 buildscript {
@@ -35,7 +36,8 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            // cannot use "share", skie bug: https://github.com/touchlab/SKIE/issues/131
+            baseName = "shared_"
             isStatic = true
         }
     }

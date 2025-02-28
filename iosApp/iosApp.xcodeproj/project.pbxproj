@@ -28,6 +28,8 @@
 		7E901FF62D6D760200417A15 /* PrimaryButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */; };
 		7E901FF82D6DA19500417A15 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 7E901FF72D6DA19500417A15 /* Localizable.xcstrings */; };
 		7E901FFA2D6DAFFD00417A15 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FF92D6DAFF900417A15 /* LoginViewModel.swift */; };
+		7E9020002D6F26C400417A15 /* RegisterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E901FFF2D6F26BF00417A15 /* RegisterScreen.swift */; };
+		7E9020022D6F276F00417A15 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9020012D6F276B00417A15 /* RegisterViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +69,8 @@
 		7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButtonModifier.swift; sourceTree = "<group>"; };
 		7E901FF72D6DA19500417A15 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		7E901FF92D6DAFF900417A15 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		7E901FFF2D6F26BF00417A15 /* RegisterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterScreen.swift; sourceTree = "<group>"; };
+		7E9020012D6F276B00417A15 /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +161,7 @@
 		7E901FE62D68806100417A15 /* auth */ = {
 			isa = PBXGroup;
 			children = (
+				7E901FFE2D6F26B600417A15 /* register */,
 				7E901FEB2D6C578700417A15 /* common */,
 				7E901FE72D68808F00417A15 /* login */,
 			);
@@ -203,6 +208,15 @@
 				7E901FF52D6D75F200417A15 /* PrimaryButtonModifier.swift */,
 			);
 			path = modifier;
+			sourceTree = "<group>";
+		};
+		7E901FFE2D6F26B600417A15 /* register */ = {
+			isa = PBXGroup;
+			children = (
+				7E901FFF2D6F26BF00417A15 /* RegisterScreen.swift */,
+				7E9020012D6F276B00417A15 /* RegisterViewModel.swift */,
+			);
+			path = register;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,9 +322,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E9020002D6F26C400417A15 /* RegisterScreen.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				7E901FF62D6D760200417A15 /* PrimaryButtonModifier.swift in Sources */,
+				7E9020022D6F276F00417A15 /* RegisterViewModel.swift in Sources */,
 				7E901FF02D6C580600417A15 /* CheckTextField.swift in Sources */,
 				7E332A752D6499AB003A5281 /* FontStyle.swift in Sources */,
 				7E81FAAB2D48C30500E45D63 /* Color.swift in Sources */,

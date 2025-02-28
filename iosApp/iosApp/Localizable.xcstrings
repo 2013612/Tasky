@@ -4,6 +4,22 @@
     "" : {
       "shouldTranslate" : false
     },
+    "create_your_account" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create your account"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建立你的帳號"
+          }
+        }
+      }
+    },
     "don_t_have_an_account" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -38,6 +54,22 @@
         }
       }
     },
+    "get_started" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET STARTED"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始"
+          }
+        }
+      }
+    },
     "log_in" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -51,6 +83,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登入"
+          }
+        }
+      }
+    },
+    "name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名稱"
           }
         }
       }
