@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda.domain.IAgendaRepository
 import com.example.tasky.android.alarm.data.SyncAgendaManager
 import com.example.tasky.android.common.data.BootReceiverManager
+import com.example.tasky.auth.domain.ISessionManager
 import com.example.tasky.common.domain.INetworkManager
-import com.example.tasky.dataStore.isLoginFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
@@ -19,9 +19,10 @@ class MainViewModel(
     private val agendaRepository: IAgendaRepository,
     bootReceiverManager: BootReceiverManager,
     syncAgendaManager: SyncAgendaManager,
+    sessionManager: ISessionManager,
 ) : ViewModel() {
     val isLoginStateFlow =
-        isLoginFlow
+        sessionManager.isLoginFlow
             .onEach {
                 if (it) {
                     bootReceiverManager.start()
@@ -35,7 +36,7 @@ class MainViewModel(
     init {
         combine(
             networkManager.observeHasConnection(),
-            isLoginFlow,
+            sessionManager.isLoginFlow,
         ) { hasConnection, isLogin ->
             hasConnection && isLogin
         }.filter {
