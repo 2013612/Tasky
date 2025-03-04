@@ -10,6 +10,8 @@ import com.example.tasky.dataStore.dataStore
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.encodeToString
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -114,4 +116,7 @@ object SessionManager : ISessionManager {
             println("cannot get userId: $e")
             null
         }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val isLoginFlow = settings.getStringOrNullFlow(SettingsKey.LOGIN_RESPONSE.name).mapLatest { !it.isNullOrEmpty() }
 }

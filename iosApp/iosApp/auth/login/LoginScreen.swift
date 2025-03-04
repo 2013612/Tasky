@@ -10,6 +10,7 @@ import SwiftUI
 
 struct LoginScreen: View {
     @State private var viewModel = LoginViewModel()
+    @Environment(NavigationManager.self) private var navigationManager
 
     var body: some View {
         VStack(spacing: 0) {
@@ -29,14 +30,14 @@ struct LoginScreen: View {
                 }
                 Spacer()
 
-                (Text("don_t_have_an_account") + Text("sign_up")).environment(\.openURL, OpenURLAction { url in
-                    print(url)
+                (Text("don_t_have_an_account") + Text("sign_up")).environment(\.openURL, OpenURLAction { _ in
+                    navigationManager.path.append(.register)
                     return .handled
                 }).font(.labelLarge).foregroundStyle(.gray).tint(.lightBlue)
 
                 Spacer().frame(height: 20)
             }.padding(.horizontal, 16).background(Color.white).clipShape(UnevenRoundedRectangle(cornerRadii: RectangleCornerRadii(topLeading: 30, bottomLeading: 0, bottomTrailing: 0, topTrailing: 30)))
-        }.background(Color.black)
+        }.background(Color.black).toolbar(.hidden, for: .navigationBar)
     }
 }
 
