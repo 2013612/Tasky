@@ -10,6 +10,8 @@ import SwiftUI
 
 struct RegisterScreen: View {
     @State private var viewModel = RegisterViewModel()
+    @Environment(NavigationManager.self) private var navigationManager
+
     var body: some View {
         VStack(spacing: 0) {
             Spacer().frame(height: 47)
@@ -32,7 +34,7 @@ struct RegisterScreen: View {
             }.padding(.horizontal, 16).background(Color.white).clipShape(UnevenRoundedRectangle(cornerRadii: RectangleCornerRadii(topLeading: 30, bottomLeading: 0, bottomTrailing: 0, topTrailing: 30)))
         }.background(Color.black).toolbar(.hidden, for: .navigationBar).onChange(of: viewModel.isRegisterSuccess) { _, value in
             if value {
-                print("success")
+                navigationManager.path.popLast()
             }
         }
     }
